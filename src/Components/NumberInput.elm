@@ -1,4 +1,4 @@
-module NumberInput exposing (numberInput, Msg, update)
+module Components.NumberInput exposing (numberInput, Msg, update)
 
 import Html exposing (Attribute, Html, input)
 import Html.Events exposing (onWithOptions, keyCode, onInput)
