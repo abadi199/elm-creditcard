@@ -6,6 +6,7 @@ import Svg.Attributes exposing (width, height, viewBox, x, y, rx, ry, fill, font
 import CardType exposing (CardType(..))
 import Model exposing (Model)
 import Update exposing (Msg)
+import String
 
 
 viewLogo : Model -> Html Msg
@@ -17,6 +18,11 @@ viewLogo model =
                 |> Maybe.withDefault ""
                 |> CardType.detect
 
+        unknownText =
+            model.options.blankChar
+                |> List.repeat 4
+                |> String.fromList
+
         viewVisa x' y' =
             text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "VISA" ]
 
@@ -26,10 +32,13 @@ viewLogo model =
         viewAmex x' y' =
             text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "AMEX" ]
 
-        viewDiscovery x' y' =
-            text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "Discovery" ]
+        viewDiscover x' y' =
+            text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "Discover" ]
+
+        viewUnknown x' y' =
+            text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text unknownText ]
     in
-        case cardType of
+        case cardType |> Debug.log "" of
             Visa ->
                 viewVisa 280 40
 
@@ -39,8 +48,8 @@ viewLogo model =
             Amex ->
                 viewAmex 280 40
 
-            Discovery ->
-                viewDiscovery 280 40
+            Discover ->
+                viewDiscover 280 40
 
             _ ->
-                viewVisa 280 40
+                viewUnknown 280 40

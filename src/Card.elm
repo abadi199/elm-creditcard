@@ -48,5 +48,11 @@ update =
     Update.update
 
 
+main : Program Never
 main =
-    App.program { init = ( init, Cmd.none ), view = view, update = update, subscriptions = subscriptions }
+    App.program
+        { init = ( init, Cmd.none )
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }

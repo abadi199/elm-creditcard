@@ -18,6 +18,7 @@ type alias Model =
 type alias Options =
     { showLabel : Bool
     , maxNumberLength : Int
+    , blankChar : Char
     }
 
 
@@ -36,7 +37,7 @@ type alias Styles =
 -}
 init : Model
 init =
-    { options = { showLabel = False, maxNumberLength = 16 }
+    { options = { showLabel = False, maxNumberLength = 16, blankChar = '•' }
     , number = { id = "", label = Just "CC Number", value = Nothing }
     , name = { id = "", label = Just "Full Name", value = Nothing }
     , expirationMonth = { id = "", label = Just "MM", value = Nothing }

@@ -49,12 +49,12 @@ partitionStep groupSize step xs =
             [ group ]
 
 
-printNumber : Int -> Maybe Int -> String
-printNumber length maybeNumber =
+printNumber : Int -> Char -> Maybe Int -> String
+printNumber length char maybeNumber =
     maybeNumber
         |> Maybe.map toString
         |> Maybe.withDefault ""
-        |> formatNumber length
+        |> formatNumber length char
 
 
 rightPad : Char -> Int -> String -> String
@@ -65,10 +65,10 @@ rightPad char length number =
         number
 
 
-formatNumber : Int -> String -> String
-formatNumber length number =
+formatNumber : Int -> Char -> String -> String
+formatNumber length char number =
     number
-        |> rightPad '•' length
+        |> rightPad char length
         |> String.toList
         |> partition 4
         |> List.map ((::) ' ')
