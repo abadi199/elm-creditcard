@@ -13,36 +13,52 @@ type alias Model =
     String
 
 
-onKeyDown : Model -> (Int -> msg) -> Attribute msg
-onKeyDown model tagger =
+allowedKeyCodes : List Int
+allowedKeyCodes =
+    [ 37, 39, 8, 17, 18, 46, 9, 13 ]
+
+
+onKeyDown : Maybe Int -> Model -> (Int -> msg) -> Attribute msg
+onKeyDown maxLength model tagger =
     let
+        options =
+            { stopPropagation = False
+            , preventDefault = True
+            }
+
+        exceedMaxLength =
+            maxLength
+                |> Maybe.map ((<) (String.length model))
+                |> Maybe.withDefault True
+
         isNotNumeric =
             (\k ->
-                if Debug.log "" k == 37 || k == 39 || k == 8 || k == 17 || k == 18 || k == 46 then
+                if List.any ((==) k) allowedKeyCodes then
                     Err "not arrow"
-                else if k >= 48 && k <= 57 && String.length model < 16 then
+                else if k >= 48 && k <= 57 && exceedMaxLength then
                     Err "numeric"
                 else
                     Ok k
             )
+
+        decoder =
+            isNotNumeric
+                |> Json.customDecoder keyCode
+                |> Json.map tagger
     in
-        onWithOptions "keydown"
-            { stopPropagation = False
-            , preventDefault = True
-            }
-            (Json.map tagger (Json.customDecoder keyCode isNotNumeric))
+        onWithOptions "keydown" options decoder
 
 
-numberInput : Model -> Html Msg
-numberInput model =
+numberInput : Maybe Int -> (String -> String) -> List (Attribute Msg) -> Model -> Html Msg
+numberInput maxLength formatter attributes model =
     let
         tagger keyCode =
-            if Debug.log "" keyCode >= 48 && keyCode <= 57 then
+            if keyCode >= 48 && keyCode <= 57 then
                 KeyDown keyCode
             else
                 NoOp
     in
-        input [ value model, onKeyDown model tagger, onInput OnInput ]
+        input (List.append attributes [ value (formatter model), onKeyDown maxLength model tagger, onInput OnInput ])
             []
 
 
@@ -67,4 +83,4 @@ type Msg
 
 main : Program Never
 main =
-    Html.beginnerProgram { model = "", update = update, view = numberInput }
+    Html.beginnerProgram { model = "", update = update, view = numberInput (Just 5) identity [] }
