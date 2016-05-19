@@ -7,7 +7,7 @@ import Update exposing (Msg)
 import Svg exposing (svg, rect, text', text, foreignObject)
 import Svg.Attributes exposing (width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
 import Components.Logo exposing (viewLogo)
-import Helper exposing (printNumber, rightPad)
+import Helper exposing (printNumber, rightPad, leftPad)
 import String
 
 
@@ -33,11 +33,20 @@ viewCard model =
                             name
                    )
 
+        blankMonth =
+            List.repeat 2 model.options.blankChar
+                |> String.fromList
+
         expirationMonth =
             model.expirationMonth.value
                 |> Maybe.map toString
                 |> Maybe.withDefault ""
-                |> rightPad model.options.blankChar 2
+                |> (\str ->
+                        if String.isEmpty str then
+                            blankMonth
+                        else
+                            leftPad '0' 2 str
+                   )
 
         expirationYear =
             model.expirationYear.value

@@ -17,11 +17,11 @@ view : Model -> Html Msg
 view model =
     div [ class "elm-card" ]
         [ viewCard model
-        , App.map UpdateNumber (viewIntField model.options 16 model.number)
+        , App.map UpdateNumber (viewIntField model.options { maxLength = Just 16, maxValue = Nothing, minValue = Nothing } model.number)
         , viewField UpdateName model.options model.name
-        , App.map UpdateExpirationMonth (viewIntField model.options 2 model.expirationMonth)
-        , App.map UpdateExpirationYear (viewIntField model.options 4 model.expirationYear)
-        , App.map UpdateCCV (viewIntField model.options 4 model.ccv)
+        , App.map UpdateExpirationMonth (viewIntField model.options { maxLength = Just 2, maxValue = Just 12, minValue = Just 1 } model.expirationMonth)
+        , App.map UpdateExpirationYear (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.expirationYear)
+        , App.map UpdateCCV (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.ccv)
         ]
 
 
@@ -33,11 +33,11 @@ viewField tagger options field =
         ]
 
 
-viewIntField : Options -> Int -> Field Int -> Html NumberInput.Msg
-viewIntField options maxLength field =
+viewIntField : Options -> NumberInput.Options -> Field Int -> Html NumberInput.Msg
+viewIntField options numberInputOptions field =
     div []
         [ viewLabel options field
-        , numberInput (Just maxLength)
+        , numberInput numberInputOptions
             identity
             [ placeholder options field ]
             (field.value |> Maybe.map toString |> Maybe.withDefault "")

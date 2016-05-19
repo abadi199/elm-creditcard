@@ -5,6 +5,7 @@ module Helper
         , partitionStep
         , printNumber
         , rightPad
+        , leftPad
         , formatNumber
         )
 
@@ -61,6 +62,14 @@ rightPad : Char -> Int -> String -> String
 rightPad char length number =
     if String.length number < length then
         rightPad char length (number ++ String.fromChar char)
+    else
+        number
+
+
+leftPad : Char -> Int -> String -> String
+leftPad char length number =
+    if String.length number < length then
+        rightPad char length (String.fromChar char ++ number)
     else
         number
 
