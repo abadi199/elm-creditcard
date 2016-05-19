@@ -6,11 +6,18 @@ import Html.App as Html
 import Html.Attributes exposing (value)
 import Char exposing (fromCode, KeyCode)
 import String exposing (fromChar, slice)
-import Json.Decode as Json
+import Json.Decode as Json exposing ((:=))
 
 
 type alias Model =
     String
+
+
+type alias Event =
+    { keyCode : Int
+    , ctrlKey : Bool
+    , altKey : Bool
+    }
 
 
 allowedKeyCodes : List Int
@@ -21,6 +28,12 @@ allowedKeyCodes =
 onKeyDown : Maybe Int -> Model -> (Int -> msg) -> Attribute msg
 onKeyDown maxLength model tagger =
     let
+        eventDecoder =
+            Json.object3 Event
+                ("keyCode" := Json.int)
+                ("ctrlKey" := Json.bool)
+                ("altKey" := Json.bool)
+
         options =
             { stopPropagation = False
             , preventDefault = True
@@ -32,18 +45,20 @@ onKeyDown maxLength model tagger =
                 |> Maybe.withDefault True
 
         isNotNumeric =
-            (\k ->
-                if List.any ((==) k) allowedKeyCodes then
+            (\event ->
+                if event.ctrlKey || event.altKey then
+                    Err "modifier key is pressed"
+                else if List.any ((==) event.keyCode) allowedKeyCodes then
                     Err "not arrow"
-                else if k >= 48 && k <= 57 && exceedMaxLength then
+                else if event.keyCode >= 48 && event.keyCode <= 57 && exceedMaxLength then
                     Err "numeric"
                 else
-                    Ok k
+                    Ok event.keyCode
             )
 
         decoder =
             isNotNumeric
-                |> Json.customDecoder keyCode
+                |> Json.customDecoder eventDecoder
                 |> Json.map tagger
     in
         onWithOptions "keydown" options decoder
