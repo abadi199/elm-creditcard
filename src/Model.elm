@@ -30,18 +30,30 @@ type alias Field a =
 
 
 type alias Styles =
-    { textColor : String }
+    { textColor : String
+    , lightTextColor : String
+    }
 
 
 {-| init
 -}
 init : Model
 init =
-    { options = { showLabel = False, maxNumberLength = 16, blankChar = '•' }
+    { options =
+        { showLabel = False
+        , maxNumberLength = 16
+        , blankChar =
+            '•'
+            -- '☺'
+            -- '⋆'
+        }
     , number = { id = "", label = Just "CC Number", value = Nothing }
     , name = { id = "", label = Just "Full Name", value = Nothing }
     , expirationMonth = { id = "", label = Just "MM", value = Nothing }
     , expirationYear = { id = "", label = Just "YYYY", value = Nothing }
     , ccv = { id = "", label = Just "CCV", value = Nothing }
-    , styles = { textColor = "rgba(255,255,255,0.7)" }
+    , styles =
+        { textColor = "rgba(255,255,255,0.7)"
+        , lightTextColor = "rgba(255,255,255,0.4)"
+        }
     }
