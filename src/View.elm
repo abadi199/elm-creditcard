@@ -4,7 +4,7 @@ module View exposing (view)
 -}
 
 import Model exposing (Model, Options, Field)
-import Html exposing (Html, div, text, input, button, label)
+import Html exposing (Html, div, text, input, button, label, br)
 import Html.Attributes exposing (class, type', id, value, placeholder)
 import Html.Events exposing (onInput)
 import Html.App as App
@@ -22,6 +22,11 @@ view model =
         , App.map UpdateExpirationMonth (viewIntField model.options { maxLength = Just 2, maxValue = Just 12, minValue = Just 1 } model.expirationMonth)
         , App.map UpdateExpirationYear (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.expirationYear)
         , App.map UpdateCCV (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.ccv)
+        , text "AMEX: 378282246310005"
+        , br [] []
+        , text "VISA: 4242424242424242"
+        , br [] []
+        , text "Mastercard: 5555555555554444"
         ]
 
 
