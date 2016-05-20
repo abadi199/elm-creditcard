@@ -1,12 +1,13 @@
 module Components.Logo exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (svg, rect, text')
-import Svg.Attributes exposing (width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
+import Svg exposing (svg, rect, text', g)
+import Svg.Attributes exposing (transform, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
 import CardType exposing (CardType(..))
 import Model exposing (Model)
 import Update exposing (Msg)
 import String
+import Components.Logo.Visa as Visa
 
 
 viewLogo : Model -> Html Msg
@@ -23,8 +24,8 @@ viewLogo model =
                 |> List.repeat 4
                 |> String.fromList
 
-        viewVisa x' y' =
-            text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "VISA" ]
+        viewVisa =
+            g [ transform ("translate(260,40)") ] [ Visa.viewLogo ]
 
         viewMastercard x' y' =
             text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "Mastercard" ]
@@ -40,7 +41,7 @@ viewLogo model =
     in
         case cardType |> Debug.log "" of
             Visa ->
-                viewVisa 280 40
+                viewVisa
 
             Mastercard ->
                 viewMastercard 280 40
