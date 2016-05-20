@@ -8,6 +8,7 @@ import Model exposing (Model)
 import Update exposing (Msg)
 import String
 import Components.Logo.Visa as Visa
+import Components.Logo.Mastercard as Mastercard
 
 
 viewLogo : Model -> Html Msg
@@ -25,10 +26,10 @@ viewLogo model =
                 |> String.fromList
 
         viewVisa =
-            g [ transform ("translate(260,40)") ] [ Visa.viewLogo ]
+            g [ transform ("translate(270,20)") ] [ Visa.viewLogo ]
 
-        viewMastercard x' y' =
-            text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "Mastercard" ]
+        viewMastercard =
+            g [ transform ("translate(280,20)") ] [ Mastercard.viewLogo ]
 
         viewAmex x' y' =
             text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "AMEX" ]
@@ -44,7 +45,7 @@ viewLogo model =
                 viewVisa
 
             Mastercard ->
-                viewMastercard 280 40
+                viewMastercard
 
             Amex ->
                 viewAmex 280 40
