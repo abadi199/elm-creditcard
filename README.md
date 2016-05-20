@@ -32,4 +32,4 @@ TBA
 ## License
 
 The MIT License (MIT)
-Copyright &copy; 2015 Abadi Kurniawan
+Copyright &copy; 2016 Abadi Kurniawan
