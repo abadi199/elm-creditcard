@@ -13,6 +13,7 @@ import Components.Logo.Amex as Amex
 import Components.Logo.Discover as Discover
 import Components.Logo.Maestro as Maestro
 import Components.Logo.JCB as JCB
+import Components.Logo.Diners as Diners
 
 
 viewLogo : Model -> Html Msg
@@ -47,6 +48,9 @@ viewLogo model =
         viewJCB =
             g [ transform "translate(285, 15)" ] [ JCB.viewLogo ]
 
+        viewDiners =
+            g [ transform "translate(290, 20)" ] [ Diners.viewLogo ]
+
         viewUnknown =
             text' [ x "280", y "40", fontSize "12", fill model.styles.textColor ] [ Svg.text unknownText ]
     in
@@ -69,5 +73,17 @@ viewLogo model =
             JCB ->
                 viewJCB
 
-            _ ->
+            DinersClubCarteBlanche ->
+                viewDiners
+
+            DinersClubInternational ->
+                viewDiners
+
+            VisaElectron ->
+                viewVisa
+
+            Laser ->
+                viewUnknown
+
+            Unknown ->
                 viewUnknown

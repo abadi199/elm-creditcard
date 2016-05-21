@@ -29,6 +29,7 @@ view model =
             , li [] [ text "Discover: 6011111111111117" ]
             , li [] [ text "Maestro: 6759649826438453" ]
             , li [] [ text "JCB: 3530111333300000" ]
+            , li [] [ text "Diners: 36700102000000" ]
             ]
         ]
 
