@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:cc="http://creativecommons.org/ns#" 
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+  xmlns:svg="http://www.w3.org/2000/svg" 
+  xmlns="http://www.w3.org/2000/svg" 
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="100%" height="100%" viewBox="0 0 37.112 33.041" id="svg2" xml:space="preserve">
+  <defs id="defs1200">
+    <linearGradient x1="108.44" y1="17.976999" x2="110.62" y2="24.427" id="SVGID_5_" gradientUnits="userSpaceOnUse">
+      <stop id="stop914" style="stop-color:#ffffff;stop-opacity:1" offset="0.0055" />
+      <stop id="stop916" style="stop-color:#9c9d9f;stop-opacity:1" offset="1" />
+    </linearGradient>
+    <linearGradient x1="107.86" y1="18.172001" x2="110.05" y2="24.622" id="SVGID_6_" gradientUnits="userSpaceOnUse">
+      <stop id="stop923" style="stop-color:#ffffff;stop-opacity:1" offset="0.0055" />
+      <stop id="stop925" style="stop-color:#9c9d9f;stop-opacity:1" offset="1" />
+    </linearGradient>
+    <linearGradient x1="31.278999" y1="55.624001" x2="55.278999" y2="88.290001" id="SVGID_7_" gradientUnits="userSpaceOnUse">
+      <stop id="stop1188" style="stop-color:#ffe8a7;stop-opacity:1" offset="0.1319" />
+      <stop id="stop1190" style="stop-color:#ffd13b;stop-opacity:1" offset="0.4725" />
+    </linearGradient>
+    <linearGradient x1="31.278999" y1="55.624001" x2="55.278999" y2="88.290001" id="linearGradient4188" xlink:href="#SVGID_7_" gradientUnits="userSpaceOnUse" gradientTransform="translate(34.376115,-13.620725)" />
+    <linearGradient x1="31.278999" y1="55.624001" x2="55.278999" y2="88.290001" id="linearGradient4334" xlink:href="#SVGID_7_" gradientUnits="userSpaceOnUse" gradientTransform="translate(34.376115,-13.620725)" />
+  </defs>
+  <g transform="translate(-55.712119,-37.207275)" id="g4330">
+    <path d="m 87.801115,37.207275 h -27.065 c -2.774,0 -5.024,2.249 -5.024,5.024 v 22.993 c 0,2.774 2.25,5.024 5.024,5.024 h 27.064 c 2.775,0 5.024,-2.25 5.024,-5.024 v -22.993 c 10e-4,-2.775 -2.248,-5.024 -5.023,-5.024 z" id="path1192" style="fill:url(#linearGradient4334)" />
+    <path d="m 87.801115,37.207275 h -27.065 c -2.774,0 -5.024,2.249 -5.024,5.024 v 22.993 c 0,2.774 2.25,5.024 5.024,5.024 h 27.064 c 2.775,0 5.024,-2.25 5.024,-5.024 v -22.993 c 10e-4,-2.775 -2.248,-5.024 -5.023,-5.024 z m -31.62,5.024 c 0,-2.517 2.04,-4.556 4.556,-4.556 h 9.707 c -2.008,0.76 -2.939,2.42 -2.995,4.801 v 3.832 h -11.268 v -4.077 z m 0,4.544 h 11.268 v 6.718 h -11.268 v -6.718 z m 0,7.186 h 11.268 v 6.716 h -11.268 v -6.716 z m 4.555,15.818 c -2.516,0 -4.556,-2.04 -4.556,-4.556 v -4.078 h 11.736 v -18.201 h 12.705 v 21.565 h -12.938 c -0.312,0 -0.312,0.468 0,0.468 h 12.935 c -0.075,3.071 -1.657,4.802 -5.51,4.802 h -14.372 z m 31.62,-4.556 c 0,2.516 -2.04,4.556 -4.556,4.556 h -9.707 c 2.009,-0.761 2.938,-2.42 2.996,-4.802 v -3.832 h 11.267 v 4.078 z m 0,-4.546 h -11.266 v -6.716 h 11.266 v 6.716 z m 0,-7.184 h -11.266 v -6.718 h 11.266 v 6.718 z m 0,-7.185 h -11.266 v -3.832 h -13.17 c 0.075,-3.071 1.658,-4.801 5.511,-4.801 h 14.37 c 2.516,0 4.556,2.039 4.556,4.556 v 4.077 z" id="path1194" />
+  </g>
+  <metadata id="metadata1196">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

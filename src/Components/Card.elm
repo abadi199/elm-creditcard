@@ -9,6 +9,7 @@ import Svg.Attributes exposing (width, height, viewBox, x, y, rx, ry, fill, font
 import Components.Logo exposing (viewLogo)
 import Helpers.Misc as Helper exposing (printNumber, rightPad, leftPad)
 import String
+import Components.Chip exposing (viewChip, viewChipAlt)
 
 
 viewCard : Model Msg -> Html Msg
@@ -59,8 +60,9 @@ viewCard model =
     in
         svg [ width "350", height "220", viewBox "0 0 350 220", fontFamily "monospace" ]
             [ rect (List.append [ x "0", y "0", width "350", height "220", rx "5", ry "5" ] cardStyle.background.attributes) cardStyle.background.svg
+            , viewChip 40 70
             , viewLogo model
-            , text' [ x "40", y "110", fontSize "22", fill cardStyle.textColor ] [ text number ]
+            , text' [ x "40", y "130", fontSize "22", fill cardStyle.textColor ] [ text number ]
             , foreignObject [ x "40", y "160", fontSize "16", width "170", fill cardStyle.textColor ]
                 [ Html.p [ style [ ( "color", cardStyle.textColor ) ] ]
                     [ Html.text name ]
