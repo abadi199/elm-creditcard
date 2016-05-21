@@ -8,6 +8,7 @@ import Model exposing (Model)
 import Update exposing (Msg)
 import String
 import Components.Logo.Visa as Visa
+import Components.Logo.VisaElectron as VisaElectron
 import Components.Logo.Mastercard as Mastercard
 import Components.Logo.Amex as Amex
 import Components.Logo.Discover as Discover
@@ -51,6 +52,9 @@ viewLogo model =
         viewDiners =
             g [ transform "translate(290, 20)" ] [ Diners.viewLogo ]
 
+        viewVisaElectron =
+            g [ transform "translate(270,20)" ] [ VisaElectron.viewLogo ]
+
         viewUnknown =
             text' [ x "280", y "40", fontSize "12", fill model.styles.textColor ] [ Svg.text unknownText ]
     in
@@ -80,7 +84,7 @@ viewLogo model =
                 viewDiners
 
             VisaElectron ->
-                viewVisa
+                viewVisaElectron
 
             Laser ->
                 viewUnknown
