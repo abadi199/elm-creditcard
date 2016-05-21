@@ -11,7 +11,7 @@ import Helpers.Misc as Helper exposing (printNumber, rightPad, leftPad)
 import String
 
 
-viewCard : Model -> Html Msg
+viewCard : Model Msg -> Html Msg
 viewCard model =
     let
         number =
@@ -53,17 +53,20 @@ viewCard model =
                 |> Maybe.map toString
                 |> Maybe.withDefault ""
                 |> rightPad model.options.blankChar 4
+
+        cardStyle =
+            model.cardInfo.cardStyle
     in
         svg [ width "350", height "220", viewBox "0 0 350 220", fontFamily "monospace" ]
-            [ rect [ x "0", y "0", width "350", height "220", rx "5", ry "5", fill "rgba(0, 0, 0, 0.4)" ] []
+            [ rect (List.append [ x "0", y "0", width "350", height "220", rx "5", ry "5" ] cardStyle.background.attributes) cardStyle.background.svg
             , viewLogo model
-            , text' [ x "40", y "110", fontSize "22", fill model.styles.textColor ] [ text number ]
-            , foreignObject [ x "40", y "160", fontSize "16", width "170", fill model.styles.textColor ]
-                [ Html.p [ style [ ( "color", model.styles.textColor ) ] ]
+            , text' [ x "40", y "110", fontSize "22", fill cardStyle.textColor ] [ text number ]
+            , foreignObject [ x "40", y "160", fontSize "16", width "170", fill cardStyle.textColor ]
+                [ Html.p [ style [ ( "color", cardStyle.textColor ) ] ]
                     [ Html.text name ]
                 ]
-            , text' [ x "250", y "160", fontSize "10", fill model.styles.lightTextColor ] [ text "MONTH/YEAR" ]
-            , text' [ x "215", y "170", fontSize "8", fill model.styles.lightTextColor ] [ text "valid" ]
-            , text' [ x "220", y "180", fontSize "8", fill model.styles.lightTextColor ] [ text "thru" ]
-            , text' [ x "250", y "180", fontSize "14", fill model.styles.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
+            , text' [ x "250", y "160", fontSize "10", fill cardStyle.lightTextColor ] [ text "MONTH/YEAR" ]
+            , text' [ x "215", y "170", fontSize "8", fill cardStyle.lightTextColor ] [ text "valid" ]
+            , text' [ x "220", y "180", fontSize "8", fill cardStyle.lightTextColor ] [ text "thru" ]
+            , text' [ x "250", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
             ]

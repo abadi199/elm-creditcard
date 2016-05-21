@@ -6,6 +6,7 @@ module Update exposing (..)
 import Components.NumberInput as NumberInput
 import Model exposing (Model, Field)
 import String
+import Helpers.CardType as CardType
 
 
 type Msg
@@ -17,14 +18,14 @@ type Msg
     | UpdateCCV NumberInput.Msg
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
 
         UpdateNumber numberInputMsg ->
-            ( { model | number = updateFieldValue (updateNumberInput numberInputMsg model.number) model.number }
+            ( updateNumber numberInputMsg model
             , Cmd.none
             )
 
@@ -47,6 +48,24 @@ update msg model =
             ( { model | ccv = updateFieldValue (updateNumberInput numberInputMsg model.ccv) model.ccv }
             , Cmd.none
             )
+
+
+updateNumber : NumberInput.Msg -> Model Msg -> Model Msg
+updateNumber numberInputMsg model =
+    let
+        newNumber =
+            updateFieldValue (updateNumberInput numberInputMsg model.number) model.number
+
+        modelWithUpdatedNumber =
+            { model | number = newNumber }
+
+        cardInfo =
+            CardType.detect modelWithUpdatedNumber
+
+        modelWithUpdatedCardInfo =
+            { modelWithUpdatedNumber | cardInfo = cardInfo }
+    in
+        modelWithUpdatedCardInfo
 
 
 updateFieldValue : Maybe a -> Field a -> Field a

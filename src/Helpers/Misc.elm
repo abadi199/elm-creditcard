@@ -7,12 +7,15 @@ module Helpers.Misc
         , rightPad
         , leftPad
         , formatNumber
+        , transitionAnimation
         )
 
 import Html.Events exposing (on, keyCode)
 import String
 import Html exposing (Attribute, Html, input)
+import Svg
 import Json.Decode as Json
+import Svg.Attributes exposing (style)
 
 
 onKeyDown : (Int -> msg) -> Attribute msg
@@ -83,3 +86,8 @@ formatNumber length char number =
         |> List.map ((::) ' ')
         |> List.concat
         |> String.fromList
+
+
+transitionAnimation : Svg.Attribute msg
+transitionAnimation =
+    style "transition: fill 0.5s ease"

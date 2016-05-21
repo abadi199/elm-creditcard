@@ -13,7 +13,7 @@ import Components.NumberInput as NumberInput exposing (numberInput)
 import Components.Card exposing (viewCard)
 
 
-view : Model -> Html Msg
+view : Model Msg -> Html Msg
 view model =
     div [ class "elm-card" ]
         [ viewCard model

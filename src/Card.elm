@@ -24,7 +24,7 @@ subscriptions model =
 {-| Model
 -}
 type alias Model =
-    Model.Model
+    Model.Model Msg
 
 
 {-| Initialize the model

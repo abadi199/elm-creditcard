@@ -3,8 +3,7 @@ module Components.Logo exposing (viewLogo)
 import Html exposing (Html)
 import Svg exposing (svg, rect, text', g)
 import Svg.Attributes exposing (transform, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
-import Helpers.CardType as CardType exposing (CardType(..))
-import Model exposing (Model)
+import Model exposing (Model, CardType(..))
 import Update exposing (Msg)
 import String
 import Components.Logo.Visa as Visa
@@ -17,14 +16,11 @@ import Components.Logo.JCB as JCB
 import Components.Logo.Diners as Diners
 
 
-viewLogo : Model -> Html Msg
+viewLogo : Model Msg -> Html Msg
 viewLogo model =
     let
         cardType =
-            model.number.value
-                |> Maybe.map toString
-                |> Maybe.withDefault ""
-                |> CardType.detect
+            model.cardInfo.cardType
 
         unknownText =
             model.options.blankChar
@@ -56,7 +52,7 @@ viewLogo model =
             g [ transform "translate(270,20)" ] [ VisaElectron.viewLogo ]
 
         viewUnknown =
-            text' [ x "280", y "40", fontSize "12", fill model.styles.textColor ] [ Svg.text unknownText ]
+            text' [ x "280", y "40", fontSize "12", fill model.cardInfo.cardStyle.textColor ] [ Svg.text unknownText ]
     in
         case cardType |> Debug.log "" of
             Visa ->
