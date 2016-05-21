@@ -10,6 +10,7 @@ import String
 import Components.Logo.Visa as Visa
 import Components.Logo.Mastercard as Mastercard
 import Components.Logo.Amex as Amex
+import Components.Logo.Discover as Discover
 
 
 viewLogo : Model -> Html Msg
@@ -35,8 +36,8 @@ viewLogo model =
         viewAmex =
             g [ transform "translate(285, 15)" ] [ Amex.viewLogo ]
 
-        viewDiscover x' y' =
-            text' [ x (toString x'), y (toString y'), fontSize "12", fill model.styles.textColor ] [ Svg.text "Discover" ]
+        viewDiscover =
+            g [ transform "translate(50, 30)" ] [ Discover.viewLogo ]
 
         viewUnknown =
             text' [ x "280", y "40", fontSize "12", fill model.styles.textColor ] [ Svg.text unknownText ]
@@ -52,7 +53,7 @@ viewLogo model =
                 viewAmex
 
             Discover ->
-                viewDiscover 280 40
+                viewDiscover
 
             _ ->
                 viewUnknown
