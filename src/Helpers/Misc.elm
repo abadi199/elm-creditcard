@@ -1,4 +1,4 @@
-module Helper
+module Helpers.Misc
     exposing
         ( onKeyDown
         , partition

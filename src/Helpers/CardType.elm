@@ -1,4 +1,4 @@
-module CardType exposing (CardType(..), detect)
+module Helpers.CardType exposing (CardType(..), detect)
 
 {-| Helper for detecting type of card
 @docs CardType, detect

@@ -3,7 +3,7 @@ module Components.Logo exposing (viewLogo)
 import Html exposing (Html)
 import Svg exposing (svg, rect, text', g)
 import Svg.Attributes exposing (transform, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
-import CardType exposing (CardType(..))
+import Helpers.CardType as CardType exposing (CardType(..))
 import Model exposing (Model)
 import Update exposing (Msg)
 import String
@@ -11,6 +11,7 @@ import Components.Logo.Visa as Visa
 import Components.Logo.Mastercard as Mastercard
 import Components.Logo.Amex as Amex
 import Components.Logo.Discover as Discover
+import Components.Logo.Maestro as Maestro
 
 
 viewLogo : Model -> Html Msg
@@ -39,6 +40,9 @@ viewLogo model =
         viewDiscover =
             g [ transform "translate(50, 30)" ] [ Discover.viewLogo ]
 
+        viewMaestro =
+            g [ transform "translate(280,20)" ] [ Maestro.viewLogo ]
+
         viewUnknown =
             text' [ x "280", y "40", fontSize "12", fill model.styles.textColor ] [ Svg.text unknownText ]
     in
@@ -54,6 +58,9 @@ viewLogo model =
 
             Discover ->
                 viewDiscover
+
+            Maestro ->
+                viewMaestro
 
             _ ->
                 viewUnknown

@@ -7,7 +7,7 @@ import Update exposing (Msg)
 import Svg exposing (svg, rect, text', text, foreignObject)
 import Svg.Attributes exposing (width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
 import Components.Logo exposing (viewLogo)
-import Helper exposing (printNumber, rightPad, leftPad)
+import Helpers.Misc as Helper exposing (printNumber, rightPad, leftPad)
 import String
 
 
