@@ -27,6 +27,8 @@ view model =
             , li [] [ text "VISA: 4242424242424242" ]
             , li [] [ text "Mastercard: 5555555555554444" ]
             , li [] [ text "Discover: 6011111111111117" ]
+            , li [] [ text "Maestro: 6759649826438453" ]
+            , li [] [ text "JCB: 3530111333300000" ]
             ]
         ]
 
