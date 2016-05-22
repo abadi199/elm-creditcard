@@ -6,8 +6,9 @@ module Helpers.CardType exposing (detect)
 
 import Regex exposing (Regex, contains, regex)
 import Model exposing (CardStyle, Model, CardType(..), unknownCard, unknownCardStyle, CardInfo)
-import Svg.Attributes exposing (style, fill)
-import Helpers.Misc as Helper exposing (transitionAnimation)
+import Styles.Visa as VisaStyle
+import Styles.Mastercard as MastercardStyle
+import Styles.Amex as AmexStyle
 
 
 {-| CardType
@@ -41,7 +42,7 @@ cards =
     [ { cardInfo =
             { cardType = Amex
             , validLength = [ 15 ]
-            , cardStyle = mastercardStyle
+            , cardStyle = AmexStyle.style
             }
       , pattern = regex "^3[47]"
       }
@@ -76,21 +77,21 @@ cards =
     , { cardInfo =
             { cardType = VisaElectron
             , validLength = [ 16 ]
-            , cardStyle = visaStyle
+            , cardStyle = VisaStyle.style
             }
       , pattern = regex "^(4026|417500|4508|4844|491(3|7))"
       }
     , { cardInfo =
             { cardType = Visa
             , validLength = [ 16 ]
-            , cardStyle = visaStyle
+            , cardStyle = VisaStyle.style
             }
       , pattern = regex "^4"
       }
     , { cardInfo =
             { cardType = Mastercard
             , validLength = [ 16 ]
-            , cardStyle = unknownCardStyle
+            , cardStyle = MastercardStyle.style
             }
       , pattern = regex "^5[1-5]"
       }
@@ -109,19 +110,3 @@ cards =
       , pattern = regex "^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)"
       }
     ]
-
-
-visaStyle : CardStyle msg
-visaStyle =
-    { background = { attributes = [ transitionAnimation, fill "blue" ], svg = [] }
-    , textColor = "rgba(255,255,255,0.7)"
-    , lightTextColor = "rgba(255,255,255,0.3)"
-    }
-
-
-mastercardStyle : CardStyle msg
-mastercardStyle =
-    { background = { attributes = [ transitionAnimation, fill "red" ], svg = [] }
-    , textColor = "rgba(255,255,255,0.7)"
-    , lightTextColor = "rgba(255,255,255,0.3)"
-    }

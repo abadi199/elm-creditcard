@@ -39,7 +39,7 @@ type alias Styles msg =
 
 
 type alias CardStyle msg =
-    { background : { attributes : List (Attribute msg), svg : List (Svg msg) }
+    { background : { attributes : List (Attribute msg), svg : List (Svg msg), defs : List (Svg msg) }
     , textColor : String
     , lightTextColor : String
     }
@@ -68,7 +68,7 @@ type alias CardInfo msg =
 
 unknownCardStyle : CardStyle msg
 unknownCardStyle =
-    { background = { attributes = [ transitionAnimation, fill "rgba(0, 0, 0, 0.4)" ], svg = [] }
+    { background = { attributes = [ transitionAnimation, fill "rgba(0, 0, 0, 0.4)" ], svg = [], defs = [] }
     , textColor = "rgba(255,255,255,0.7)"
     , lightTextColor = "rgba(255,255,255,0.3)"
     }

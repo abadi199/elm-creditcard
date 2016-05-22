@@ -54,7 +54,7 @@ viewLogo model =
         viewUnknown =
             text' [ x "280", y "40", fontSize "12", fill model.cardInfo.cardStyle.textColor ] [ Svg.text unknownText ]
     in
-        case cardType |> Debug.log "" of
+        case cardType of
             Visa ->
                 viewVisa
 
