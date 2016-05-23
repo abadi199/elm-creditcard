@@ -37,7 +37,7 @@ viewLogo model =
             g [ transform "translate(285, 30)" ] [ Amex.viewLogo ]
 
         viewDiscover =
-            g [ transform "translate(50, 30)" ] [ Discover.viewLogo ]
+            g [ transform "translate(200, 30)" ] [ Discover.viewLogo ]
 
         viewMaestro =
             g [ transform "translate(280,20)" ] [ Maestro.viewLogo ]

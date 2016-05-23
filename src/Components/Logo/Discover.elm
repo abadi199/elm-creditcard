@@ -7,7 +7,7 @@ import Svg.Attributes exposing (fill, r, d, transform, id, style, xlinkHref, gra
 
 viewLogo : Html msg
 viewLogo =
-    g []
+    g [ transform "scale(0.5, 0.5)" ]
         [ defs [ id "defs78273" ]
             [ radialGradient [ cx "121.25", cy "97.588577", r "77.916664", fx "141.25", fy "77.588577", id "radialGradient72834", xlinkHref "#radialGradient3202", gradientUnits "userSpaceOnUse" ] []
             , radialGradient [ cx "121.25", cy "97.588577", r "77.916664", fx "141.25", fy "77.588577", id "radialGradient3202", gradientUnits "userSpaceOnUse" ]
