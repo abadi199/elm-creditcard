@@ -34,7 +34,7 @@ viewLogo model =
             g [ transform "translate(280,20)" ] [ Mastercard.viewLogo ]
 
         viewAmex =
-            g [ transform "translate(285, 15)" ] [ Amex.viewLogo ]
+            g [ transform "translate(285, 30)" ] [ Amex.viewLogo ]
 
         viewDiscover =
             g [ transform "translate(50, 30)" ] [ Discover.viewLogo ]
