@@ -73,7 +73,7 @@ cards =
     , { cardInfo =
             { cardType = Laser
             , validLength = [ 16, 17, 18, 19 ]
-            , cardStyle = unknownCardStyle
+            , cardStyle = VisaStyle.style
             }
       , pattern = regex "^(6304|670[69]|6771)"
       }
@@ -101,7 +101,7 @@ cards =
     , { cardInfo =
             { cardType = Maestro
             , validLength = [ 12, 13, 14, 15, 16, 17, 18, 19 ]
-            , cardStyle = unknownCardStyle
+            , cardStyle = MastercardStyle.style
             }
       , pattern = regex "^(5018|5020|5038|6304|6759|676[1-3])"
       }
