@@ -9,6 +9,9 @@ import Model exposing (CardStyle, Model, CardType(..), unknownCard, unknownCardS
 import Styles.Cards.Visa as VisaStyle
 import Styles.Cards.Mastercard as MastercardStyle
 import Styles.Cards.Amex as AmexStyle
+import Styles.Cards.Discover as DiscoverStyle
+import Styles.Cards.Diners as DinersStyle
+import Styles.Cards.JCB as JCBStyle
 
 
 {-| CardType
@@ -49,21 +52,21 @@ cards =
     , { cardInfo =
             { cardType = DinersClubCarteBlanche
             , validLength = [ 14 ]
-            , cardStyle = unknownCardStyle
+            , cardStyle = DinersStyle.style
             }
       , pattern = regex "^30[0-5]"
       }
     , { cardInfo =
             { cardType = DinersClubInternational
             , validLength = [ 14 ]
-            , cardStyle = unknownCardStyle
+            , cardStyle = DinersStyle.style
             }
       , pattern = regex "^36"
       }
     , { cardInfo =
             { cardType = JCB
             , validLength = [ 16 ]
-            , cardStyle = unknownCardStyle
+            , cardStyle = JCBStyle.style
             }
       , pattern = regex "^35(2[89]|[3-8][0-9])"
       }
@@ -105,7 +108,7 @@ cards =
     , { cardInfo =
             { cardType = Discover
             , validLength = [ 16 ]
-            , cardStyle = unknownCardStyle
+            , cardStyle = DiscoverStyle.style
             }
       , pattern = regex "^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)"
       }
