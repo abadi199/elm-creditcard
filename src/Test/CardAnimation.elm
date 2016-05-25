@@ -9,12 +9,12 @@ import Svg.Attributes as Attributes exposing (id, style, viewBox, x, y, width, h
 
 
 type alias Model =
-    { isFlipped : Bool }
+    { isFlipped : Maybe Bool }
 
 
 init : Model
 init =
-    { isFlipped = False }
+    { isFlipped = Nothing }
 
 
 main : Program Never
@@ -24,12 +24,23 @@ main =
 
 flipStyle : Model -> Svg.Attribute Msg
 flipStyle model =
-    style
-        (if model.isFlipped then
-            "transition: transform 0.5s; transform-origin: 50% 50%; transform: rotateY(180deg); perspective"
-         else
-            "transition: transform 0.5s;"
-        )
+    if model.isFlipped |> Maybe.withDefault False then
+        style "transition: transform 0.5s; transform-origin: 50% 50%; transform: rotateY(180deg);"
+    else
+        style "transition: transform 0.5s;"
+
+
+backsideAnimation : Model -> Svg.Attribute Msg
+backsideAnimation model =
+    case model.isFlipped of
+        Nothing ->
+            style "transform: rotateY(180deg); transform-origin: 195px 130px; opacity: 0;"
+
+        Just isFlipped ->
+            if isFlipped then
+                style "transform: rotateY(180deg); transform-origin: 195px 130px; animation: show 0.175s 1 steps(1); opacity: 1;"
+            else
+                style "transform: rotateY(180deg); transform-origin: 195px 130px; animation: hide 0.125s 1 steps(1); opacity: 0;"
 
 
 view : Model -> Html Msg
@@ -41,9 +52,26 @@ view model =
             , viewBox "0 0 390 260"
             , flipStyle model
             ]
-            [ g [ id "elmCardSvg" ]
+            [ defs []
+                [ Svg.style []
+                    [ text """@keyframes show {
+                        0% { opacity: 0; }
+                        100% { opacity: 1; }
+                        }
+                        @keyframes hide {
+                        0% { opacity: 1; }
+                        100% { opacity: 0; }
+                        }"""
+                    ]
+                ]
+            , g [ id "elmCardSvg" ]
                 [ rect [ x "20", y "20", width "350", height "220", rx "5", ry "5", fill "gray" ] []
-                , Svg.text' [ x "200", y "160", fill "white" ] [ Svg.text "TEXT" ]
+                , Svg.text' [ x "200", y "160", fill "white" ] [ Svg.text "FRONT" ]
+                ]
+            , g [ id "elmCardSvg", backsideAnimation model ]
+                [ rect [ x "20", y "20", width "350", height "220", rx "5", ry "5", fill "gray" ]
+                    []
+                , Svg.text' [ x "100", y "160", fill "white" ] [ Svg.text "BACK" ]
                 ]
             ]
         , form [] [ button [ type' "button", onClick Flip ] [ text "Flip" ] ]
@@ -62,4 +90,4 @@ update msg model =
             model
 
         Flip ->
-            { model | isFlipped = not model.isFlipped } |> Debug.log ""
+            { model | isFlipped = model.isFlipped |> Maybe.withDefault False |> not |> Just } |> Debug.log ""
