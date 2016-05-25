@@ -16,13 +16,13 @@ backsideAnimation : Maybe Bool -> Attribute msg
 backsideAnimation flipped =
     case flipped of
         Nothing ->
-            style "transform: rotateY(180deg); transform-origin: 195px 130px; opacity: 0;"
+            style "transform: rotateY(180deg); transform-origin: 175px 110px; opacity: 0;"
 
         Just isFlipped ->
             if isFlipped then
-                style "transform: rotateY(180deg); transform-origin: 195px 130px; animation: show 0.175s 1 steps(1); opacity: 1;"
+                style "transform: rotateY(180deg); transform-origin: 175px 110px; animation: show 0.175s 1 steps(1); opacity: 1;"
             else
-                style "transform: rotateY(180deg); transform-origin: 195px 130px; animation: hide 0.125s 1 steps(1); opacity: 0;"
+                style "transform: rotateY(180deg); transform-origin: 175px 110px; animation: hide 0.125s 1 steps(1); opacity: 0;"
 
 
 keyframeAnimationDefs : Svg msg

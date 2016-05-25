@@ -17,4 +17,5 @@ style =
         }
     , textColor = "rgba(255,255,255,0.7)"
     , lightTextColor = "rgba(255,255,255,0.3)"
+    , darkTextColor = "#000"
     }

@@ -11,6 +11,7 @@ import Helpers.Misc as Helper exposing (printNumber, rightPad, leftPad)
 import String
 import Components.Chip exposing (viewChip, viewChipAlt)
 import Helpers.CardAnimation exposing (flipAnimation, backsideAnimation, keyframeAnimationDefs)
+import Components.BackCard exposing (viewBackCard)
 
 
 viewCard : Model Msg -> Html Msg
@@ -64,14 +65,14 @@ viewCard model =
             , Html.Attributes.style [ ( "perspective", "1200px" ) ]
             ]
             [ svg
-                [ width "390"
-                , height "260"
-                , viewBox "0 0 390 260"
+                [ width "350"
+                , height "220"
+                , viewBox "0 0 350 220"
                 , fontFamily "monospace"
                 , flipAnimation model.flipped
                 ]
                 [ keyframeAnimationDefs
-                , g [ id "elmCardSvg", transform "translate(20, 20)" ]
+                , g [ id "elmCardSvgFront" ]
                     (List.append
                         [ defs [] cardStyle.background.defs
                         , rect (List.append [ x "0", y "0", width "350", height "220", rx "5", ry "5" ] cardStyle.background.attributes) []
@@ -91,10 +92,6 @@ viewCard model =
                             , text' [ x "250", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
                             ]
                     )
-                , g [ id "elmCardSvg", backsideAnimation model.flipped ]
-                    [ rect [ x "20", y "20", width "350", height "220", rx "5", ry "5", fill "gray" ]
-                        []
-                    , Svg.text' [ x "100", y "160", fill "white" ] [ Svg.text "BACK" ]
-                    ]
+                , viewBackCard model
                 ]
             ]
