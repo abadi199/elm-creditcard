@@ -6,10 +6,10 @@ module View exposing (view)
 import Model exposing (Model, Options, Field)
 import Html exposing (Html, Attribute, div, text, input, button, label, ul, li)
 import Html.Attributes exposing (class, type', id, value, placeholder)
-import Html.Events exposing (onInput)
 import Html.App as App
-import Update exposing (Msg(..))
+import Update exposing (Msg(..), toNumberInputModel, toStringInputModel)
 import Components.NumberInput as NumberInput exposing (numberInput)
+import Components.StringInput as StringInput exposing (stringInput)
 import Components.Card exposing (viewCard)
 
 
@@ -18,7 +18,7 @@ view model =
     div [ class "elm-card" ]
         [ viewCard model
         , App.map UpdateNumber (viewIntField model.options { maxLength = Just 16, maxValue = Nothing, minValue = Nothing } model.number)
-        , viewField UpdateName model.options model.name
+        , App.map UpdateName (viewStringField model.options model.name)
         , App.map UpdateExpirationMonth (viewIntField model.options { maxLength = Just 2, maxValue = Just 12, minValue = Just 1 } model.expirationMonth)
         , App.map UpdateExpirationYear (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.expirationYear)
         , App.map UpdateCCV (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.ccv)
@@ -32,25 +32,35 @@ view model =
             , li [] [ text "Diners: 36700102000000" ]
             , li [] [ text "Visa Electron: 4917300800000000" ]
             ]
+        , text (toString model)
         ]
 
 
-viewField : (String -> Msg) -> Options -> Field String -> Html Msg
-viewField tagger options field =
+viewStringField : Options -> Field String -> Html StringInput.Msg
+viewStringField options field =
     div []
         [ viewLabel options field
-        , input [ placeholder options field, onInput tagger, value (field.value |> Maybe.withDefault "") ] []
+        , stringInput [ placeholder options field ]
+            (toStringInputModel field)
         ]
 
 
 viewIntField : Options -> NumberInput.Options -> Field Int -> Html NumberInput.Msg
 viewIntField options numberInputOptions field =
+    viewIntFieldWithAttributes [ placeholder options field ]
+        options
+        numberInputOptions
+        field
+
+
+viewIntFieldWithAttributes : List (Attribute NumberInput.Msg) -> Options -> NumberInput.Options -> Field Int -> Html NumberInput.Msg
+viewIntFieldWithAttributes attributes options numberInputOptions field =
     div []
         [ viewLabel options field
         , numberInput numberInputOptions
             identity
-            [ placeholder options field ]
-            (field.value |> Maybe.map toString |> Maybe.withDefault "")
+            attributes
+            (toNumberInputModel field)
         ]
 
 

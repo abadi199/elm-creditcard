@@ -16,6 +16,7 @@ type alias Model msg =
     , expirationYear : Field Int
     , ccv : Field Int
     , cardInfo : CardInfo msg
+    , flipped : Maybe Bool
     }
 
 
@@ -30,6 +31,7 @@ type alias Field a =
     { id : String
     , label : Maybe String
     , value : Maybe a
+    , hasFocus : Bool
     }
 
 
@@ -94,10 +96,11 @@ init =
             -- '☺'
             -- '⋆'
         }
-    , number = { id = "", label = Just "CC Number", value = Nothing }
-    , name = { id = "", label = Just "Full Name", value = Nothing }
-    , expirationMonth = { id = "", label = Just "MM", value = Nothing }
-    , expirationYear = { id = "", label = Just "YYYY", value = Nothing }
-    , ccv = { id = "", label = Just "CCV", value = Nothing }
+    , number = { id = "", label = Just "CC Number", value = Nothing, hasFocus = False }
+    , name = { id = "", label = Just "Full Name", value = Nothing, hasFocus = False }
+    , expirationMonth = { id = "", label = Just "MM", value = Nothing, hasFocus = False }
+    , expirationYear = { id = "", label = Just "YYYY", value = Nothing, hasFocus = False }
+    , ccv = { id = "", label = Just "CCV", value = Nothing, hasFocus = False }
     , cardInfo = unknownCard
+    , flipped = Nothing
     }

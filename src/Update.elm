@@ -4,6 +4,7 @@ module Update exposing (..)
 -}
 
 import Components.NumberInput as NumberInput
+import Components.StringInput as StringInput
 import Model exposing (Model, Field)
 import String
 import Helpers.CardType as CardType
@@ -12,10 +13,11 @@ import Helpers.CardType as CardType
 type Msg
     = NoOp
     | UpdateNumber NumberInput.Msg
-    | UpdateName String
+    | UpdateName StringInput.Msg
     | UpdateExpirationMonth NumberInput.Msg
     | UpdateExpirationYear NumberInput.Msg
     | UpdateCCV NumberInput.Msg
+    | Flip Bool
 
 
 update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
@@ -29,35 +31,42 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateName name ->
-            ( { model | name = updateFieldValue (Just name) model.name }
+        UpdateName stringInputMsg ->
+            ( { model | name = updateStringInput stringInputMsg model.name }
             , Cmd.none
             )
 
         UpdateExpirationMonth numberInputMsg ->
-            ( { model | expirationMonth = updateFieldValue (updateNumberInput numberInputMsg model.expirationMonth) model.expirationMonth }
+            ( { model | expirationMonth = updateNumberInput numberInputMsg model.expirationMonth }
             , Cmd.none
             )
 
         UpdateExpirationYear numberInputMsg ->
-            ( { model | expirationYear = updateFieldValue (updateNumberInput numberInputMsg model.expirationYear) model.expirationYear }
+            ( { model | expirationYear = updateNumberInput numberInputMsg model.expirationYear }
             , Cmd.none
             )
 
         UpdateCCV numberInputMsg ->
-            ( { model | ccv = updateFieldValue (updateNumberInput numberInputMsg model.ccv) model.ccv }
-            , Cmd.none
-            )
+            let
+                updatedCcv =
+                    updateNumberInput numberInputMsg model.ccv
+            in
+                ( { model | ccv = updatedCcv, flipped = Just updatedCcv.hasFocus }
+                , Cmd.none
+                )
+
+        Flip flipped ->
+            ( { model | flipped = Just flipped }, Cmd.none )
 
 
 updateNumber : NumberInput.Msg -> Model Msg -> Model Msg
 updateNumber numberInputMsg model =
     let
-        newNumber =
-            updateFieldValue (updateNumberInput numberInputMsg model.number) model.number
+        newField =
+            updateNumberInput numberInputMsg model.number
 
         modelWithUpdatedNumber =
-            { model | number = newNumber }
+            { model | number = newField }
 
         cardInfo =
             CardType.detect modelWithUpdatedNumber
@@ -73,11 +82,41 @@ updateFieldValue newValue field =
     { field | value = newValue }
 
 
-updateNumberInput : NumberInput.Msg -> Field Int -> Maybe Int
+updateStringInput : StringInput.Msg -> Field String -> Field String
+updateStringInput stringInputMsg field =
+    let
+        toField stringInputModel =
+            { field
+                | value = Just stringInputModel.value
+                , hasFocus = stringInputModel.hasFocus
+            }
+    in
+        field
+            |> toStringInputModel
+            |> StringInput.update stringInputMsg
+            |> toField
+
+
+updateNumberInput : NumberInput.Msg -> Field Int -> Field Int
 updateNumberInput numberInputMsg field =
-    field.value
-        |> Maybe.map toString
-        |> Maybe.withDefault ""
-        |> NumberInput.update numberInputMsg
-        |> String.toInt
-        |> Result.toMaybe
+    let
+        toField numberInputModel =
+            { field
+                | value = numberInputModel.value |> String.toInt |> Result.toMaybe
+                , hasFocus = numberInputModel.hasFocus
+            }
+    in
+        field
+            |> toNumberInputModel
+            |> NumberInput.update numberInputMsg
+            |> toField
+
+
+toNumberInputModel : Field Int -> NumberInput.Model
+toNumberInputModel field =
+    { value = field.value |> Maybe.map toString |> Maybe.withDefault "", hasFocus = field.hasFocus }
+
+
+toStringInputModel : Field String -> StringInput.Model
+toStringInputModel field =
+    { value = field.value |> Maybe.withDefault "", hasFocus = field.hasFocus }

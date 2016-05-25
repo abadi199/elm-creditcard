@@ -1,7 +1,7 @@
-module Components.NumberInput exposing (numberInput, Msg, update, Options)
+module Components.NumberInput exposing (Model, numberInput, Msg, update, Options)
 
 import Html exposing (Attribute, Html, input)
-import Html.Events exposing (onWithOptions, keyCode, onInput)
+import Html.Events exposing (onWithOptions, keyCode, onInput, onFocus, onBlur)
 import Html.App as Html
 import Html.Attributes exposing (value)
 import Char exposing (fromCode, KeyCode)
@@ -17,7 +17,9 @@ type alias Options =
 
 
 type alias Model =
-    String
+    { value : String
+    , hasFocus : Bool
+    }
 
 
 type alias Event =
@@ -50,7 +52,7 @@ onKeyDown options model tagger =
             keyCode
                 |> Char.fromCode
                 |> String.fromChar
-                |> (++) model
+                |> (++) model.value
                 |> String.toInt
                 |> Result.toMaybe
 
@@ -68,7 +70,7 @@ onKeyDown options model tagger =
 
         exceedMaxLength =
             options.maxLength
-                |> Maybe.map ((>=) (String.length model))
+                |> Maybe.map ((>=) (String.length model.value))
                 |> Maybe.withDefault True
 
         isNotNumeric =
@@ -108,11 +110,19 @@ numberInput options formatter attributes model =
             else
                 NoOp
     in
-        input (List.append attributes [ value (formatter model), onKeyDown options model tagger, onInput OnInput ])
+        input
+            (List.append attributes
+                [ value (formatter model.value)
+                , onKeyDown options model tagger
+                , onInput OnInput
+                , onFocus (OnFocus True)
+                , onBlur (OnFocus False)
+                ]
+            )
             []
 
 
-update : Msg -> Model -> String
+update : Msg -> Model -> Model
 update msg model =
     case msg of
         NoOp ->
@@ -122,19 +132,23 @@ update msg model =
             model
 
         OnInput newValue ->
-            newValue
+            { model | value = newValue }
+
+        OnFocus hasFocus ->
+            { model | hasFocus = hasFocus }
 
 
 type Msg
     = NoOp
     | KeyDown KeyCode
     | OnInput String
+    | OnFocus Bool
 
 
 main : Program Never
 main =
     Html.beginnerProgram
-        { model = ""
+        { model = { value = "", hasFocus = False }
         , update = update
         , view =
             numberInput { maxLength = Just 5, maxValue = Just 12, minValue = Just 1 }

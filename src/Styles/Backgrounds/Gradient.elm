@@ -18,5 +18,5 @@ background options =
             , stop [ offset "50%", stopColor "black", stopOpacity "0" ] []
             , stop [ offset "100%", stopColor options.lightColor ] []
             ]
-        , rect [ x "0", y "0", width "100%", height "100%", rx "5", ry "5", fill "url(#Gradient1)" ] []
+        , rect [ x "0", y "0", width "350", height "220", rx "5", ry "5", fill "url(#Gradient1)" ] []
         ]
