@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
-    "summary": "Pretty credit card form build with elm",
-    "repository": "https://github.com/abadi199/elm-card.git",
+    "summary": "Pretty credit card form built purely with elm",
+    "repository": "https://github.com/abadi199/elm-creditcard-form.git",
     "license": "MIT",
     "source-directories": [
         "src"
