@@ -1,4 +1,4 @@
-module Card exposing (view, update, init, Model)
+module CreditCardForm exposing (view, update, init, Model)
 
 {-| Pretty credit card library.
 

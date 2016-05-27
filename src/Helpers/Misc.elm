@@ -7,15 +7,16 @@ module Helpers.Misc
         , rightPad
         , leftPad
         , formatNumber
-        , transitionAnimation
+        , cardInfo
+        , minMaxNumberLength
         )
 
 import Html.Events exposing (on, keyCode)
 import String
 import Html exposing (Attribute, Html, input)
-import Svg
 import Json.Decode as Json
-import Svg.Attributes exposing (style)
+import Model exposing (Model, NumberFormat, CardInfo)
+import Helpers.CardType exposing (unknownCard)
 
 
 onKeyDown : (Int -> msg) -> Attribute msg
@@ -23,15 +24,21 @@ onKeyDown tagger =
     on "keydown" (Json.map tagger keyCode)
 
 
-{-| Split list into groups of `groupSize`.
--}
-partition : Int -> List a -> List (List a)
-partition groupSize xs =
+partition : NumberFormat -> List a -> List (List a)
+partition numberFormat xs =
+    case numberFormat of
+        [] ->
+            [ xs ]
+
+        n :: tail ->
+            List.take n xs :: (partition tail (List.drop n xs))
+
+
+partition' : Int -> List a -> List (List a)
+partition' groupSize xs =
     partitionStep groupSize groupSize xs
 
 
-{-| Split list into groups of `groupSize`. Move the head of each group by `step`.
--}
 partitionStep : Int -> Int -> List a -> List (List a)
 partitionStep groupSize step xs =
     let
@@ -53,12 +60,12 @@ partitionStep groupSize step xs =
             [ group ]
 
 
-printNumber : Int -> Char -> Maybe Int -> String
-printNumber length char maybeNumber =
+printNumber : NumberFormat -> Int -> Char -> Maybe Int -> String
+printNumber numberFormat length char maybeNumber =
     maybeNumber
         |> Maybe.map toString
         |> Maybe.withDefault ""
-        |> formatNumber length char
+        |> formatNumber numberFormat length char
 
 
 rightPad : Char -> Int -> String -> String
@@ -77,17 +84,25 @@ leftPad char length number =
         number
 
 
-formatNumber : Int -> Char -> String -> String
-formatNumber length char number =
+formatNumber : NumberFormat -> Int -> Char -> String -> String
+formatNumber numberFormat length char number =
     number
         |> rightPad char length
         |> String.toList
-        |> partition 4
+        |> partition numberFormat
         |> List.map ((::) ' ')
         |> List.concat
         |> String.fromList
 
 
-transitionAnimation : Svg.Attribute msg
-transitionAnimation =
-    style "transition: fill 0.5s ease"
+minMaxNumberLength : Model msg -> ( Int, Int )
+minMaxNumberLength model =
+    model
+        |> cardInfo
+        |> .validLength
+        |> \numbers -> ( List.minimum numbers |> Maybe.withDefault 16, List.maximum numbers |> Maybe.withDefault 16 )
+
+
+cardInfo : Model msg -> CardInfo msg
+cardInfo model =
+    model.cardInfo |> Maybe.withDefault unknownCard

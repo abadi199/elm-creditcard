@@ -17,8 +17,15 @@ import Components.BackCard exposing (viewBackCard)
 viewCard : Model Msg -> Html Msg
 viewCard model =
     let
+        cardInfo =
+            Helper.cardInfo model
+
+        ( minNumberLength, maxNumberLength ) =
+            Helper.minMaxNumberLength model
+
         number =
-            printNumber model.options.maxNumberLength
+            printNumber cardInfo.numberFormat
+                minNumberLength
                 model.options.blankChar
                 model.number.value
 
@@ -58,7 +65,18 @@ viewCard model =
                 |> rightPad model.options.blankChar 4
 
         cardStyle =
-            model.cardInfo.cardStyle
+            cardInfo.cardStyle
+
+        numberLength =
+            model.number.value
+                |> Maybe.map (toString >> String.length)
+                |> Maybe.withDefault 0
+
+        numberFontSize =
+            if numberLength > 16 then
+                fontSize "20"
+            else
+                fontSize "22"
     in
         div
             [ Html.Attributes.class "elm-card-svg"
@@ -81,7 +99,7 @@ viewCard model =
                         |> flip List.append
                             [ viewChip 40 70
                             , viewLogo model
-                            , text' [ x "40", y "130", fontSize "22", fill cardStyle.textColor ] [ text number ]
+                            , text' [ x "40", y "130", numberFontSize, fill cardStyle.textColor ] [ text number ]
                             , foreignObject [ x "40", y "160", fontSize "16", width "170", fill cardStyle.textColor ]
                                 [ Html.p [ style [ ( "color", cardStyle.textColor ) ] ]
                                     [ Html.text name ]

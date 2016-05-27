@@ -5,13 +5,17 @@ import Update exposing (Msg)
 import Svg exposing (Svg, rect, text', text, g)
 import Svg.Attributes exposing (id, x, y, width, height, fill, rx, ry, fontSize)
 import Helpers.CardAnimation exposing (backsideAnimation)
+import Helpers.CardType exposing (unknownCard)
 
 
 viewBackCard : Model Msg -> Svg Msg
 viewBackCard model =
     let
+        cardInfo =
+            model.cardInfo |> Maybe.withDefault unknownCard
+
         cardStyle =
-            model.cardInfo.cardStyle
+            cardInfo.cardStyle
 
         ccv =
             model.ccv.value

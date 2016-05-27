@@ -1,4 +1,10 @@
-module Helpers.CardAnimation exposing (flipAnimation, backsideAnimation, keyframeAnimationDefs)
+module Helpers.CardAnimation
+    exposing
+        ( flipAnimation
+        , backsideAnimation
+        , keyframeAnimationDefs
+        , transitionAnimation
+        )
 
 import Svg exposing (Svg, Attribute, defs, text)
 import Svg.Attributes as Attributes exposing (style)
@@ -39,3 +45,8 @@ keyframeAnimationDefs =
                         }"""
             ]
         ]
+
+
+transitionAnimation : Svg.Attribute msg
+transitionAnimation =
+    style "transition: fill 0.5s ease"

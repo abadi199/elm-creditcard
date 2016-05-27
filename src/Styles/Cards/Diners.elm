@@ -1,8 +1,8 @@
 module Styles.Cards.Diners exposing (style)
 
-import Model exposing (CardStyle, Model, CardType(..), unknownCard, unknownCardStyle, CardInfo)
+import Model exposing (CardStyle, Model, CardType(..), CardInfo)
 import Svg.Attributes as Attributes exposing (fill)
-import Helpers.Misc as Helper exposing (transitionAnimation)
+import Helpers.CardAnimation exposing (transitionAnimation)
 import Styles.Backgrounds.Gradient exposing (background)
 
 

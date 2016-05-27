@@ -72,7 +72,7 @@ updateNumber numberInputMsg model =
             CardType.detect modelWithUpdatedNumber
 
         modelWithUpdatedCardInfo =
-            { modelWithUpdatedNumber | cardInfo = cardInfo }
+            { modelWithUpdatedNumber | cardInfo = Just cardInfo }
     in
         modelWithUpdatedCardInfo
 

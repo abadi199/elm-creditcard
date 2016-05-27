@@ -11,29 +11,62 @@ import Update exposing (Msg(..), toNumberInputModel, toStringInputModel)
 import Components.NumberInput as NumberInput exposing (numberInput)
 import Components.StringInput as StringInput exposing (stringInput)
 import Components.Card exposing (viewCard)
+import Helpers.Misc as Helper
 
 
 view : Model Msg -> Html Msg
 view model =
-    div [ class "elm-card" ]
-        [ viewCard model
-        , App.map UpdateNumber (viewIntField model.options { maxLength = Just 16, maxValue = Nothing, minValue = Nothing } model.number)
-        , App.map UpdateName (viewStringField model.options model.name)
-        , App.map UpdateExpirationMonth (viewIntField model.options { maxLength = Just 2, maxValue = Just 12, minValue = Just 1 } model.expirationMonth)
-        , App.map UpdateExpirationYear (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.expirationYear)
-        , App.map UpdateCCV (viewIntField model.options { maxLength = Just 4, maxValue = Nothing, minValue = Nothing } model.ccv)
-        , ul []
-            [ li [] [ text "AMEX: 378282246310005" ]
-            , li [] [ text "VISA: 4242424242424242" ]
-            , li [] [ text "Mastercard: 5555555555554444" ]
-            , li [] [ text "Discover: 6011111111111117" ]
-            , li [] [ text "Maestro: 6759649826438453" ]
-            , li [] [ text "JCB: 3530111333300000" ]
-            , li [] [ text "Diners: 36700102000000" ]
-            , li [] [ text "Visa Electron: 4917300800000000" ]
+    let
+        ( minNumberLength, maxNumberLength ) =
+            Helper.minMaxNumberLength model
+    in
+        div [ class "elm-card" ]
+            [ viewCard model
+            , App.map UpdateNumber
+                (viewIntField model.options
+                    { maxLength = Just maxNumberLength
+                    , maxValue = Nothing
+                    , minValue = Nothing
+                    }
+                    model.number
+                )
+            , App.map UpdateName (viewStringField model.options model.name)
+            , App.map UpdateExpirationMonth
+                (viewIntField model.options
+                    { maxLength = Just 2
+                    , maxValue = Just 12
+                    , minValue = Just 1
+                    }
+                    model.expirationMonth
+                )
+            , App.map UpdateExpirationYear
+                (viewIntField model.options
+                    { maxLength = Just 4
+                    , maxValue = Nothing
+                    , minValue = Nothing
+                    }
+                    model.expirationYear
+                )
+            , App.map UpdateCCV
+                (viewIntField model.options
+                    { maxLength = Just 4
+                    , maxValue = Nothing
+                    , minValue = Nothing
+                    }
+                    model.ccv
+                )
+            , ul []
+                [ li [] [ text "AMEX: 378282246310005" ]
+                , li [] [ text "VISA: 4242424242424242" ]
+                , li [] [ text "Mastercard: 5555555555554444" ]
+                , li [] [ text "Discover: 6011111111111117" ]
+                , li [] [ text "Maestro: 6759649826438453" ]
+                , li [] [ text "JCB: 3530111333300000" ]
+                , li [] [ text "Diners: 36700102000000" ]
+                , li [] [ text "Visa Electron: 4917300800000000" ]
+                ]
+            , text (toString model.cardInfo)
             ]
-        , text (toString model)
-        ]
 
 
 viewStringField : Options -> Field String -> Html StringInput.Msg

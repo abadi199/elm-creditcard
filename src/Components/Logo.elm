@@ -14,15 +14,19 @@ import Components.Logo.Discover as Discover
 import Components.Logo.Maestro as Maestro
 import Components.Logo.JCB as JCB
 import Components.Logo.Diners as Diners
+import Helpers.CardType exposing (unknownCard)
 
 
 viewLogo : Model Msg -> Html Msg
 viewLogo model =
     let
-        cardType =
-            model.cardInfo.cardType
+        cardInfo =
+            model.cardInfo |> Maybe.withDefault unknownCard
 
-        unknownText =
+        cardType =
+            cardInfo.cardType
+
+        unknownLogo =
             model.options.blankChar
                 |> List.repeat 4
                 |> String.fromList
@@ -52,7 +56,7 @@ viewLogo model =
             g [ transform "translate(270,20)" ] [ VisaElectron.viewLogo ]
 
         viewUnknown =
-            text' [ x "280", y "40", fontSize "12", fill model.cardInfo.cardStyle.textColor ] [ Svg.text unknownText ]
+            text' [ x "280", y "40", fontSize "12", fill cardInfo.cardStyle.textColor ] [ Svg.text unknownLogo ]
     in
         case cardType of
             Visa ->
