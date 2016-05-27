@@ -15,6 +15,7 @@ import Components.Logo.Maestro as Maestro
 import Components.Logo.JCB as JCB
 import Components.Logo.Diners as Diners
 import Helpers.CardType exposing (unknownCard)
+import Helpers.CardAnimation as CardAnimation
 
 
 viewLogo : Model Msg -> Html Msg
@@ -38,19 +39,19 @@ viewLogo model =
             g [ transform "translate(280,20)" ] [ Mastercard.viewLogo ]
 
         viewAmex =
-            g [ transform "translate(285, 30)" ] [ Amex.viewLogo ]
+            g [ transform "translate(285,20)" ] [ Amex.viewLogo ]
 
         viewDiscover =
-            g [ transform "translate(200, 30)" ] [ Discover.viewLogo ]
+            g [ transform "translate(200,20)" ] [ Discover.viewLogo ]
 
         viewMaestro =
             g [ transform "translate(280,20)" ] [ Maestro.viewLogo ]
 
         viewJCB =
-            g [ transform "translate(285, 15)" ] [ JCB.viewLogo ]
+            g [ transform "translate(285,15)" ] [ JCB.viewLogo ]
 
         viewDiners =
-            g [ transform "translate(290, 20)" ] [ Diners.viewLogo ]
+            g [ transform "translate(290,20)" ] [ Diners.viewLogo ]
 
         viewVisaElectron =
             g [ transform "translate(270,20)" ] [ VisaElectron.viewLogo ]
@@ -58,36 +59,38 @@ viewLogo model =
         viewUnknown =
             text' [ x "280", y "40", fontSize "12", fill cardInfo.cardStyle.textColor ] [ Svg.text unknownLogo ]
     in
-        case cardType of
-            Visa ->
-                viewVisa
+        g [ CardAnimation.fadeInAnimation ]
+            [ case cardType of
+                Visa ->
+                    viewVisa
 
-            Mastercard ->
-                viewMastercard
+                Mastercard ->
+                    viewMastercard
 
-            Amex ->
-                viewAmex
+                Amex ->
+                    viewAmex
 
-            Discover ->
-                viewDiscover
+                Discover ->
+                    viewDiscover
 
-            Maestro ->
-                viewMaestro
+                Maestro ->
+                    viewMaestro
 
-            JCB ->
-                viewJCB
+                JCB ->
+                    viewJCB
 
-            DinersClubCarteBlanche ->
-                viewDiners
+                DinersClubCarteBlanche ->
+                    viewDiners
 
-            DinersClubInternational ->
-                viewDiners
+                DinersClubInternational ->
+                    viewDiners
 
-            VisaElectron ->
-                viewVisaElectron
+                VisaElectron ->
+                    viewVisaElectron
 
-            Laser ->
-                viewUnknown
+                Laser ->
+                    viewUnknown
 
-            Unknown ->
-                viewUnknown
+                Unknown ->
+                    viewUnknown
+            ]

@@ -4,6 +4,8 @@ module Helpers.CardAnimation
         , backsideAnimation
         , keyframeAnimationDefs
         , transitionAnimation
+        , fadeInAnimation
+        , fadeOutAnimation
         )
 
 import Svg exposing (Svg, Attribute, defs, text)
@@ -36,13 +38,14 @@ keyframeAnimationDefs =
     defs []
         [ Svg.style []
             [ text """@keyframes show {
-                        0% { opacity: 0; }
-                        100% { opacity: 1; }
+                            0% { opacity: 0; }
+                            100% { opacity: 1; }
                         }
                         @keyframes hide {
-                        0% { opacity: 1; }
-                        100% { opacity: 0; }
-                        }"""
+                            0% { opacity: 1; }
+                            100% { opacity: 0; }
+                        }
+                    """
             ]
         ]
 
@@ -50,3 +53,13 @@ keyframeAnimationDefs =
 transitionAnimation : Svg.Attribute msg
 transitionAnimation =
     style "transition: fill 0.5s ease"
+
+
+fadeInAnimation : Svg.Attribute msg
+fadeInAnimation =
+    style "animation: show 0.5s ease"
+
+
+fadeOutAnimation : Svg.Attribute msg
+fadeOutAnimation =
+    style "animation: hide 0.5s ease"

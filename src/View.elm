@@ -55,17 +55,17 @@ view model =
                     }
                     model.ccv
                 )
-            , ul []
-                [ li [] [ text "AMEX: 378282246310005" ]
-                , li [] [ text "VISA: 4242424242424242" ]
-                , li [] [ text "Mastercard: 5555555555554444" ]
-                , li [] [ text "Discover: 6011111111111117" ]
-                , li [] [ text "Maestro: 6759649826438453" ]
-                , li [] [ text "JCB: 3530111333300000" ]
-                , li [] [ text "Diners: 36700102000000" ]
-                , li [] [ text "Visa Electron: 4917300800000000" ]
-                ]
-            , text (toString model.cardInfo)
+              -- , ul []
+              --     [ li [] [ text "AMEX: 378282246310005" ]
+              --     , li [] [ text "VISA: 4242424242424242" ]
+              --     , li [] [ text "Mastercard: 5555555555554444" ]
+              --     , li [] [ text "Discover: 6011111111111117" ]
+              --     , li [] [ text "Maestro: 6759649826438453" ]
+              --     , li [] [ text "JCB: 3530111333300000" ]
+              --     , li [] [ text "Diners: 36700102000000" ]
+              --     , li [] [ text "Visa Electron: 4917300800000000" ]
+              --     ]
+              -- , text (toString model.cardInfo)
             ]
 
 
