@@ -1,4 +1,16 @@
-module Model exposing (Model, Options, Field, Styles, CardStyle, CardInfo, NumberFormat, CardType(..), init)
+module Model
+    exposing
+        ( Model
+        , Options
+        , Field
+        , Styles
+        , CardStyle
+        , CardInfo
+        , NumberFormat
+        , CardType(..)
+        , CCVPosition(..)
+        , init
+        )
 
 {-| Model
 -}
@@ -63,11 +75,17 @@ type alias NumberFormat =
     List Int
 
 
+type CCVPosition
+    = Front
+    | Back
+
+
 type alias CardInfo msg =
     { cardType : CardType
     , validLength : List Int
     , numberFormat : NumberFormat
     , cardStyle : CardStyle msg
+    , ccvPosition : CCVPosition
     }
 
 

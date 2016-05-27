@@ -5,9 +5,11 @@ module Update exposing (..)
 
 import Components.NumberInput as NumberInput
 import Components.StringInput as StringInput
-import Model exposing (Model, Field)
+import Model exposing (Model, Field, CCVPosition(..))
 import String
 import Helpers.CardType as CardType
+import Helpers.Misc as Helper
+import Task
 
 
 type Msg
@@ -51,12 +53,15 @@ update msg model =
                 updatedCcv =
                     updateNumberInput numberInputMsg model.ccv
             in
-                ( { model | ccv = updatedCcv, flipped = Just updatedCcv.hasFocus }
-                , Cmd.none
+                ( { model | ccv = updatedCcv }
+                , Task.succeed updatedCcv.hasFocus |> Task.perform (\_ -> NoOp) Flip
                 )
 
         Flip flipped ->
-            ( { model | flipped = Just flipped }, Cmd.none )
+            if Helper.cardInfo model |> .ccvPosition |> (==) Front then
+                ( model, Cmd.none )
+            else
+                ( { model | flipped = Just flipped }, Cmd.none )
 
 
 updateNumber : NumberInput.Msg -> Model Msg -> Model Msg

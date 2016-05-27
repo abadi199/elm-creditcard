@@ -65,7 +65,7 @@ view model =
               --     , li [] [ text "Diners: 36700102000000" ]
               --     , li [] [ text "Visa Electron: 4917300800000000" ]
               --     ]
-              -- , text (toString model.cardInfo)
+            , text (toString model.flipped)
             ]
 
 

@@ -5,7 +5,7 @@ module Helpers.CardType exposing (detect, unknownCard)
 -}
 
 import Regex exposing (Regex, contains, regex)
-import Model exposing (CardStyle, Model, CardType(..), CardInfo)
+import Model exposing (CardStyle, Model, CardType(..), CardInfo, CCVPosition(Back, Front))
 import Styles.Cards.Visa as VisaStyle
 import Styles.Cards.Mastercard as MastercardStyle
 import Styles.Cards.Amex as AmexStyle
@@ -48,6 +48,7 @@ cards =
             , validLength = [ 15 ]
             , numberFormat = [ 4, 6, 5 ]
             , cardStyle = AmexStyle.style
+            , ccvPosition = Front
             }
       , pattern = regex "^3[47]"
       }
@@ -56,6 +57,7 @@ cards =
             , validLength = [ 14 ]
             , numberFormat = [ 4, 6, 4 ]
             , cardStyle = DinersStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^30[0-5]"
       }
@@ -64,6 +66,7 @@ cards =
             , validLength = [ 14 ]
             , numberFormat = [ 4, 6, 4 ]
             , cardStyle = DinersStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^36"
       }
@@ -72,6 +75,7 @@ cards =
             , validLength = [ 16 ]
             , numberFormat = [ 4, 4, 4, 4 ]
             , cardStyle = JCBStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^35(2[89]|[3-8][0-9])"
       }
@@ -80,6 +84,7 @@ cards =
             , validLength = [ 16, 17, 18, 19 ]
             , numberFormat = [ 19 ]
             , cardStyle = VisaStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^(6304|670[69]|6771)"
       }
@@ -88,6 +93,7 @@ cards =
             , validLength = [ 16 ]
             , numberFormat = [ 4, 4, 4, 4 ]
             , cardStyle = VisaStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^(4026|417500|4508|4844|491(3|7))"
       }
@@ -96,6 +102,7 @@ cards =
             , validLength = [ 16 ]
             , numberFormat = [ 4, 4, 4, 4 ]
             , cardStyle = VisaStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^4"
       }
@@ -104,6 +111,7 @@ cards =
             , validLength = [ 16 ]
             , numberFormat = [ 4, 4, 4, 4 ]
             , cardStyle = MastercardStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^5[1-5]"
       }
@@ -112,6 +120,7 @@ cards =
             , validLength = [ 12, 13, 14, 15, 16, 17, 18, 19 ]
             , numberFormat = [ 4, 4, 4 ]
             , cardStyle = MastercardStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^(5018|5020|5038|6304|6759|676[1-3])"
       }
@@ -120,6 +129,7 @@ cards =
             , validLength = [ 16 ]
             , numberFormat = [ 4, 4, 4, 4 ]
             , cardStyle = DiscoverStyle.style
+            , ccvPosition = Back
             }
       , pattern = regex "^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)"
       }
@@ -132,4 +142,5 @@ unknownCard =
     , validLength = [ 16 ]
     , numberFormat = [ 4, 4, 4 ]
     , cardStyle = UnknownStyle.style
+    , ccvPosition = Back
     }

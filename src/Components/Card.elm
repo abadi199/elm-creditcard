@@ -2,7 +2,7 @@ module Components.Card exposing (viewCard)
 
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
-import Model exposing (Model)
+import Model exposing (Model, CCVPosition(..))
 import Update exposing (Msg)
 import Svg exposing (svg, rect, text', text, foreignObject, defs, g)
 import Svg.Attributes as Attributes exposing (transform, id, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
@@ -77,6 +77,11 @@ viewCard model =
                 fontSize "20"
             else
                 fontSize "22"
+
+        ccv =
+            model.ccv.value
+                |> Maybe.map toString
+                |> Maybe.withDefault "CCV"
     in
         div
             [ Html.Attributes.class "elm-card-svg"
@@ -108,6 +113,11 @@ viewCard model =
                             , text' [ x "215", y "170", fontSize "8", fill cardStyle.lightTextColor ] [ text "valid" ]
                             , text' [ x "220", y "180", fontSize "8", fill cardStyle.lightTextColor ] [ text "thru" ]
                             , text' [ x "250", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
+                            , (if (cardInfo.ccvPosition == Front) then
+                                text' [ x "290", y "110", fontSize "14", fill cardStyle.darkTextColor ] [ text ccv ]
+                               else
+                                text ""
+                              )
                             ]
                     )
                 , viewBackCard model
