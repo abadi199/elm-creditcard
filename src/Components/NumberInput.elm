@@ -3,7 +3,7 @@ module Components.NumberInput exposing (Model, numberInput, Msg, update, Options
 import Html exposing (Attribute, Html, input)
 import Html.Events exposing (onWithOptions, keyCode, onInput, onFocus, onBlur)
 import Html.App as Html
-import Html.Attributes exposing (value)
+import Html.Attributes as Attributes exposing (value)
 import Char exposing (fromCode, KeyCode)
 import String exposing (fromChar, slice)
 import Json.Decode as Json exposing ((:=))
@@ -101,8 +101,8 @@ onKeyDown options model tagger =
         onWithOptions "keydown" eventOptions decoder
 
 
-numberInput : Options -> (String -> String) -> List (Attribute Msg) -> Model -> Html Msg
-numberInput options formatter attributes model =
+numberInput : String -> Options -> (String -> String) -> List (Attribute Msg) -> Model -> Html Msg
+numberInput id options formatter attributes model =
     let
         tagger keyCode =
             if keyCode >= 48 && keyCode <= 57 then
@@ -112,7 +112,8 @@ numberInput options formatter attributes model =
     in
         input
             (List.append attributes
-                [ value (formatter model.value)
+                [ Attributes.id id
+                , value (formatter model.value)
                 , onKeyDown options model tagger
                 , onInput OnInput
                 , onFocus (OnFocus True)
@@ -151,7 +152,8 @@ main =
         { model = { value = "", hasFocus = False }
         , update = update
         , view =
-            numberInput { maxLength = Just 5, maxValue = Just 12, minValue = Just 1 }
+            numberInput "NumberInput"
+                { maxLength = Just 5, maxValue = Just 12, minValue = Just 1 }
                 identity
                 []
         }

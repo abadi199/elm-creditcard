@@ -1,13 +1,13 @@
 {
     "version": "1.0.0",
-    "summary": "Pretty credit card form built purely with elm",
-    "repository": "https://github.com/abadi199/elm-creditcard-form.git",
+    "summary": "Pretty credit card form built with elm",
+    "repository": "https://github.com/abadi199/elm-creditcard.git",
     "license": "MIT",
     "source-directories": [
         "src"
     ],
     "exposed-modules": [
-        "CreditCardForm", "CardType"
+        "CreditCard"
     ],
     "dependencies": {
         "elm-lang/core": "4.0.0 <= v < 5.0.0",

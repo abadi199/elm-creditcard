@@ -95,10 +95,7 @@ init : Model msg
 init =
     { options =
         { showLabel = False
-        , blankChar =
-            '•'
-            -- '☺'
-            -- '⋆'
+        , blankChar = '•'
         }
     , number = { id = "", label = Just "Card Number", value = Nothing, hasFocus = False }
     , name = { id = "", label = Just "Full Name", value = Nothing, hasFocus = False }

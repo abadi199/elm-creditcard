@@ -1,4 +1,4 @@
-module Components.Card exposing (viewCard)
+module Components.Card exposing (cardView)
 
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
@@ -14,8 +14,8 @@ import Helpers.CardAnimation exposing (flipAnimation, backsideAnimation, keyfram
 import Components.BackCard exposing (viewBackCard)
 
 
-viewCard : Model Msg -> Html Msg
-viewCard model =
+cardView : Model Msg -> Html Msg
+cardView model =
     let
         cardInfo =
             Helper.cardInfo model

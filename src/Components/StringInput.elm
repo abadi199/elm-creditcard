@@ -2,7 +2,7 @@ module Components.StringInput exposing (Model, stringInput, Msg, update)
 
 import Html exposing (Attribute, Html, input)
 import Html.Events exposing (onWithOptions, keyCode, onInput, onFocus, onBlur)
-import Html.Attributes exposing (value)
+import Html.Attributes as Attributes exposing (value)
 import Char exposing (fromCode, KeyCode)
 
 
@@ -12,11 +12,12 @@ type alias Model =
     }
 
 
-stringInput : List (Attribute Msg) -> Model -> Html Msg
-stringInput attributes model =
+stringInput : String -> List (Attribute Msg) -> Model -> Html Msg
+stringInput id attributes model =
     input
         (List.append attributes
-            [ value model.value
+            [ Attributes.id id
+            , value model.value
             , onInput OnInput
             , onFocus (OnFocus True)
             , onBlur (OnFocus False)
