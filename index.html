@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Elm Credit Card by abadi199</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Elm Credit Card</h1>
+        <p>Pretty credit card form built with Elm</p>
+
+        <p class="view"><a href="https://github.com/abadi199/elm-creditcard">View the Project on GitHub <small>abadi199/elm-creditcard</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/abadi199/elm-creditcard/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/abadi199/elm-creditcard/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/abadi199/elm-creditcard">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="elm-credit-card-form-wip" class="anchor" href="#elm-credit-card-form-wip" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Elm Credit Card Form (WIP)</h1>
+
+<p>Pretty credit card input form inspired by <a href="https://github.com/jessepollak/card">https://github.com/jessepollak/card</a> </p>
+
+<p>Everything is written in Elm without any external javascript, and css.
+The credit card is created with elm svg renderer.</p>
+
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
+
+<p>TBA</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>To use this component, just include this component in your view and update as part of your Elm Architecture.</p>
+
+<div class="highlight highlight-source-haskell"><pre><span class="pl-k">import</span> <span class="pl-c1">Card</span> 
+
+view model <span class="pl-k">=</span> 
+    <span class="pl-c1">div</span> <span class="pl-c1">[]</span> [ <span class="pl-c1">Html</span><span class="pl-k">.</span><span class="pl-c1">map</span> <span class="pl-c1">CardUpdate</span> <span class="pl-c1">Card</span><span class="pl-k">.</span>view ]
+
+update msg model <span class="pl-k">=</span>
+    <span class="pl-k">case</span> msg <span class="pl-k">of</span>
+        <span class="pl-c1">CardUpdate</span> cardMsg <span class="pl-k">-&gt;</span>
+            <span class="pl-k">...</span></pre></div>
+
+<h2>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Options</h2>
+
+<p>TBA</p>
+
+<h2>
+<a id="style" class="anchor" href="#style" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Style</h2>
+
+<p>TBA</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>The MIT License (MIT)
+Copyright © 2016 Abadi Kurniawan</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/abadi199">abadi199</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

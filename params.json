@@ -1,0 +1,6 @@
+{
+  "name": "Elm Credit Card",
+  "tagline": "Pretty credit card form built with Elm",
+  "body": "# Elm Credit Card Form (WIP)\r\n\r\nPretty credit card input form inspired by https://github.com/jessepollak/card \r\n\r\nEverything is written in Elm without any external javascript, and css.\r\nThe credit card is created with elm svg renderer.\r\n\r\n## Example\r\nTBA\r\n\r\n## Usage\r\n\r\nTo use this component, just include this component in your view and update as part of your Elm Architecture.\r\n```haskell\r\nimport Card \r\n\r\nview model = \r\n    div [] [ Html.map CardUpdate Card.view ]\r\n    \r\nupdate msg model =\r\n    case msg of\r\n        CardUpdate cardMsg ->\r\n            ...\r\n```\r\n\r\n## Options\r\nTBA\r\n\r\n## Style\r\nTBA\r\n\r\n## License\r\n\r\nThe MIT License (MIT)\r\nCopyright &copy; 2016 Abadi Kurniawan\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
