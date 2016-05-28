@@ -51,12 +51,6 @@
 
 	var elm = Elm.CreditCardForm.fullscreen();
 
-	//interop
-	elm.ports.alert.subscribe(function(message) {
-	  alert(message);
-	  elm.ports.log.send('Alert called: ' + message);
-	});
-
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
@@ -6871,7 +6865,7 @@
 		},
 		number: {
 			id: '',
-			label: _elm_lang$core$Maybe$Just('CC Number'),
+			label: _elm_lang$core$Maybe$Just('Card Number'),
 			value: _elm_lang$core$Maybe$Nothing,
 			hasFocus: false
 		},

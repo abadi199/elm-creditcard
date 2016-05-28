@@ -100,7 +100,7 @@ init =
             -- '☺'
             -- '⋆'
         }
-    , number = { id = "", label = Just "CC Number", value = Nothing, hasFocus = False }
+    , number = { id = "", label = Just "Card Number", value = Nothing, hasFocus = False }
     , name = { id = "", label = Just "Full Name", value = Nothing, hasFocus = False }
     , expirationMonth = { id = "", label = Just "MM", value = Nothing, hasFocus = False }
     , expirationYear = { id = "", label = Just "YYYY", value = Nothing, hasFocus = False }
