@@ -1,4 +1,4 @@
-# Elm Credit Card Form (WIP)
+# Elm Credit Card
 
 Pretty credit card input form inspired by https://github.com/jessepollak/card 
 
