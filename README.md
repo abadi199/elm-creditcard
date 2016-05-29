@@ -42,7 +42,7 @@ update msg model =
                 ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )
         ...
 ```
-You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/Examples/CheckoutForm.elm)
+You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutForm.elm)
 
 **Example of rendering each sub-components individually:**
 ```haskell
@@ -89,7 +89,7 @@ update msg model =
                 ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )
         ...
 ```
-You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/Examples/CheckoutFormWithFields.elm)
+You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutFormWithFields.elm)
 
 ## Options
 TBA
