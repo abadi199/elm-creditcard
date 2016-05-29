@@ -3,7 +3,10 @@
 Pretty credit card input form inspired by https://github.com/jessepollak/card 
 
 Everything is written in Elm without any external javascript, and css.
-The credit card is created with elm svg renderer.
+The card is created with elm svg renderer.
+
+![alt text](https://github.com/abadi199/elm-creditcard/raw/master/images/form.gif "Sample of Credit Card Form")
+
 
 ## Usage
 
