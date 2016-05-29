@@ -22,10 +22,15 @@ module.exports = {
         loader: 'file?name=[name].[ext]'
       },
       {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        loader: 'style-loader!css-loader'
+      },
+      {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
         loader: 'elm-hot!elm-webpack'
-      }
+      },      
     ],
 
     noParse: /\.elm$/

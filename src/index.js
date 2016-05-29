@@ -1,6 +1,7 @@
 'use strict';
 
 require('./index.html');
-var Elm = require('./CreditCardForm');
+require('./index.css');
+var Elm = require('./Examples/CheckoutFormWithFields');
 
-var elm = Elm.CreditCardForm.fullscreen();
+var elm = Elm.CheckoutFormWithFields.fullscreen();

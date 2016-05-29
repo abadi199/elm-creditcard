@@ -47,9 +47,10 @@
 	'use strict';
 
 	__webpack_require__(1);
-	var Elm = __webpack_require__(2);
+	__webpack_require__(2);
+	var Elm = __webpack_require__(6);
 
-	var elm = Elm.CreditCardForm.fullscreen();
+	var elm = Elm.CheckoutFormWithFields.fullscreen();
 
 /***/ },
 /* 1 */
@@ -59,6 +60,354 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(3);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(5)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./index.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./index.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(4)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "* { box-sizing: border-box; }\nform { width: 24rem; background: #efefef; padding: 1rem; }\nlabel { width: 8rem; display: block; font-family: 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif; color: #555; }\ninput { padding: 0.5rem; width: 100%; box-shadow: inset 0 1px 1px rgba(0,0,0,.075); border: 1px solid #ccc;}\ninput#CreditCardMonth { width: 3rem; }\ninput#CreditCardYear { width: 5rem; }\ninput#CreditCardCcv { width: 5rem; }\ndiv.container { display: flex; flex-direction: row; align-items: flex-end;}\nform p { margin: 0.5rem 0; }\nform p.expiration { margin-right: 1rem; }\nform p.ccv { width: 6.5rem; }\nbutton { background: #26A69A; border: none; padding: 0.5rem 2rem; color: #fff; border-radius: 0.2rem; height: 2.5rem; margin: 0.5rem 5rem 0.5rem 0}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 6 */
 /***/ function(module, exports) {
 
 	
@@ -2087,10 +2436,11 @@
 	{
 		function applyTaggers(x)
 		{
-			while (taggers)
+			var temp = taggers;
+			while (temp)
 			{
-				x = taggers.tagger(x);
-				taggers = taggers.rest;
+				x = temp.tagger(x);
+				temp = temp.rest;
 			}
 			return x;
 		}
@@ -5145,7 +5495,10 @@
 		return { tag: 'oneOf', problems: problems };
 	}
 
-	var bad = { tag: 'fail' };
+	function bad(msg)
+	{
+		return { tag: 'fail', msg: msg };
+	}
 
 	function badToString(problem)
 	{
@@ -5181,7 +5534,8 @@
 
 				case 'fail':
 					return 'I ran into a `fail` decoder'
-						+ (context === '_' ? '' : ' at ' + context);
+						+ (context === '_' ? '' : ' at ' + context)
+						+ ': ' + problem.msg;
 			}
 		}
 	}
@@ -5228,14 +5582,19 @@
 					: badPrimitive('a Bool', value);
 
 			case 'int':
-				var isNotInt =
-					typeof value !== 'number'
-					|| !(-2147483647 < value && value < 2147483647 && (value | 0) === value)
-					|| !(isFinite(value) && !(value % 1));
+				if (typeof value !== 'number') {
+					return badPrimitive('an Int', value);
+				}
 
-				return isNotInt
-					? badPrimitive('an Int', value)
-					: ok(value);
+				if (-2147483647 < value && value < 2147483647 && (value | 0) === value) {
+					return ok(value);
+				}
+
+				if (isFinite(value) && !(value % 1)) {
+					return ok(value);
+				}
+
+				return badPrimitive('an Int', value);
 
 			case 'float':
 				return (typeof value === 'number')
@@ -5315,7 +5674,7 @@
 			case 'key-value':
 				if (typeof value !== 'object' || value === null || value instanceof Array)
 				{
-					return err('an object', value);
+					return badPrimitive('an object', value);
 				}
 
 				var keyValuePairs = _elm_lang$core$Native_List.Nil;
@@ -5404,7 +5763,7 @@
 				return badOneOf(errors);
 
 			case 'fail':
-				return bad;
+				return bad(decoder.msg);
 
 			case 'succeed':
 				return ok(decoder.msg);
@@ -5942,11 +6301,24 @@
 				return render(vNode.node, eventNode);
 
 			case 'tagger':
+				var subNode = vNode.node;
+				var tagger = vNode.tagger;
+			
+				while (subNode.type === 'tagger')
+				{
+					typeof tagger !== 'object'
+						? tagger = [tagger, subNode.tagger]
+						: tagger.push(subNode.tagger);
+
+					subNode = subNode.node;
+				}
+	            
 				var subEventRoot = {
-					tagger: vNode.tagger,
+					tagger: tagger,
 					parent: eventNode
 				};
-				var domNode = render(vNode.node, subEventRoot);
+				
+				var domNode = render(subNode, subEventRoot);
 				domNode.elm_event_node_ref = subEventRoot;
 				return domNode;
 
@@ -6041,6 +6413,7 @@
 			if (typeof value === 'undefined')
 			{
 				domNode.removeEventListener(key, handler);
+				allHandlers[key] = undefined;
 			}
 			else if (typeof handler === 'undefined')
 			{
@@ -6356,10 +6729,7 @@
 					(category === STYLE_KEY)
 						? ''
 						:
-					(category === EVENT_KEY)
-						? null
-						:
-					(category === ATTR_KEY)
+					(category === EVENT_KEY || category === ATTR_KEY)
 						? undefined
 						:
 					{ namespace: a[aKey].namespace, value: undefined };
@@ -6474,7 +6844,14 @@
 		switch (vNode.type)
 		{
 			case 'tagger':
-				return addDomNodesHelp(domNode, vNode.node, patches, i, low + 1, high, domNode.elm_event_node_ref);
+				var subNode = vNode.node;
+	            
+				while (subNode.type === "tagger")
+				{
+					subNode = subNode.node;
+				}
+	            
+				return addDomNodesHelp(domNode, subNode, patches, i, low + 1, high, domNode.elm_event_node_ref);
 
 			case 'node':
 				var vChildren = vNode.children;
@@ -6586,10 +6963,9 @@
 		var parentNode = domNode.parentNode;
 		var newNode = render(vNode, eventNode);
 
-		var ref = domNode.elm_event_node_ref
-		if (typeof ref !== 'undefined')
+		if (typeof newNode.elm_event_node_ref === 'undefined')
 		{
-			newNode.elm_event_node_ref = ref;
+			newNode.elm_event_node_ref = domNode.elm_event_node_ref;
 		}
 
 		if (parentNode && newNode !== domNode)
@@ -6764,6 +7140,44 @@
 	var _elm_lang$html$Html$menuitem = _elm_lang$html$Html$node('menuitem');
 	var _elm_lang$html$Html$menu = _elm_lang$html$Html$node('menu');
 
+	var _elm_lang$html$Html_App$programWithFlags = _elm_lang$virtual_dom$VirtualDom$programWithFlags;
+	var _elm_lang$html$Html_App$program = function (app) {
+		return _elm_lang$html$Html_App$programWithFlags(
+			_elm_lang$core$Native_Utils.update(
+				app,
+				{
+					init: function (_p0) {
+						return app.init;
+					}
+				}));
+	};
+	var _elm_lang$html$Html_App$beginnerProgram = function (_p1) {
+		var _p2 = _p1;
+		return _elm_lang$html$Html_App$programWithFlags(
+			{
+				init: function (_p3) {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_p2.model,
+						_elm_lang$core$Native_List.fromArray(
+							[]));
+				},
+				update: F2(
+					function (msg, model) {
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							A2(_p2.update, msg, model),
+							_elm_lang$core$Native_List.fromArray(
+								[]));
+					}),
+				view: _p2.view,
+				subscriptions: function (_p4) {
+					return _elm_lang$core$Platform_Sub$none;
+				}
+			});
+	};
+	var _elm_lang$html$Html_App$map = _elm_lang$virtual_dom$VirtualDom$map;
+
 	var _elm_lang$svg$Svg$text = _elm_lang$virtual_dom$VirtualDom$text;
 	var _elm_lang$svg$Svg$svgNamespace = A2(
 		_elm_lang$virtual_dom$VirtualDom$property,
@@ -6858,7 +7272,7 @@
 	var _elm_lang$svg$Svg$style = _elm_lang$svg$Svg$node('style');
 	var _elm_lang$svg$Svg$view = _elm_lang$svg$Svg$node('view');
 
-	var _abadi199$elm_creditcard_form$Model$init = {
+	var _abadi199$elm_creditcard$Model$init = {
 		options: {
 			showLabel: false,
 			blankChar: _elm_lang$core$Native_Utils.chr('•')
@@ -6896,42 +7310,42 @@
 		cardInfo: _elm_lang$core$Maybe$Nothing,
 		flipped: _elm_lang$core$Maybe$Nothing
 	};
-	var _abadi199$elm_creditcard_form$Model$Model = F8(
+	var _abadi199$elm_creditcard$Model$Model = F8(
 		function (a, b, c, d, e, f, g, h) {
 			return {options: a, number: b, name: c, expirationMonth: d, expirationYear: e, ccv: f, cardInfo: g, flipped: h};
 		});
-	var _abadi199$elm_creditcard_form$Model$Options = F2(
+	var _abadi199$elm_creditcard$Model$Options = F2(
 		function (a, b) {
 			return {showLabel: a, blankChar: b};
 		});
-	var _abadi199$elm_creditcard_form$Model$Field = F4(
+	var _abadi199$elm_creditcard$Model$Field = F4(
 		function (a, b, c, d) {
 			return {id: a, label: b, value: c, hasFocus: d};
 		});
-	var _abadi199$elm_creditcard_form$Model$Styles = function (a) {
+	var _abadi199$elm_creditcard$Model$Styles = function (a) {
 		return {cardStyle: a};
 	};
-	var _abadi199$elm_creditcard_form$Model$CardStyle = F4(
+	var _abadi199$elm_creditcard$Model$CardStyle = F4(
 		function (a, b, c, d) {
 			return {background: a, textColor: b, lightTextColor: c, darkTextColor: d};
 		});
-	var _abadi199$elm_creditcard_form$Model$CardInfo = F5(
+	var _abadi199$elm_creditcard$Model$CardInfo = F5(
 		function (a, b, c, d, e) {
 			return {cardType: a, validLength: b, numberFormat: c, cardStyle: d, ccvPosition: e};
 		});
-	var _abadi199$elm_creditcard_form$Model$VisaElectron = {ctor: 'VisaElectron'};
-	var _abadi199$elm_creditcard_form$Model$Maestro = {ctor: 'Maestro'};
-	var _abadi199$elm_creditcard_form$Model$Laser = {ctor: 'Laser'};
-	var _abadi199$elm_creditcard_form$Model$JCB = {ctor: 'JCB'};
-	var _abadi199$elm_creditcard_form$Model$DinersClubInternational = {ctor: 'DinersClubInternational'};
-	var _abadi199$elm_creditcard_form$Model$DinersClubCarteBlanche = {ctor: 'DinersClubCarteBlanche'};
-	var _abadi199$elm_creditcard_form$Model$Discover = {ctor: 'Discover'};
-	var _abadi199$elm_creditcard_form$Model$Amex = {ctor: 'Amex'};
-	var _abadi199$elm_creditcard_form$Model$Mastercard = {ctor: 'Mastercard'};
-	var _abadi199$elm_creditcard_form$Model$Visa = {ctor: 'Visa'};
-	var _abadi199$elm_creditcard_form$Model$Unknown = {ctor: 'Unknown'};
-	var _abadi199$elm_creditcard_form$Model$Back = {ctor: 'Back'};
-	var _abadi199$elm_creditcard_form$Model$Front = {ctor: 'Front'};
+	var _abadi199$elm_creditcard$Model$VisaElectron = {ctor: 'VisaElectron'};
+	var _abadi199$elm_creditcard$Model$Maestro = {ctor: 'Maestro'};
+	var _abadi199$elm_creditcard$Model$Laser = {ctor: 'Laser'};
+	var _abadi199$elm_creditcard$Model$JCB = {ctor: 'JCB'};
+	var _abadi199$elm_creditcard$Model$DinersClubInternational = {ctor: 'DinersClubInternational'};
+	var _abadi199$elm_creditcard$Model$DinersClubCarteBlanche = {ctor: 'DinersClubCarteBlanche'};
+	var _abadi199$elm_creditcard$Model$Discover = {ctor: 'Discover'};
+	var _abadi199$elm_creditcard$Model$Amex = {ctor: 'Amex'};
+	var _abadi199$elm_creditcard$Model$Mastercard = {ctor: 'Mastercard'};
+	var _abadi199$elm_creditcard$Model$Visa = {ctor: 'Visa'};
+	var _abadi199$elm_creditcard$Model$Unknown = {ctor: 'Unknown'};
+	var _abadi199$elm_creditcard$Model$Back = {ctor: 'Back'};
+	var _abadi199$elm_creditcard$Model$Front = {ctor: 'Front'};
 
 	var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode_ops[':='], 'keyCode', _elm_lang$core$Json_Decode$int);
 	var _elm_lang$html$Html_Events$targetChecked = A2(
@@ -7033,44 +7447,6 @@
 		function (a, b) {
 			return {stopPropagation: a, preventDefault: b};
 		});
-
-	var _elm_lang$html$Html_App$programWithFlags = _elm_lang$virtual_dom$VirtualDom$programWithFlags;
-	var _elm_lang$html$Html_App$program = function (app) {
-		return _elm_lang$html$Html_App$programWithFlags(
-			_elm_lang$core$Native_Utils.update(
-				app,
-				{
-					init: function (_p0) {
-						return app.init;
-					}
-				}));
-	};
-	var _elm_lang$html$Html_App$beginnerProgram = function (_p1) {
-		var _p2 = _p1;
-		return _elm_lang$html$Html_App$programWithFlags(
-			{
-				init: function (_p3) {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_p2.model,
-						_elm_lang$core$Native_List.fromArray(
-							[]));
-				},
-				update: F2(
-					function (msg, model) {
-						return A2(
-							_elm_lang$core$Platform_Cmd_ops['!'],
-							A2(_p2.update, msg, model),
-							_elm_lang$core$Native_List.fromArray(
-								[]));
-					}),
-				view: _p2.view,
-				subscriptions: function (_p4) {
-					return _elm_lang$core$Platform_Sub$none;
-				}
-			});
-	};
-	var _elm_lang$html$Html_App$map = _elm_lang$virtual_dom$VirtualDom$map;
 
 	var _elm_lang$html$Html_Attributes$attribute = _elm_lang$virtual_dom$VirtualDom$attribute;
 	var _elm_lang$html$Html_Attributes$contextmenu = function (value) {
@@ -7424,7 +7800,7 @@
 	};
 	var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
-	var _abadi199$elm_creditcard_form$Components_NumberInput$update = F2(
+	var _abadi199$elm_creditcard$Components_NumberInput$update = F2(
 		function (msg, model) {
 			var _p0 = msg;
 			switch (_p0.ctor) {
@@ -7442,21 +7818,21 @@
 						{hasFocus: _p0._0});
 			}
 		});
-	var _abadi199$elm_creditcard_form$Components_NumberInput$allowedKeyCodes = _elm_lang$core$Native_List.fromArray(
+	var _abadi199$elm_creditcard$Components_NumberInput$allowedKeyCodes = _elm_lang$core$Native_List.fromArray(
 		[37, 39, 8, 17, 18, 46, 9, 13]);
-	var _abadi199$elm_creditcard_form$Components_NumberInput$Options = F3(
+	var _abadi199$elm_creditcard$Components_NumberInput$Options = F3(
 		function (a, b, c) {
 			return {maxLength: a, maxValue: b, minValue: c};
 		});
-	var _abadi199$elm_creditcard_form$Components_NumberInput$Model = F2(
+	var _abadi199$elm_creditcard$Components_NumberInput$Model = F2(
 		function (a, b) {
 			return {value: a, hasFocus: b};
 		});
-	var _abadi199$elm_creditcard_form$Components_NumberInput$Event = F3(
+	var _abadi199$elm_creditcard$Components_NumberInput$Event = F3(
 		function (a, b, c) {
 			return {keyCode: a, ctrlKey: b, altKey: c};
 		});
-	var _abadi199$elm_creditcard_form$Components_NumberInput$onKeyDown = F3(
+	var _abadi199$elm_creditcard$Components_NumberInput$onKeyDown = F3(
 		function (options, model, tagger) {
 			var exceedMaxLength = A2(
 				_elm_lang$core$Maybe$withDefault,
@@ -7514,14 +7890,14 @@
 						function (x, y) {
 							return _elm_lang$core$Native_Utils.eq(x, y);
 						})(event.keyCode),
-					_abadi199$elm_creditcard_form$Components_NumberInput$allowedKeyCodes) ? _elm_lang$core$Result$Err('not arrow') : (((_elm_lang$core$Native_Utils.cmp(event.keyCode, 48) > -1) && ((_elm_lang$core$Native_Utils.cmp(event.keyCode, 57) < 1) && (_elm_lang$core$Basics$not(exceedMaxLength) && (_elm_lang$core$Basics$not(
+					_abadi199$elm_creditcard$Components_NumberInput$allowedKeyCodes) ? _elm_lang$core$Result$Err('not arrow') : (((_elm_lang$core$Native_Utils.cmp(event.keyCode, 48) > -1) && ((_elm_lang$core$Native_Utils.cmp(event.keyCode, 57) < 1) && (_elm_lang$core$Basics$not(exceedMaxLength) && (_elm_lang$core$Basics$not(
 					exceedMaxValue(event.keyCode)) && _elm_lang$core$Basics$not(
 					lessThanMinValue(event.keyCode)))))) ? _elm_lang$core$Result$Err('numeric') : _elm_lang$core$Result$Ok(event.keyCode)));
 			};
 			var eventOptions = {stopPropagation: false, preventDefault: true};
 			var eventDecoder = A4(
 				_elm_lang$core$Json_Decode$object3,
-				_abadi199$elm_creditcard_form$Components_NumberInput$Event,
+				_abadi199$elm_creditcard$Components_NumberInput$Event,
 				A2(_elm_lang$core$Json_Decode_ops[':='], 'keyCode', _elm_lang$core$Json_Decode$int),
 				A2(_elm_lang$core$Json_Decode_ops[':='], 'ctrlKey', _elm_lang$core$Json_Decode$bool),
 				A2(_elm_lang$core$Json_Decode_ops[':='], 'altKey', _elm_lang$core$Json_Decode$bool));
@@ -7531,20 +7907,20 @@
 				A2(_elm_lang$core$Json_Decode$customDecoder, eventDecoder, isNotNumeric));
 			return A3(_elm_lang$html$Html_Events$onWithOptions, 'keydown', eventOptions, decoder);
 		});
-	var _abadi199$elm_creditcard_form$Components_NumberInput$OnFocus = function (a) {
+	var _abadi199$elm_creditcard$Components_NumberInput$OnFocus = function (a) {
 		return {ctor: 'OnFocus', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Components_NumberInput$OnInput = function (a) {
+	var _abadi199$elm_creditcard$Components_NumberInput$OnInput = function (a) {
 		return {ctor: 'OnInput', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Components_NumberInput$KeyDown = function (a) {
+	var _abadi199$elm_creditcard$Components_NumberInput$KeyDown = function (a) {
 		return {ctor: 'KeyDown', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Components_NumberInput$NoOp = {ctor: 'NoOp'};
-	var _abadi199$elm_creditcard_form$Components_NumberInput$numberInput = F4(
-		function (options, formatter, attributes, model) {
+	var _abadi199$elm_creditcard$Components_NumberInput$NoOp = {ctor: 'NoOp'};
+	var _abadi199$elm_creditcard$Components_NumberInput$numberInput = F5(
+		function (id, options, formatter, attributes, model) {
 			var tagger = function (keyCode) {
-				return ((_elm_lang$core$Native_Utils.cmp(keyCode, 48) > -1) && (_elm_lang$core$Native_Utils.cmp(keyCode, 57) < 1)) ? _abadi199$elm_creditcard_form$Components_NumberInput$KeyDown(keyCode) : _abadi199$elm_creditcard_form$Components_NumberInput$NoOp;
+				return ((_elm_lang$core$Native_Utils.cmp(keyCode, 48) > -1) && (_elm_lang$core$Native_Utils.cmp(keyCode, 57) < 1)) ? _abadi199$elm_creditcard$Components_NumberInput$KeyDown(keyCode) : _abadi199$elm_creditcard$Components_NumberInput$NoOp;
 			};
 			return A2(
 				_elm_lang$html$Html$input,
@@ -7553,25 +7929,27 @@
 					attributes,
 					_elm_lang$core$Native_List.fromArray(
 						[
+							_elm_lang$html$Html_Attributes$id(id),
 							_elm_lang$html$Html_Attributes$value(
 							formatter(model.value)),
-							A3(_abadi199$elm_creditcard_form$Components_NumberInput$onKeyDown, options, model, tagger),
-							_elm_lang$html$Html_Events$onInput(_abadi199$elm_creditcard_form$Components_NumberInput$OnInput),
+							A3(_abadi199$elm_creditcard$Components_NumberInput$onKeyDown, options, model, tagger),
+							_elm_lang$html$Html_Events$onInput(_abadi199$elm_creditcard$Components_NumberInput$OnInput),
 							_elm_lang$html$Html_Events$onFocus(
-							_abadi199$elm_creditcard_form$Components_NumberInput$OnFocus(true)),
+							_abadi199$elm_creditcard$Components_NumberInput$OnFocus(true)),
 							_elm_lang$html$Html_Events$onBlur(
-							_abadi199$elm_creditcard_form$Components_NumberInput$OnFocus(false))
+							_abadi199$elm_creditcard$Components_NumberInput$OnFocus(false))
 						])),
 				_elm_lang$core$Native_List.fromArray(
 					[]));
 		});
-	var _abadi199$elm_creditcard_form$Components_NumberInput$main = {
+	var _abadi199$elm_creditcard$Components_NumberInput$main = {
 		main: _elm_lang$html$Html_App$beginnerProgram(
 			{
 				model: {value: '', hasFocus: false},
-				update: _abadi199$elm_creditcard_form$Components_NumberInput$update,
-				view: A3(
-					_abadi199$elm_creditcard_form$Components_NumberInput$numberInput,
+				update: _abadi199$elm_creditcard$Components_NumberInput$update,
+				view: A4(
+					_abadi199$elm_creditcard$Components_NumberInput$numberInput,
+					'NumberInput',
 					{
 						maxLength: _elm_lang$core$Maybe$Just(5),
 						maxValue: _elm_lang$core$Maybe$Just(12),
@@ -7583,7 +7961,7 @@
 			})
 	};
 
-	var _abadi199$elm_creditcard_form$Components_StringInput$update = F2(
+	var _abadi199$elm_creditcard$Components_StringInput$update = F2(
 		function (msg, model) {
 			var _p0 = msg;
 			switch (_p0.ctor) {
@@ -7601,18 +7979,18 @@
 						{hasFocus: _p0._0});
 			}
 		});
-	var _abadi199$elm_creditcard_form$Components_StringInput$Model = F2(
+	var _abadi199$elm_creditcard$Components_StringInput$Model = F2(
 		function (a, b) {
 			return {value: a, hasFocus: b};
 		});
-	var _abadi199$elm_creditcard_form$Components_StringInput$OnFocus = function (a) {
+	var _abadi199$elm_creditcard$Components_StringInput$OnFocus = function (a) {
 		return {ctor: 'OnFocus', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Components_StringInput$OnInput = function (a) {
+	var _abadi199$elm_creditcard$Components_StringInput$OnInput = function (a) {
 		return {ctor: 'OnInput', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Components_StringInput$stringInput = F2(
-		function (attributes, model) {
+	var _abadi199$elm_creditcard$Components_StringInput$stringInput = F3(
+		function (id, attributes, model) {
 			return A2(
 				_elm_lang$html$Html$input,
 				A2(
@@ -7620,20 +7998,21 @@
 					attributes,
 					_elm_lang$core$Native_List.fromArray(
 						[
+							_elm_lang$html$Html_Attributes$id(id),
 							_elm_lang$html$Html_Attributes$value(model.value),
-							_elm_lang$html$Html_Events$onInput(_abadi199$elm_creditcard_form$Components_StringInput$OnInput),
+							_elm_lang$html$Html_Events$onInput(_abadi199$elm_creditcard$Components_StringInput$OnInput),
 							_elm_lang$html$Html_Events$onFocus(
-							_abadi199$elm_creditcard_form$Components_StringInput$OnFocus(true)),
+							_abadi199$elm_creditcard$Components_StringInput$OnFocus(true)),
 							_elm_lang$html$Html_Events$onBlur(
-							_abadi199$elm_creditcard_form$Components_StringInput$OnFocus(false))
+							_abadi199$elm_creditcard$Components_StringInput$OnFocus(false))
 						])),
 				_elm_lang$core$Native_List.fromArray(
 					[]));
 		});
-	var _abadi199$elm_creditcard_form$Components_StringInput$KeyDown = function (a) {
+	var _abadi199$elm_creditcard$Components_StringInput$KeyDown = function (a) {
 		return {ctor: 'KeyDown', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Components_StringInput$NoOp = {ctor: 'NoOp'};
+	var _abadi199$elm_creditcard$Components_StringInput$NoOp = {ctor: 'NoOp'};
 
 	//import Maybe, Native.List //
 
@@ -8024,10 +8403,10 @@
 	var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 	var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
 
-	var _abadi199$elm_creditcard_form$Helpers_CardAnimation$fadeOutAnimation = _elm_lang$svg$Svg_Attributes$style('animation: hide 0.5s ease');
-	var _abadi199$elm_creditcard_form$Helpers_CardAnimation$fadeInAnimation = _elm_lang$svg$Svg_Attributes$style('animation: show 0.5s ease');
-	var _abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation = _elm_lang$svg$Svg_Attributes$style('transition: fill 0.5s ease');
-	var _abadi199$elm_creditcard_form$Helpers_CardAnimation$keyframeAnimationDefs = A2(
+	var _abadi199$elm_creditcard$Helpers_CardAnimation$fadeOutAnimation = _elm_lang$svg$Svg_Attributes$style('animation: hide 0.5s ease');
+	var _abadi199$elm_creditcard$Helpers_CardAnimation$fadeInAnimation = _elm_lang$svg$Svg_Attributes$style('animation: show 0.5s ease');
+	var _abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation = _elm_lang$svg$Svg_Attributes$style('transition: fill 0.5s ease');
+	var _abadi199$elm_creditcard$Helpers_CardAnimation$keyframeAnimationDefs = A2(
 		_elm_lang$svg$Svg$defs,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
@@ -8042,7 +8421,7 @@
 						_elm_lang$svg$Svg$text('@keyframes show {\n                            0% { opacity: 0; }\n                            100% { opacity: 1; }\n                        }\n                        @keyframes hide {\n                            0% { opacity: 1; }\n                            100% { opacity: 0; }\n                        }\n                    ')
 					]))
 			]));
-	var _abadi199$elm_creditcard_form$Helpers_CardAnimation$backsideAnimation = function (flipped) {
+	var _abadi199$elm_creditcard$Helpers_CardAnimation$backsideAnimation = function (flipped) {
 		var _p0 = flipped;
 		if (_p0.ctor === 'Nothing') {
 			return _elm_lang$svg$Svg_Attributes$style('transform: rotateY(180deg); transform-origin: 175px 110px; opacity: 0;');
@@ -8050,11 +8429,11 @@
 			return _p0._0 ? _elm_lang$svg$Svg_Attributes$style('transform: rotateY(180deg); transform-origin: 175px 110px; animation: show 0.175s 1 steps(1); opacity: 1;') : _elm_lang$svg$Svg_Attributes$style('transform: rotateY(180deg); transform-origin: 175px 110px; animation: hide 0.125s 1 steps(1); opacity: 0;');
 		}
 	};
-	var _abadi199$elm_creditcard_form$Helpers_CardAnimation$flipAnimation = function (flipped) {
+	var _abadi199$elm_creditcard$Helpers_CardAnimation$flipAnimation = function (flipped) {
 		return A2(_elm_lang$core$Maybe$withDefault, false, flipped) ? _elm_lang$svg$Svg_Attributes$style('transition: transform 0.5s; transform-origin: 50% 50%; transform: rotateY(180deg);') : _elm_lang$svg$Svg_Attributes$style('transition: transform 0.5s;');
 	};
 
-	var _abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$background = function (options) {
+	var _abadi199$elm_creditcard$Styles_Backgrounds_Gradient$background = function (options) {
 		return A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -8118,21 +8497,21 @@
 						[]))
 				]));
 	};
-	var _abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$Options = F2(
+	var _abadi199$elm_creditcard$Styles_Backgrounds_Gradient$Options = F2(
 		function (a, b) {
 			return {darkColor: a, lightColor: b};
 		});
 
-	var _abadi199$elm_creditcard_form$Styles_Cards_Visa$style = {
+	var _abadi199$elm_creditcard$Styles_Cards_Visa$style = {
 		background: {
 			attributes: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation,
+					_abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation,
 					_elm_lang$svg$Svg_Attributes$fill('#025fd1')
 				]),
 			svg: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$background(
+					_abadi199$elm_creditcard$Styles_Backgrounds_Gradient$background(
 					{darkColor: '#013a7e', lightColor: '#025fd1'})
 				]),
 			defs: _elm_lang$core$Native_List.fromArray(
@@ -8143,16 +8522,16 @@
 		darkTextColor: '#000'
 	};
 
-	var _abadi199$elm_creditcard_form$Styles_Cards_Mastercard$style = {
+	var _abadi199$elm_creditcard$Styles_Cards_Mastercard$style = {
 		background: {
 			attributes: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation,
+					_abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation,
 					_elm_lang$svg$Svg_Attributes$fill('#6E8398')
 				]),
 			svg: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$background(
+					_abadi199$elm_creditcard$Styles_Backgrounds_Gradient$background(
 					{darkColor: '#152E42', lightColor: '#6E8398'})
 				]),
 			defs: _elm_lang$core$Native_List.fromArray(
@@ -8163,16 +8542,16 @@
 		darkTextColor: '#000'
 	};
 
-	var _abadi199$elm_creditcard_form$Styles_Cards_Amex$style = {
+	var _abadi199$elm_creditcard$Styles_Cards_Amex$style = {
 		background: {
 			attributes: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation,
+					_abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation,
 					_elm_lang$svg$Svg_Attributes$fill('#D4AF37')
 				]),
 			svg: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$background(
+					_abadi199$elm_creditcard$Styles_Backgrounds_Gradient$background(
 					{darkColor: '#7D6720', lightColor: '#D4AF37'})
 				]),
 			defs: _elm_lang$core$Native_List.fromArray(
@@ -8183,16 +8562,16 @@
 		darkTextColor: '#000'
 	};
 
-	var _abadi199$elm_creditcard_form$Styles_Cards_Discover$style = {
+	var _abadi199$elm_creditcard$Styles_Cards_Discover$style = {
 		background: {
 			attributes: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation,
+					_abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation,
 					_elm_lang$svg$Svg_Attributes$fill('#ADDBE8')
 				]),
 			svg: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$background(
+					_abadi199$elm_creditcard$Styles_Backgrounds_Gradient$background(
 					{darkColor: '#94B8CA', lightColor: '#ADDBE8'})
 				]),
 			defs: _elm_lang$core$Native_List.fromArray(
@@ -8203,16 +8582,16 @@
 		darkTextColor: '#000'
 	};
 
-	var _abadi199$elm_creditcard_form$Styles_Cards_Diners$style = {
+	var _abadi199$elm_creditcard$Styles_Cards_Diners$style = {
 		background: {
 			attributes: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation,
+					_abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation,
 					_elm_lang$svg$Svg_Attributes$fill('#C5C6C8')
 				]),
 			svg: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$background(
+					_abadi199$elm_creditcard$Styles_Backgrounds_Gradient$background(
 					{darkColor: '#8B8E92', lightColor: '#C5C6C8'})
 				]),
 			defs: _elm_lang$core$Native_List.fromArray(
@@ -8223,16 +8602,16 @@
 		darkTextColor: '#000'
 	};
 
-	var _abadi199$elm_creditcard_form$Styles_Cards_JCB$style = {
+	var _abadi199$elm_creditcard$Styles_Cards_JCB$style = {
 		background: {
 			attributes: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation,
+					_abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation,
 					_elm_lang$svg$Svg_Attributes$fill('#0069CA')
 				]),
 			svg: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Styles_Backgrounds_Gradient$background(
+					_abadi199$elm_creditcard$Styles_Backgrounds_Gradient$background(
 					{darkColor: '#000F4B', lightColor: '#0069CA'})
 				]),
 			defs: _elm_lang$core$Native_List.fromArray(
@@ -8243,11 +8622,11 @@
 		darkTextColor: '#000'
 	};
 
-	var _abadi199$elm_creditcard_form$Styles_Cards_Unknown$style = {
+	var _abadi199$elm_creditcard$Styles_Cards_Unknown$style = {
 		background: {
 			attributes: _elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$transitionAnimation,
+					_abadi199$elm_creditcard$Helpers_CardAnimation$transitionAnimation,
 					_elm_lang$svg$Svg_Attributes$fill('rgba(102, 102, 102, 1)')
 				]),
 			svg: _elm_lang$core$Native_List.fromArray(
@@ -8260,146 +8639,146 @@
 		darkTextColor: '#000'
 	};
 
-	var _abadi199$elm_creditcard_form$Helpers_CardType$unknownCard = {
-		cardType: _abadi199$elm_creditcard_form$Model$Unknown,
+	var _abadi199$elm_creditcard$Helpers_CardType$unknownCard = {
+		cardType: _abadi199$elm_creditcard$Model$Unknown,
 		validLength: _elm_lang$core$Native_List.fromArray(
 			[16]),
 		numberFormat: _elm_lang$core$Native_List.fromArray(
 			[4, 4, 4]),
-		cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Unknown$style,
-		ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+		cardStyle: _abadi199$elm_creditcard$Styles_Cards_Unknown$style,
+		ccvPosition: _abadi199$elm_creditcard$Model$Back
 	};
-	var _abadi199$elm_creditcard_form$Helpers_CardType$cards = _elm_lang$core$Native_List.fromArray(
+	var _abadi199$elm_creditcard$Helpers_CardType$cards = _elm_lang$core$Native_List.fromArray(
 		[
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$Amex,
+				cardType: _abadi199$elm_creditcard$Model$Amex,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[15]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 6, 5]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Amex$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Front
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Amex$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Front
 			},
 			pattern: _elm_lang$core$Regex$regex('^3[47]')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$DinersClubCarteBlanche,
+				cardType: _abadi199$elm_creditcard$Model$DinersClubCarteBlanche,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[14]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 6, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Diners$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Diners$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^30[0-5]')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$DinersClubInternational,
+				cardType: _abadi199$elm_creditcard$Model$DinersClubInternational,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[14]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 6, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Diners$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Diners$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^36')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$JCB,
+				cardType: _abadi199$elm_creditcard$Model$JCB,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[16]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 4, 4, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_JCB$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_JCB$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^35(2[89]|[3-8][0-9])')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$Laser,
+				cardType: _abadi199$elm_creditcard$Model$Laser,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[16, 17, 18, 19]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[19]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Visa$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Visa$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^(6304|670[69]|6771)')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$VisaElectron,
+				cardType: _abadi199$elm_creditcard$Model$VisaElectron,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[16]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 4, 4, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Visa$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Visa$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^(4026|417500|4508|4844|491(3|7))')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$Visa,
+				cardType: _abadi199$elm_creditcard$Model$Visa,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[16]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 4, 4, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Visa$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Visa$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^4')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$Mastercard,
+				cardType: _abadi199$elm_creditcard$Model$Mastercard,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[16]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 4, 4, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Mastercard$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Mastercard$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^5[1-5]')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$Maestro,
+				cardType: _abadi199$elm_creditcard$Model$Maestro,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[12, 13, 14, 15, 16, 17, 18, 19]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 4, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Mastercard$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Mastercard$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^(5018|5020|5038|6304|6759|676[1-3])')
 		},
 			{
 			cardInfo: {
-				cardType: _abadi199$elm_creditcard_form$Model$Discover,
+				cardType: _abadi199$elm_creditcard$Model$Discover,
 				validLength: _elm_lang$core$Native_List.fromArray(
 					[16]),
 				numberFormat: _elm_lang$core$Native_List.fromArray(
 					[4, 4, 4, 4]),
-				cardStyle: _abadi199$elm_creditcard_form$Styles_Cards_Discover$style,
-				ccvPosition: _abadi199$elm_creditcard_form$Model$Back
+				cardStyle: _abadi199$elm_creditcard$Styles_Cards_Discover$style,
+				ccvPosition: _abadi199$elm_creditcard$Model$Back
 			},
 			pattern: _elm_lang$core$Regex$regex('^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)')
 		}
 		]);
-	var _abadi199$elm_creditcard_form$Helpers_CardType$detect = function (model) {
+	var _abadi199$elm_creditcard$Helpers_CardType$detect = function (model) {
 		var number = A2(
 			_elm_lang$core$Maybe$withDefault,
 			'',
 			A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, model.number.value));
 		return A2(
 			_elm_lang$core$Maybe$withDefault,
-			_abadi199$elm_creditcard_form$Helpers_CardType$unknownCard,
+			_abadi199$elm_creditcard$Helpers_CardType$unknownCard,
 			A2(
 				_elm_lang$core$Maybe$map,
 				function (_p0) {
@@ -8422,17 +8801,17 @@
 									_1: card
 								};
 							},
-							_abadi199$elm_creditcard_form$Helpers_CardType$cards)))));
+							_abadi199$elm_creditcard$Helpers_CardType$cards)))));
 	};
-	var _abadi199$elm_creditcard_form$Helpers_CardType$CardRegex = F2(
+	var _abadi199$elm_creditcard$Helpers_CardType$CardRegex = F2(
 		function (a, b) {
 			return {pattern: a, cardInfo: b};
 		});
 
-	var _abadi199$elm_creditcard_form$Helpers_Misc$cardInfo = function (model) {
-		return A2(_elm_lang$core$Maybe$withDefault, _abadi199$elm_creditcard_form$Helpers_CardType$unknownCard, model.cardInfo);
+	var _abadi199$elm_creditcard$Helpers_Misc$cardInfo = function (model) {
+		return A2(_elm_lang$core$Maybe$withDefault, _abadi199$elm_creditcard$Helpers_CardType$unknownCard, model.cardInfo);
 	};
-	var _abadi199$elm_creditcard_form$Helpers_Misc$minMaxNumberLength = function (model) {
+	var _abadi199$elm_creditcard$Helpers_Misc$minMaxNumberLength = function (model) {
 		return function (numbers) {
 			return {
 				ctor: '_Tuple2',
@@ -8449,9 +8828,9 @@
 			function (_) {
 				return _.validLength;
 			}(
-				_abadi199$elm_creditcard_form$Helpers_Misc$cardInfo(model)));
+				_abadi199$elm_creditcard$Helpers_Misc$cardInfo(model)));
 	};
-	var _abadi199$elm_creditcard_form$Helpers_Misc$rightPad = F3(
+	var _abadi199$elm_creditcard$Helpers_Misc$rightPad = F3(
 		function ($char, length, number) {
 			rightPad:
 			while (true) {
@@ -8473,12 +8852,12 @@
 				}
 			}
 		});
-	var _abadi199$elm_creditcard_form$Helpers_Misc$leftPad = F3(
+	var _abadi199$elm_creditcard$Helpers_Misc$leftPad = F3(
 		function ($char, length, number) {
 			return (_elm_lang$core$Native_Utils.cmp(
 				_elm_lang$core$String$length(number),
 				length) < 0) ? A3(
-				_abadi199$elm_creditcard_form$Helpers_Misc$rightPad,
+				_abadi199$elm_creditcard$Helpers_Misc$rightPad,
 				$char,
 				length,
 				A2(
@@ -8486,7 +8865,7 @@
 					_elm_lang$core$String$fromChar($char),
 					number)) : number;
 		});
-	var _abadi199$elm_creditcard_form$Helpers_Misc$partitionStep = F3(
+	var _abadi199$elm_creditcard$Helpers_Misc$partitionStep = F3(
 		function (groupSize, step, xs) {
 			var okayArgs = (_elm_lang$core$Native_Utils.cmp(groupSize, 0) > 0) && (_elm_lang$core$Native_Utils.cmp(step, 0) > 0);
 			var xs$ = A2(_elm_lang$core$List$drop, step, xs);
@@ -8497,14 +8876,14 @@
 			return (okayArgs && okayLength) ? A2(
 				_elm_lang$core$List_ops['::'],
 				group,
-				A3(_abadi199$elm_creditcard_form$Helpers_Misc$partitionStep, groupSize, step, xs$)) : _elm_lang$core$Native_List.fromArray(
+				A3(_abadi199$elm_creditcard$Helpers_Misc$partitionStep, groupSize, step, xs$)) : _elm_lang$core$Native_List.fromArray(
 				[group]);
 		});
-	var _abadi199$elm_creditcard_form$Helpers_Misc$partition$ = F2(
+	var _abadi199$elm_creditcard$Helpers_Misc$partition$ = F2(
 		function (groupSize, xs) {
-			return A3(_abadi199$elm_creditcard_form$Helpers_Misc$partitionStep, groupSize, groupSize, xs);
+			return A3(_abadi199$elm_creditcard$Helpers_Misc$partitionStep, groupSize, groupSize, xs);
 		});
-	var _abadi199$elm_creditcard_form$Helpers_Misc$partition = F2(
+	var _abadi199$elm_creditcard$Helpers_Misc$partition = F2(
 		function (numberFormat, xs) {
 			var _p0 = numberFormat;
 			if (_p0.ctor === '[]') {
@@ -8516,12 +8895,12 @@
 					_elm_lang$core$List_ops['::'],
 					A2(_elm_lang$core$List$take, _p1, xs),
 					A2(
-						_abadi199$elm_creditcard_form$Helpers_Misc$partition,
+						_abadi199$elm_creditcard$Helpers_Misc$partition,
 						_p0._1,
 						A2(_elm_lang$core$List$drop, _p1, xs)));
 			}
 		});
-	var _abadi199$elm_creditcard_form$Helpers_Misc$formatNumber = F4(
+	var _abadi199$elm_creditcard$Helpers_Misc$formatNumber = F4(
 		function (numberFormat, length, $char, number) {
 			return _elm_lang$core$String$fromList(
 				_elm_lang$core$List$concat(
@@ -8533,15 +8912,15 @@
 							})(
 							_elm_lang$core$Native_Utils.chr(' ')),
 						A2(
-							_abadi199$elm_creditcard_form$Helpers_Misc$partition,
+							_abadi199$elm_creditcard$Helpers_Misc$partition,
 							numberFormat,
 							_elm_lang$core$String$toList(
-								A3(_abadi199$elm_creditcard_form$Helpers_Misc$rightPad, $char, length, number))))));
+								A3(_abadi199$elm_creditcard$Helpers_Misc$rightPad, $char, length, number))))));
 		});
-	var _abadi199$elm_creditcard_form$Helpers_Misc$printNumber = F4(
+	var _abadi199$elm_creditcard$Helpers_Misc$printNumber = F4(
 		function (numberFormat, length, $char, maybeNumber) {
 			return A4(
-				_abadi199$elm_creditcard_form$Helpers_Misc$formatNumber,
+				_abadi199$elm_creditcard$Helpers_Misc$formatNumber,
 				numberFormat,
 				length,
 				$char,
@@ -8550,7 +8929,7 @@
 					'',
 					A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, maybeNumber)));
 		});
-	var _abadi199$elm_creditcard_form$Helpers_Misc$onKeyDown = function (tagger) {
+	var _abadi199$elm_creditcard$Helpers_Misc$onKeyDown = function (tagger) {
 		return A2(
 			_elm_lang$html$Html_Events$on,
 			'keydown',
@@ -8790,13 +9169,13 @@
 		});
 	_elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
 
-	var _abadi199$elm_creditcard_form$Update$toStringInputModel = function (field) {
+	var _abadi199$elm_creditcard$Update$toStringInputModel = function (field) {
 		return {
 			value: A2(_elm_lang$core$Maybe$withDefault, '', field.value),
 			hasFocus: field.hasFocus
 		};
 	};
-	var _abadi199$elm_creditcard_form$Update$toNumberInputModel = function (field) {
+	var _abadi199$elm_creditcard$Update$toNumberInputModel = function (field) {
 		return {
 			value: A2(
 				_elm_lang$core$Maybe$withDefault,
@@ -8805,7 +9184,7 @@
 			hasFocus: field.hasFocus
 		};
 	};
-	var _abadi199$elm_creditcard_form$Update$updateNumberInput = F2(
+	var _abadi199$elm_creditcard$Update$updateNumberInput = F2(
 		function (numberInputMsg, field) {
 			var toField = function (numberInputModel) {
 				return _elm_lang$core$Native_Utils.update(
@@ -8818,11 +9197,11 @@
 			};
 			return toField(
 				A2(
-					_abadi199$elm_creditcard_form$Components_NumberInput$update,
+					_abadi199$elm_creditcard$Components_NumberInput$update,
 					numberInputMsg,
-					_abadi199$elm_creditcard_form$Update$toNumberInputModel(field)));
+					_abadi199$elm_creditcard$Update$toNumberInputModel(field)));
 		});
-	var _abadi199$elm_creditcard_form$Update$updateStringInput = F2(
+	var _abadi199$elm_creditcard$Update$updateStringInput = F2(
 		function (stringInputMsg, field) {
 			var toField = function (stringInputModel) {
 				return _elm_lang$core$Native_Utils.update(
@@ -8834,23 +9213,23 @@
 			};
 			return toField(
 				A2(
-					_abadi199$elm_creditcard_form$Components_StringInput$update,
+					_abadi199$elm_creditcard$Components_StringInput$update,
 					stringInputMsg,
-					_abadi199$elm_creditcard_form$Update$toStringInputModel(field)));
+					_abadi199$elm_creditcard$Update$toStringInputModel(field)));
 		});
-	var _abadi199$elm_creditcard_form$Update$updateFieldValue = F2(
+	var _abadi199$elm_creditcard$Update$updateFieldValue = F2(
 		function (newValue, field) {
 			return _elm_lang$core$Native_Utils.update(
 				field,
 				{value: newValue});
 		});
-	var _abadi199$elm_creditcard_form$Update$updateNumber = F2(
+	var _abadi199$elm_creditcard$Update$updateNumber = F2(
 		function (numberInputMsg, model) {
-			var newField = A2(_abadi199$elm_creditcard_form$Update$updateNumberInput, numberInputMsg, model.number);
+			var newField = A2(_abadi199$elm_creditcard$Update$updateNumberInput, numberInputMsg, model.number);
 			var modelWithUpdatedNumber = _elm_lang$core$Native_Utils.update(
 				model,
 				{number: newField});
-			var cardInfo = _abadi199$elm_creditcard_form$Helpers_CardType$detect(modelWithUpdatedNumber);
+			var cardInfo = _abadi199$elm_creditcard$Helpers_CardType$detect(modelWithUpdatedNumber);
 			var modelWithUpdatedCardInfo = _elm_lang$core$Native_Utils.update(
 				modelWithUpdatedNumber,
 				{
@@ -8858,26 +9237,26 @@
 				});
 			return modelWithUpdatedCardInfo;
 		});
-	var _abadi199$elm_creditcard_form$Update$Flip = function (a) {
+	var _abadi199$elm_creditcard$Update$Flip = function (a) {
 		return {ctor: 'Flip', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Update$UpdateCCV = function (a) {
+	var _abadi199$elm_creditcard$Update$UpdateCCV = function (a) {
 		return {ctor: 'UpdateCCV', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Update$UpdateExpirationYear = function (a) {
+	var _abadi199$elm_creditcard$Update$UpdateExpirationYear = function (a) {
 		return {ctor: 'UpdateExpirationYear', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Update$UpdateExpirationMonth = function (a) {
+	var _abadi199$elm_creditcard$Update$UpdateExpirationMonth = function (a) {
 		return {ctor: 'UpdateExpirationMonth', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Update$UpdateName = function (a) {
+	var _abadi199$elm_creditcard$Update$UpdateName = function (a) {
 		return {ctor: 'UpdateName', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Update$UpdateNumber = function (a) {
+	var _abadi199$elm_creditcard$Update$UpdateNumber = function (a) {
 		return {ctor: 'UpdateNumber', _0: a};
 	};
-	var _abadi199$elm_creditcard_form$Update$NoOp = {ctor: 'NoOp'};
-	var _abadi199$elm_creditcard_form$Update$update = F2(
+	var _abadi199$elm_creditcard$Update$NoOp = {ctor: 'NoOp'};
+	var _abadi199$elm_creditcard$Update$update = F2(
 		function (msg, model) {
 			var _p0 = msg;
 			switch (_p0.ctor) {
@@ -8886,7 +9265,7 @@
 				case 'UpdateNumber':
 					return {
 						ctor: '_Tuple2',
-						_0: A2(_abadi199$elm_creditcard_form$Update$updateNumber, _p0._0, model),
+						_0: A2(_abadi199$elm_creditcard$Update$updateNumber, _p0._0, model),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'UpdateName':
@@ -8895,7 +9274,7 @@
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								name: A2(_abadi199$elm_creditcard_form$Update$updateStringInput, _p0._0, model.name)
+								name: A2(_abadi199$elm_creditcard$Update$updateStringInput, _p0._0, model.name)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -8905,7 +9284,7 @@
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								expirationMonth: A2(_abadi199$elm_creditcard_form$Update$updateNumberInput, _p0._0, model.expirationMonth)
+								expirationMonth: A2(_abadi199$elm_creditcard$Update$updateNumberInput, _p0._0, model.expirationMonth)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -8915,12 +9294,12 @@
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								expirationYear: A2(_abadi199$elm_creditcard_form$Update$updateNumberInput, _p0._0, model.expirationYear)
+								expirationYear: A2(_abadi199$elm_creditcard$Update$updateNumberInput, _p0._0, model.expirationYear)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'UpdateCCV':
-					var updatedCcv = A2(_abadi199$elm_creditcard_form$Update$updateNumberInput, _p0._0, model.ccv);
+					var updatedCcv = A2(_abadi199$elm_creditcard$Update$updateNumberInput, _p0._0, model.ccv);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -8929,9 +9308,9 @@
 						_1: A3(
 							_elm_lang$core$Task$perform,
 							function (_p1) {
-								return _abadi199$elm_creditcard_form$Update$NoOp;
+								return _abadi199$elm_creditcard$Update$NoOp;
 							},
-							_abadi199$elm_creditcard_form$Update$Flip,
+							_abadi199$elm_creditcard$Update$Flip,
 							_elm_lang$core$Task$succeed(updatedCcv.hasFocus))
 					};
 				default:
@@ -8940,11 +9319,11 @@
 							function (x, y) {
 								return _elm_lang$core$Native_Utils.eq(x, y);
 							}),
-						_abadi199$elm_creditcard_form$Model$Front,
+						_abadi199$elm_creditcard$Model$Front,
 						function (_) {
 							return _.ccvPosition;
 						}(
-							_abadi199$elm_creditcard_form$Helpers_Misc$cardInfo(model))) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
+							_abadi199$elm_creditcard$Helpers_Misc$cardInfo(model))) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
@@ -8956,80 +9335,7 @@
 			}
 		});
 
-	var _abadi199$elm_creditcard_form$Components_BackCard$viewBackCard = function (model) {
-		var ccv = A2(
-			_elm_lang$core$Maybe$withDefault,
-			'CCV',
-			A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, model.ccv.value));
-		var cardInfo = A2(_elm_lang$core$Maybe$withDefault, _abadi199$elm_creditcard_form$Helpers_CardType$unknownCard, model.cardInfo);
-		var cardStyle = cardInfo.cardStyle;
-		return A2(
-			_elm_lang$svg$Svg$g,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$id('elmCardSvgBack'),
-					_abadi199$elm_creditcard_form$Helpers_CardAnimation$backsideAnimation(model.flipped)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$svg$Svg$rect,
-					A2(
-						_elm_lang$core$List$append,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$svg$Svg_Attributes$x('0'),
-								_elm_lang$svg$Svg_Attributes$y('0'),
-								_elm_lang$svg$Svg_Attributes$width('350'),
-								_elm_lang$svg$Svg_Attributes$height('220'),
-								_elm_lang$svg$Svg_Attributes$rx('5'),
-								_elm_lang$svg$Svg_Attributes$ry('5'),
-								_elm_lang$svg$Svg_Attributes$fill('gray')
-							]),
-						cardStyle.background.attributes),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$svg$Svg$rect,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$svg$Svg_Attributes$x('0'),
-							_elm_lang$svg$Svg_Attributes$y('20'),
-							_elm_lang$svg$Svg_Attributes$width('350'),
-							_elm_lang$svg$Svg_Attributes$height('40'),
-							_elm_lang$svg$Svg_Attributes$fill('#333')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$svg$Svg$rect,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$svg$Svg_Attributes$x('30'),
-							_elm_lang$svg$Svg_Attributes$y('90'),
-							_elm_lang$svg$Svg_Attributes$width('290'),
-							_elm_lang$svg$Svg_Attributes$height('40'),
-							_elm_lang$svg$Svg_Attributes$fill('rgba(255,255,255,0.5)')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					_elm_lang$core$Native_Utils.eq(cardInfo.ccvPosition, _abadi199$elm_creditcard_form$Model$Back) ? A2(
-					_elm_lang$svg$Svg$text$,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$svg$Svg_Attributes$x('270'),
-							_elm_lang$svg$Svg_Attributes$y('115'),
-							_elm_lang$svg$Svg_Attributes$fontSize('14'),
-							_elm_lang$svg$Svg_Attributes$fill(cardStyle.darkTextColor)
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$svg$Svg$text(ccv)
-						])) : _elm_lang$svg$Svg$text('')
-				]));
-	};
-
-	var _abadi199$elm_creditcard_form$Components_Logo_Visa$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_Visa$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -9147,7 +9453,7 @@
 					]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo_VisaElectron$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_VisaElectron$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -9387,7 +9693,7 @@
 					]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo_Mastercard$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_Mastercard$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -9649,7 +9955,7 @@
 					[]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo_Amex$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_Amex$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -9772,7 +10078,7 @@
 					[]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo_Discover$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_Discover$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -10020,7 +10326,7 @@
 					]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo_Maestro$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_Maestro$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -10212,7 +10518,7 @@
 					[]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo_JCB$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_JCB$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
@@ -10382,7 +10688,7 @@
 					]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo_Diners$viewLogo = A2(
+	var _abadi199$elm_creditcard$Components_Logo_Diners$viewLogo = A2(
 		_elm_lang$svg$Svg$g,
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -10433,7 +10739,7 @@
 					[]))
 			]));
 
-	var _abadi199$elm_creditcard_form$Components_Logo$viewLogo = function (model) {
+	var _abadi199$elm_creditcard$Components_Logo$viewLogo = function (model) {
 		var viewVisaElectron = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10441,7 +10747,7 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(270,20)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_VisaElectron$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_VisaElectron$viewLogo]));
 		var viewDiners = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10449,7 +10755,7 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(290,20)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_Diners$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_Diners$viewLogo]));
 		var viewJCB = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10457,7 +10763,7 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(285,15)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_JCB$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_JCB$viewLogo]));
 		var viewMaestro = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10465,7 +10771,7 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(280,20)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_Maestro$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_Maestro$viewLogo]));
 		var viewDiscover = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10473,7 +10779,7 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(200,20)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_Discover$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_Discover$viewLogo]));
 		var viewAmex = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10481,7 +10787,7 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(285,20)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_Amex$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_Amex$viewLogo]));
 		var viewMastercard = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10489,7 +10795,7 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(280,20)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_Mastercard$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_Mastercard$viewLogo]));
 		var viewVisa = A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
@@ -10497,10 +10803,10 @@
 					_elm_lang$svg$Svg_Attributes$transform('translate(270,20)')
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Components_Logo_Visa$viewLogo]));
+				[_abadi199$elm_creditcard$Components_Logo_Visa$viewLogo]));
 		var unknownLogo = _elm_lang$core$String$fromList(
 			A2(_elm_lang$core$List$repeat, 4, model.options.blankChar));
-		var cardInfo = A2(_elm_lang$core$Maybe$withDefault, _abadi199$elm_creditcard_form$Helpers_CardType$unknownCard, model.cardInfo);
+		var cardInfo = A2(_elm_lang$core$Maybe$withDefault, _abadi199$elm_creditcard$Helpers_CardType$unknownCard, model.cardInfo);
 		var cardType = cardInfo.cardType;
 		var viewUnknown = A2(
 			_elm_lang$svg$Svg$text$,
@@ -10518,7 +10824,7 @@
 		return A2(
 			_elm_lang$svg$Svg$g,
 			_elm_lang$core$Native_List.fromArray(
-				[_abadi199$elm_creditcard_form$Helpers_CardAnimation$fadeInAnimation]),
+				[_abadi199$elm_creditcard$Helpers_CardAnimation$fadeInAnimation]),
 			_elm_lang$core$Native_List.fromArray(
 				[
 					function () {
@@ -10551,7 +10857,7 @@
 				]));
 	};
 
-	var _abadi199$elm_creditcard_form$Components_Chip$viewChipAlt = F2(
+	var _abadi199$elm_creditcard$Components_Chip$viewChipAlt = F2(
 		function (x$, y$) {
 			return A2(
 				_elm_lang$svg$Svg$g,
@@ -10746,7 +11052,7 @@
 							]))
 					]));
 		});
-	var _abadi199$elm_creditcard_form$Components_Chip$viewChip = F2(
+	var _abadi199$elm_creditcard$Components_Chip$viewChip = F2(
 		function (x$, y$) {
 			return A2(
 				_elm_lang$svg$Svg$g,
@@ -10843,7 +11149,80 @@
 					]));
 		});
 
-	var _abadi199$elm_creditcard_form$Components_Card$viewCard = function (model) {
+	var _abadi199$elm_creditcard$Components_BackCard$viewBackCard = function (model) {
+		var ccv = A2(
+			_elm_lang$core$Maybe$withDefault,
+			'CCV',
+			A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, model.ccv.value));
+		var cardInfo = A2(_elm_lang$core$Maybe$withDefault, _abadi199$elm_creditcard$Helpers_CardType$unknownCard, model.cardInfo);
+		var cardStyle = cardInfo.cardStyle;
+		return A2(
+			_elm_lang$svg$Svg$g,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$id('elmCardSvgBack'),
+					_abadi199$elm_creditcard$Helpers_CardAnimation$backsideAnimation(model.flipped)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$svg$Svg$rect,
+					A2(
+						_elm_lang$core$List$append,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$x('0'),
+								_elm_lang$svg$Svg_Attributes$y('0'),
+								_elm_lang$svg$Svg_Attributes$width('350'),
+								_elm_lang$svg$Svg_Attributes$height('220'),
+								_elm_lang$svg$Svg_Attributes$rx('5'),
+								_elm_lang$svg$Svg_Attributes$ry('5'),
+								_elm_lang$svg$Svg_Attributes$fill('gray')
+							]),
+						cardStyle.background.attributes),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$svg$Svg$rect,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$svg$Svg_Attributes$x('0'),
+							_elm_lang$svg$Svg_Attributes$y('20'),
+							_elm_lang$svg$Svg_Attributes$width('350'),
+							_elm_lang$svg$Svg_Attributes$height('40'),
+							_elm_lang$svg$Svg_Attributes$fill('#333')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$svg$Svg$rect,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$svg$Svg_Attributes$x('30'),
+							_elm_lang$svg$Svg_Attributes$y('90'),
+							_elm_lang$svg$Svg_Attributes$width('290'),
+							_elm_lang$svg$Svg_Attributes$height('40'),
+							_elm_lang$svg$Svg_Attributes$fill('rgba(255,255,255,0.5)')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					_elm_lang$core$Native_Utils.eq(cardInfo.ccvPosition, _abadi199$elm_creditcard$Model$Back) ? A2(
+					_elm_lang$svg$Svg$text$,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$svg$Svg_Attributes$x('270'),
+							_elm_lang$svg$Svg_Attributes$y('115'),
+							_elm_lang$svg$Svg_Attributes$fontSize('14'),
+							_elm_lang$svg$Svg_Attributes$fill(cardStyle.darkTextColor)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$svg$Svg$text(ccv)
+						])) : _elm_lang$svg$Svg$text('')
+				]));
+	};
+
+	var _abadi199$elm_creditcard$Components_Card$cardView = function (model) {
 		var ccv = A2(
 			_elm_lang$core$Maybe$withDefault,
 			'CCV',
@@ -10860,7 +11239,7 @@
 				model.number.value));
 		var numberFontSize = (_elm_lang$core$Native_Utils.cmp(numberLength, 16) > 0) ? _elm_lang$svg$Svg_Attributes$fontSize('20') : _elm_lang$svg$Svg_Attributes$fontSize('22');
 		var expirationYear = A3(
-			_abadi199$elm_creditcard_form$Helpers_Misc$rightPad,
+			_abadi199$elm_creditcard$Helpers_Misc$rightPad,
 			model.options.blankChar,
 			4,
 			A2(
@@ -10871,7 +11250,7 @@
 			A2(_elm_lang$core$List$repeat, 2, model.options.blankChar));
 		var expirationMonth = function (str) {
 			return _elm_lang$core$String$isEmpty(str) ? blankMonth : A3(
-				_abadi199$elm_creditcard_form$Helpers_Misc$leftPad,
+				_abadi199$elm_creditcard$Helpers_Misc$leftPad,
 				_elm_lang$core$Native_Utils.chr('0'),
 				2,
 				str);
@@ -10888,11 +11267,11 @@
 				_elm_lang$core$Maybe$withDefault,
 				'',
 				A2(_elm_lang$core$Maybe$map, _elm_lang$core$String$toUpper, model.name.value)));
-		var _p1 = _abadi199$elm_creditcard_form$Helpers_Misc$minMaxNumberLength(model);
+		var _p1 = _abadi199$elm_creditcard$Helpers_Misc$minMaxNumberLength(model);
 		var minNumberLength = _p1._0;
 		var maxNumberLength = _p1._1;
-		var cardInfo = _abadi199$elm_creditcard_form$Helpers_Misc$cardInfo(model);
-		var number = A4(_abadi199$elm_creditcard_form$Helpers_Misc$printNumber, cardInfo.numberFormat, minNumberLength, model.options.blankChar, model.number.value);
+		var cardInfo = _abadi199$elm_creditcard$Helpers_Misc$cardInfo(model);
+		var number = A4(_abadi199$elm_creditcard$Helpers_Misc$printNumber, cardInfo.numberFormat, minNumberLength, model.options.blankChar, model.number.value);
 		var cardStyle = cardInfo.cardStyle;
 		return A2(
 			_elm_lang$html$Html$div,
@@ -10915,11 +11294,11 @@
 							_elm_lang$svg$Svg_Attributes$height('220'),
 							_elm_lang$svg$Svg_Attributes$viewBox('0 0 350 220'),
 							_elm_lang$svg$Svg_Attributes$fontFamily('monospace'),
-							_abadi199$elm_creditcard_form$Helpers_CardAnimation$flipAnimation(model.flipped)
+							_abadi199$elm_creditcard$Helpers_CardAnimation$flipAnimation(model.flipped)
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_abadi199$elm_creditcard_form$Helpers_CardAnimation$keyframeAnimationDefs,
+							_abadi199$elm_creditcard$Helpers_CardAnimation$keyframeAnimationDefs,
 							A2(
 							_elm_lang$svg$Svg$g,
 							_elm_lang$core$Native_List.fromArray(
@@ -10931,8 +11310,8 @@
 								_elm_lang$core$List$append,
 								_elm_lang$core$Native_List.fromArray(
 									[
-										A2(_abadi199$elm_creditcard_form$Components_Chip$viewChip, 40, 70),
-										_abadi199$elm_creditcard_form$Components_Logo$viewLogo(model),
+										A2(_abadi199$elm_creditcard$Components_Chip$viewChip, 40, 70),
+										_abadi199$elm_creditcard$Components_Logo$viewLogo(model),
 										A2(
 										_elm_lang$svg$Svg$text$,
 										_elm_lang$core$Native_List.fromArray(
@@ -11029,7 +11408,7 @@
 													expirationMonth,
 													A2(_elm_lang$core$Basics_ops['++'], '/', expirationYear)))
 											])),
-										_elm_lang$core$Native_Utils.eq(cardInfo.ccvPosition, _abadi199$elm_creditcard_form$Model$Front) ? A2(
+										_elm_lang$core$Native_Utils.eq(cardInfo.ccvPosition, _abadi199$elm_creditcard$Model$Front) ? A2(
 										_elm_lang$svg$Svg$text$,
 										_elm_lang$core$Native_List.fromArray(
 											[
@@ -11070,20 +11449,20 @@
 												[]))
 										]),
 									cardStyle.background.svg))),
-							_abadi199$elm_creditcard_form$Components_BackCard$viewBackCard(model)
+							_abadi199$elm_creditcard$Components_BackCard$viewBackCard(model)
 						]))
 				]));
 	};
 
-	var _abadi199$elm_creditcard_form$View$placeholder = F2(
+	var _abadi199$elm_creditcard$View$placeholder = F2(
 		function (options, field) {
 			return options.showLabel ? _elm_lang$html$Html_Attributes$placeholder('') : A2(
 				_elm_lang$core$Maybe$withDefault,
 				_elm_lang$html$Html_Attributes$placeholder(''),
 				A2(_elm_lang$core$Maybe$map, _elm_lang$html$Html_Attributes$placeholder, field.label));
 		});
-	var _abadi199$elm_creditcard_form$View$viewLabel = F2(
-		function (options, field) {
+	var _abadi199$elm_creditcard$View$viewLabel = F3(
+		function (id, options, field) {
 			return options.showLabel ? A2(
 				_elm_lang$core$Maybe$withDefault,
 				_elm_lang$html$Html$text(''),
@@ -11093,7 +11472,9 @@
 						return A2(
 							_elm_lang$html$Html$label,
 							_elm_lang$core$Native_List.fromArray(
-								[]),
+								[
+									_elm_lang$html$Html_Attributes$for(id)
+								]),
 							_elm_lang$core$Native_List.fromArray(
 								[
 									_elm_lang$html$Html$text(labelText)
@@ -11101,57 +11482,135 @@
 					},
 					field.label)) : _elm_lang$html$Html$text('');
 		});
-	var _abadi199$elm_creditcard_form$View$viewIntFieldWithAttributes = F4(
-		function (attributes, options, numberInputOptions, field) {
-			return A2(
-				_elm_lang$html$Html$div,
+	var _abadi199$elm_creditcard$View$viewIntFieldWithAttributes = F5(
+		function (id, attributes, options, numberInputOptions, field) {
+			var input = A5(
+				_abadi199$elm_creditcard$Components_NumberInput$numberInput,
+				id,
+				numberInputOptions,
+				_elm_lang$core$Basics$identity,
+				attributes,
+				_abadi199$elm_creditcard$Update$toNumberInputModel(field));
+			return options.showLabel ? A2(
+				_elm_lang$html$Html$p,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(_abadi199$elm_creditcard_form$View$viewLabel, options, field),
-						A4(
-						_abadi199$elm_creditcard_form$Components_NumberInput$numberInput,
-						numberInputOptions,
-						_elm_lang$core$Basics$identity,
-						attributes,
-						_abadi199$elm_creditcard_form$Update$toNumberInputModel(field))
-					]));
+						A3(_abadi199$elm_creditcard$View$viewLabel, id, options, field),
+						input
+					])) : input;
 		});
-	var _abadi199$elm_creditcard_form$View$viewIntField = F3(
-		function (options, numberInputOptions, field) {
-			return A4(
-				_abadi199$elm_creditcard_form$View$viewIntFieldWithAttributes,
+	var _abadi199$elm_creditcard$View$viewIntField = F4(
+		function (id, options, numberInputOptions, field) {
+			return A5(
+				_abadi199$elm_creditcard$View$viewIntFieldWithAttributes,
+				id,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(_abadi199$elm_creditcard_form$View$placeholder, options, field)
+						A2(_abadi199$elm_creditcard$View$placeholder, options, field)
 					]),
 				options,
 				numberInputOptions,
 				field);
 		});
-	var _abadi199$elm_creditcard_form$View$viewStringField = F2(
-		function (options, field) {
-			return A2(
-				_elm_lang$html$Html$div,
+	var _abadi199$elm_creditcard$View$viewStringField = F4(
+		function (id, attributes, options, field) {
+			var stringInput = A3(
+				_abadi199$elm_creditcard$Components_StringInput$stringInput,
+				id,
+				A2(
+					_elm_lang$core$List$append,
+					attributes,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(_abadi199$elm_creditcard$View$placeholder, options, field)
+						])),
+				_abadi199$elm_creditcard$Update$toStringInputModel(field));
+			return options.showLabel ? A2(
+				_elm_lang$html$Html$p,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(_abadi199$elm_creditcard_form$View$viewLabel, options, field),
-						A2(
-						_abadi199$elm_creditcard_form$Components_StringInput$stringInput,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(_abadi199$elm_creditcard_form$View$placeholder, options, field)
-							]),
-						_abadi199$elm_creditcard_form$Update$toStringInputModel(field))
-					]));
+						A3(_abadi199$elm_creditcard$View$viewLabel, id, options, field),
+						stringInput
+					])) : stringInput;
 		});
-	var _abadi199$elm_creditcard_form$View$view = function (model) {
-		var _p0 = _abadi199$elm_creditcard_form$Helpers_Misc$minMaxNumberLength(model);
-		var minNumberLength = _p0._0;
-		var maxNumberLength = _p0._1;
+	var _abadi199$elm_creditcard$View$ccvInput = F2(
+		function (id, model) {
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_abadi199$elm_creditcard$Update$UpdateCCV,
+				A4(
+					_abadi199$elm_creditcard$View$viewIntField,
+					id,
+					model.options,
+					{
+						maxLength: _elm_lang$core$Maybe$Just(4),
+						maxValue: _elm_lang$core$Maybe$Nothing,
+						minValue: _elm_lang$core$Maybe$Nothing
+					},
+					model.ccv));
+		});
+	var _abadi199$elm_creditcard$View$yearInput = F2(
+		function (id, model) {
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_abadi199$elm_creditcard$Update$UpdateExpirationYear,
+				A4(
+					_abadi199$elm_creditcard$View$viewIntField,
+					id,
+					model.options,
+					{
+						maxLength: _elm_lang$core$Maybe$Just(4),
+						maxValue: _elm_lang$core$Maybe$Nothing,
+						minValue: _elm_lang$core$Maybe$Nothing
+					},
+					model.expirationYear));
+		});
+	var _abadi199$elm_creditcard$View$monthInput = F2(
+		function (id, model) {
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_abadi199$elm_creditcard$Update$UpdateExpirationMonth,
+				A4(
+					_abadi199$elm_creditcard$View$viewIntField,
+					id,
+					model.options,
+					{
+						maxLength: _elm_lang$core$Maybe$Just(2),
+						maxValue: _elm_lang$core$Maybe$Just(12),
+						minValue: _elm_lang$core$Maybe$Just(1)
+					},
+					model.expirationMonth));
+		});
+	var _abadi199$elm_creditcard$View$nameInput = F3(
+		function (id, attributes, model) {
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_abadi199$elm_creditcard$Update$UpdateName,
+				A4(_abadi199$elm_creditcard$View$viewStringField, id, attributes, model.options, model.name));
+		});
+	var _abadi199$elm_creditcard$View$numberInput = F2(
+		function (id, model) {
+			var _p0 = _abadi199$elm_creditcard$Helpers_Misc$minMaxNumberLength(model);
+			var maxNumberLength = _p0._1;
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_abadi199$elm_creditcard$Update$UpdateNumber,
+				A4(
+					_abadi199$elm_creditcard$View$viewIntField,
+					id,
+					model.options,
+					{
+						maxLength: _elm_lang$core$Maybe$Just(maxNumberLength),
+						maxValue: _elm_lang$core$Maybe$Nothing,
+						minValue: _elm_lang$core$Maybe$Nothing
+					},
+					model.number));
+		});
+	var _abadi199$elm_creditcard$View$view = function (model) {
 		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
@@ -11160,81 +11619,217 @@
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_abadi199$elm_creditcard_form$Components_Card$viewCard(model),
-					A2(
-					_elm_lang$html$Html_App$map,
-					_abadi199$elm_creditcard_form$Update$UpdateNumber,
+					_abadi199$elm_creditcard$Components_Card$cardView(model),
+					A2(_abadi199$elm_creditcard$View$numberInput, 'CreditCardNumber', model),
 					A3(
-						_abadi199$elm_creditcard_form$View$viewIntField,
-						model.options,
-						{
-							maxLength: _elm_lang$core$Maybe$Just(maxNumberLength),
-							maxValue: _elm_lang$core$Maybe$Nothing,
-							minValue: _elm_lang$core$Maybe$Nothing
-						},
-						model.number)),
-					A2(
-					_elm_lang$html$Html_App$map,
-					_abadi199$elm_creditcard_form$Update$UpdateName,
-					A2(_abadi199$elm_creditcard_form$View$viewStringField, model.options, model.name)),
-					A2(
-					_elm_lang$html$Html_App$map,
-					_abadi199$elm_creditcard_form$Update$UpdateExpirationMonth,
-					A3(
-						_abadi199$elm_creditcard_form$View$viewIntField,
-						model.options,
-						{
-							maxLength: _elm_lang$core$Maybe$Just(2),
-							maxValue: _elm_lang$core$Maybe$Just(12),
-							minValue: _elm_lang$core$Maybe$Just(1)
-						},
-						model.expirationMonth)),
-					A2(
-					_elm_lang$html$Html_App$map,
-					_abadi199$elm_creditcard_form$Update$UpdateExpirationYear,
-					A3(
-						_abadi199$elm_creditcard_form$View$viewIntField,
-						model.options,
-						{
-							maxLength: _elm_lang$core$Maybe$Just(4),
-							maxValue: _elm_lang$core$Maybe$Nothing,
-							minValue: _elm_lang$core$Maybe$Nothing
-						},
-						model.expirationYear)),
-					A2(
-					_elm_lang$html$Html_App$map,
-					_abadi199$elm_creditcard_form$Update$UpdateCCV,
-					A3(
-						_abadi199$elm_creditcard_form$View$viewIntField,
-						model.options,
-						{
-							maxLength: _elm_lang$core$Maybe$Just(4),
-							maxValue: _elm_lang$core$Maybe$Nothing,
-							minValue: _elm_lang$core$Maybe$Nothing
-						},
-						model.ccv))
+					_abadi199$elm_creditcard$View$nameInput,
+					'CreditCardName',
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					model),
+					A2(_abadi199$elm_creditcard$View$monthInput, 'CreditCardMonth', model),
+					A2(_abadi199$elm_creditcard$View$yearInput, 'CreditCardYear', model),
+					A2(_abadi199$elm_creditcard$View$ccvInput, 'CreditCardCcv', model)
 				]));
 	};
 
-	var _abadi199$elm_creditcard_form$CreditCardForm$update = _abadi199$elm_creditcard_form$Update$update;
-	var _abadi199$elm_creditcard_form$CreditCardForm$view = _abadi199$elm_creditcard_form$View$view;
-	var _abadi199$elm_creditcard_form$CreditCardForm$init = _abadi199$elm_creditcard_form$Model$init;
-	var _abadi199$elm_creditcard_form$CreditCardForm$subscriptions = function (model) {
+	var _abadi199$elm_creditcard$CreditCard$update = _abadi199$elm_creditcard$Update$update;
+	var _abadi199$elm_creditcard$CreditCard$cardView = _abadi199$elm_creditcard$Components_Card$cardView;
+	var _abadi199$elm_creditcard$CreditCard$ccvInput = _abadi199$elm_creditcard$View$ccvInput;
+	var _abadi199$elm_creditcard$CreditCard$yearInput = _abadi199$elm_creditcard$View$yearInput;
+	var _abadi199$elm_creditcard$CreditCard$monthInput = _abadi199$elm_creditcard$View$monthInput;
+	var _abadi199$elm_creditcard$CreditCard$nameInput = _abadi199$elm_creditcard$View$nameInput;
+	var _abadi199$elm_creditcard$CreditCard$numberInput = _abadi199$elm_creditcard$View$numberInput;
+	var _abadi199$elm_creditcard$CreditCard$form = _abadi199$elm_creditcard$View$view;
+	var _abadi199$elm_creditcard$CreditCard$init = _abadi199$elm_creditcard$Model$init;
+	var _abadi199$elm_creditcard$CreditCard$subscriptions = function (model) {
 		return _elm_lang$core$Platform_Sub$none;
 	};
-	var _abadi199$elm_creditcard_form$CreditCardForm$main = {
+	var _abadi199$elm_creditcard$CreditCard$main = {
 		main: _elm_lang$html$Html_App$program(
 			{
-				init: {ctor: '_Tuple2', _0: _abadi199$elm_creditcard_form$CreditCardForm$init, _1: _elm_lang$core$Platform_Cmd$none},
-				view: _abadi199$elm_creditcard_form$CreditCardForm$view,
-				update: _abadi199$elm_creditcard_form$CreditCardForm$update,
-				subscriptions: _abadi199$elm_creditcard_form$CreditCardForm$subscriptions
+				init: {ctor: '_Tuple2', _0: _abadi199$elm_creditcard$CreditCard$init, _1: _elm_lang$core$Platform_Cmd$none},
+				view: _abadi199$elm_creditcard$CreditCard$form,
+				update: _abadi199$elm_creditcard$CreditCard$update,
+				subscriptions: _abadi199$elm_creditcard$CreditCard$subscriptions
 			})
 	};
 
+	var _abadi199$elm_creditcard$CheckoutFormWithFields$init = {creditCard: _abadi199$elm_creditcard$CreditCard$init, address1: '', address2: '', city: '', state: '', zipCode: ''};
+	var _abadi199$elm_creditcard$CheckoutFormWithFields$Model = F6(
+		function (a, b, c, d, e, f) {
+			return {creditCard: a, address1: b, address2: c, city: d, state: e, zipCode: f};
+		});
+	var _abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg = function (a) {
+		return {ctor: 'CreditCardMsg', _0: a};
+	};
+	var _abadi199$elm_creditcard$CheckoutFormWithFields$view = function (model) {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html_App$map,
+					_abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg,
+					_abadi199$elm_creditcard$CreditCard$cardView(model.creditCard)),
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('number')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$label,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$for('CreditCardNumber')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('Number')
+								])),
+							A2(
+							_elm_lang$html$Html_App$map,
+							_abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg,
+							A2(_abadi199$elm_creditcard$CreditCard$numberInput, 'CreditCardNumber', model.creditCard))
+						])),
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('name')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$label,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$for('CreditCardName')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('Name')
+								])),
+							A2(
+							_elm_lang$html$Html_App$map,
+							_abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg,
+							A3(
+								_abadi199$elm_creditcard$CreditCard$nameInput,
+								'CreditCardName',
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('input-control')
+									]),
+								model.creditCard))
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('container')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('expiration')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									A2(
+									_elm_lang$html$Html$label,
+									_elm_lang$core$Native_List.fromArray(
+										[
+											_elm_lang$html$Html_Attributes$for('CreditCardNumber')
+										]),
+									_elm_lang$core$Native_List.fromArray(
+										[
+											_elm_lang$html$Html$text('Expiration Date')
+										])),
+									A2(
+									_elm_lang$html$Html_App$map,
+									_abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg,
+									A2(_abadi199$elm_creditcard$CreditCard$monthInput, 'CreditCardMonth', model.creditCard)),
+									A2(
+									_elm_lang$html$Html_App$map,
+									_abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg,
+									A2(_abadi199$elm_creditcard$CreditCard$yearInput, 'CreditCardYear', model.creditCard))
+								])),
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('ccv')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									A2(
+									_elm_lang$html$Html$label,
+									_elm_lang$core$Native_List.fromArray(
+										[
+											_elm_lang$html$Html_Attributes$for('CreditCardCcv')
+										]),
+									_elm_lang$core$Native_List.fromArray(
+										[
+											_elm_lang$html$Html$text('Number')
+										])),
+									A2(
+									_elm_lang$html$Html_App$map,
+									_abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg,
+									A2(_abadi199$elm_creditcard$CreditCard$ccvInput, 'CreditCardCcv', model.creditCard))
+								])),
+							A2(
+							_elm_lang$html$Html$button,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('Submit')
+								]))
+						]))
+				]));
+	};
+	var _abadi199$elm_creditcard$CheckoutFormWithFields$update = F2(
+		function (msg, model) {
+			var _p0 = msg;
+			if (_p0.ctor === 'NoOp') {
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			} else {
+				var _p1 = A2(_abadi199$elm_creditcard$CreditCard$update, _p0._0, model.creditCard);
+				var creditCardModel = _p1._0;
+				var creditCardCmd = _p1._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{creditCard: creditCardModel}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _abadi199$elm_creditcard$CheckoutFormWithFields$CreditCardMsg, creditCardCmd)
+				};
+			}
+		});
+	var _abadi199$elm_creditcard$CheckoutFormWithFields$main = {
+		main: _elm_lang$html$Html_App$program(
+			{
+				init: {ctor: '_Tuple2', _0: _abadi199$elm_creditcard$CheckoutFormWithFields$init, _1: _elm_lang$core$Platform_Cmd$none},
+				view: _abadi199$elm_creditcard$CheckoutFormWithFields$view,
+				update: _abadi199$elm_creditcard$CheckoutFormWithFields$update,
+				subscriptions: function (_p2) {
+					return _elm_lang$core$Platform_Sub$none;
+				}
+			})
+	};
+	var _abadi199$elm_creditcard$CheckoutFormWithFields$NoOp = {ctor: 'NoOp'};
+
 	var Elm = {};
-	Elm['CreditCardForm'] = Elm['CreditCardForm'] || {};
-	_elm_lang$core$Native_Platform.addPublicModule(Elm['CreditCardForm'], 'CreditCardForm', typeof _abadi199$elm_creditcard_form$CreditCardForm$main === 'undefined' ? null : _abadi199$elm_creditcard_form$CreditCardForm$main);
+	Elm['CheckoutFormWithFields'] = Elm['CheckoutFormWithFields'] || {};
+	_elm_lang$core$Native_Platform.addPublicModule(Elm['CheckoutFormWithFields'], 'CheckoutFormWithFields', typeof _abadi199$elm_creditcard$CheckoutFormWithFields$main === 'undefined' ? null : _abadi199$elm_creditcard$CheckoutFormWithFields$main);
 
 
 
@@ -11267,6 +11862,12 @@
 	    module.hot.dispose(function(data) {
 	      data.instances = instances;
 	      data.uid = uid;
+
+	      // disable current instance
+	      _elm_lang$core$Native_Scheduler.nativeBinding = function() {
+	        return _elm_lang$core$Native_Scheduler.fail(new Error('[elm-hot] Inactive Elm instance.'))
+	      }
+
 	      if (cancellers.length) {
 	        console.log('[elm-hot] Killing ' + cancellers.length + ' running processes...');
 	        try {

@@ -2,7 +2,7 @@ module CheckoutFormWithFields exposing (main)
 
 import CreditCard
 import Html.App as App
-import Html exposing (Html, form, button, label, text, input, p)
+import Html exposing (Html, form, button, label, text, input, p, div)
 import Html.Attributes exposing (placeholder, for, id, class)
 
 
@@ -39,42 +39,25 @@ view : Model -> Html Msg
 view model =
     form []
         [ App.map CreditCardMsg (CreditCard.cardView model.creditCard)
-        , p []
+        , p [ class "number" ]
             [ label [ for "CreditCardNumber" ] [ text "Number" ]
             , App.map CreditCardMsg (CreditCard.numberInput "CreditCardNumber" model.creditCard)
             ]
-        , p []
+        , p [ class "name" ]
             [ label [ for "CreditCardName" ] [ text "Name" ]
             , App.map CreditCardMsg (CreditCard.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
             ]
-        , p []
-            [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
-            , App.map CreditCardMsg (CreditCard.monthInput "CreditCardMonth" model.creditCard)
-            , App.map CreditCardMsg (CreditCard.yearInput "CreditCardYear" model.creditCard)
-            ]
-        , p []
-            [ label [ for "CreditCardCcv" ] [ text "Number" ]
-            , App.map CreditCardMsg (CreditCard.ccvInput "CreditCardCcv" model.creditCard)
-            ]
-        , p []
-            [ label [ for "Address1" ] [ text "Address (Line 1)" ]
-            , input [ id "Address1", placeholder "Address (Line 1)" ] []
-            ]
-        , p []
-            [ label [ for "Address2" ] [ text "Address (Line 2)" ]
-            , input [ id "Address2", placeholder "Address (Line 2)" ] []
-            ]
-        , p []
-            [ label [ for "City" ] [ text "City" ]
-            , input [ id "City", placeholder "City" ] []
-            ]
-        , p []
-            [ label [ for "State" ] [ text "State" ]
-            , input [ id "State", placeholder "State" ] []
-            ]
-        , p []
-            [ label [ for "ZipCode" ] [ text "Zip Code" ]
-            , input [ id "ZipCode", placeholder "Zip Code" ] []
+        , div [ class "container" ]
+            [ p [ class "expiration" ]
+                [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
+                , App.map CreditCardMsg (CreditCard.monthInput "CreditCardMonth" model.creditCard)
+                , App.map CreditCardMsg (CreditCard.yearInput "CreditCardYear" model.creditCard)
+                ]
+            , p [ class "ccv" ]
+                [ label [ for "CreditCardCcv" ] [ text "Number" ]
+                , App.map CreditCardMsg (CreditCard.ccvInput "CreditCardCcv" model.creditCard)
+                ]
+            , button [] [ text "Submit" ]
             ]
         ]
 
