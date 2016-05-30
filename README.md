@@ -3,12 +3,17 @@
 Pretty credit card input form inspired by https://github.com/jessepollak/card 
 
 Everything is written in Elm without any external javascript, and css.
-The card is created with elm svg renderer.
+
 
 ![alt text](https://github.com/abadi199/elm-creditcard/raw/master/images/form.gif "Sample of Credit Card Form")
 
+## Features
+ * Interactive update of the card type and information.
+ * Supports multiple card type: Visa, Mastercard, American Express, Discover, Diners Club, JCB, Laser, Maestro, and Visa Electron
+ * No external css or JavaScript dependency
+ * Easy to add to any Elm application using The Elm Architecture
 
-## Usage
+## How to Use
 
 This component implements [The Elm Architecture (TEA)](http://guide.elm-lang.org/architecture/index.html), so if you're application also implements TEA, then using this components is simply by adding it to be part of your `view`, `update`, and `Model`.
 
