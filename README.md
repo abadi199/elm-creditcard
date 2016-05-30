@@ -13,6 +13,9 @@ Everything is written in Elm without any external javascript, and css.
  * No external css or JavaScript dependency
  * Easy to add to any Elm application using The Elm Architecture
 
+## Live Demo
+See [here](http://abadi199.github.io/elm-creditcard#live-demo) for live demo
+
 ## How to Use
 
 This component implements [The Elm Architecture (TEA)](http://guide.elm-lang.org/architecture/index.html), so if you're application also implements TEA, then using this components is simply by adding it to be part of your `view`, `update`, and `Model`.
