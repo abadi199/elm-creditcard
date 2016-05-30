@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
+    <link rel="stylesheet" href="stylesheets/index.css">
     <meta name="viewport" content="width=device-width">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -33,11 +34,24 @@
 <h2>
 <a id="usage" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
 <p>
-<div id="CheckoutFormWithFields">Loading...</div>
+    Try out the form yourself. Start typing the credit card numbers and information into this form. 
 </p>
-
+<p>
+<div id="CheckoutFormWithFields"></div>
+</p>
+<p>
+    <h4>Sample credit card numbers</h4>
+    <table>
+        <tr><td>MasterCard</td><td>5105105105105100</td></tr>
+        <tr><td>Visa</td><td>4111111111111111</td></tr>
+        <tr><td>AmericanExpress:</td><td>378282246310005</td></tr>
+        <tr><td>Discover</td><td>6011000990139424</td></tr>
+        <tr><td>DinersClub:</td><td>6011000990139424</td></tr>
+        <tr><td>JCB</td><td>3530111333300000</td></tr>
+    </table>
+</p>
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Use</h2>
 
 <p>This component implements <a href="http://guide.elm-lang.org/architecture/index.html">The Elm Architecture (TEA)</a>, so if you're application also implements TEA, then using this components is simply by adding it to be part of your <code>view</code>, <code>update</code>, and <code>Model</code>.</p>
 
@@ -143,5 +157,8 @@ Copyright © 2016 Abadi Kurniawan</p>
     </div>
     <script src="javascripts/scale.fix.js"></script>
     <script src="javascripts/index.js"></script>
+    <script>
+        Elm.CheckoutFormWithFields.embed(document.getElementById("CheckoutFormWithFields"));
+    </script>
   </body>
 </html>
