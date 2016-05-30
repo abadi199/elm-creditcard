@@ -10,8 +10,8 @@ Everything is written in Elm without any external javascript, and css.
 ## Features
  * Interactive update of the card type and information.
  * Supports multiple card type: Visa, Mastercard, American Express, Discover, Diners Club, JCB, Laser, Maestro, and Visa Electron
- * No external css or JavaScript dependency
- * Easy to add to any Elm application using The Elm Architecture
+ * No external css or JavaScript dependency. The credit cards and logos are all svg dynamically generated using elm-svg.
+ * Implements The Elm Architecture.
 
 ## Live Demo
 See [here](http://abadi199.github.io/elm-creditcard#live-demo) for live demo
@@ -20,7 +20,7 @@ See [here](http://abadi199.github.io/elm-creditcard#live-demo) for live demo
 
 This component implements [The Elm Architecture (TEA)](http://guide.elm-lang.org/architecture/index.html), so if you're application also implements TEA, then using this components is simply by adding it to be part of your `view`, `update`, and `Model`.
 
-You can use this component in two ways, one is by rendering the whole form together, or rendering each sub-components individually.
+You can use this component in two ways; one is by rendering the whole form together, or rendering each input fields and card individually.
 
 **Example of rendering the whole form:**
 ```haskell
