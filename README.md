@@ -23,7 +23,7 @@ This component implements [The Elm Architecture (TEA)](http://guide.elm-lang.org
 You can use this component in two ways; one is by rendering the whole form together, or rendering each input fields and card individually.
 
 **Example of rendering the whole form:**
-```haskell
+```elm
 import CreditCard 
 import Html.App
 
@@ -53,7 +53,7 @@ update msg model =
 You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutForm.elm)
 
 **Example of rendering each sub-components individually:**
-```haskell
+```elm
 import CreditCard 
 import Html.App
 
