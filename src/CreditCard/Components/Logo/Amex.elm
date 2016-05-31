@@ -1,4 +1,4 @@
-module Components.Logo.Amex exposing (viewLogo)
+module CreditCard.Components.Logo.Amex exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (path, node, g, clipPath, stop, use, radialGradient, defs)

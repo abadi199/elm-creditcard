@@ -1,4 +1,4 @@
-module Components.Chip exposing (viewChip, viewChipAlt)
+module CreditCard.Components.Chip exposing (viewChip, viewChipAlt)
 
 import Html exposing (Html)
 import Svg exposing (rect, path, node, g, defs, text, linearGradient, stop)

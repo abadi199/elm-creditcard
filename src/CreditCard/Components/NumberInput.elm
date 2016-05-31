@@ -1,4 +1,4 @@
-module Components.NumberInput exposing (Model, numberInput, Msg, update, Options)
+module CreditCard.Components.NumberInput exposing (Model, numberInput, Msg, update, Options)
 
 import Html exposing (Attribute, Html, input)
 import Html.Events exposing (onWithOptions, keyCode, onInput, onFocus, onBlur)

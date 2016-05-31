@@ -1,17 +1,25 @@
-module Update exposing (..)
+module CreditCard.Update exposing (Msg(..), update)
 
-{-| Update
+{-| Update functions and Msg.
+
+# Message
+@docs Msg
+
+# Update functions
+@docs update
 -}
 
-import Components.NumberInput as NumberInput
-import Components.StringInput as StringInput
-import Model exposing (Model, Field, CCVPosition(..))
+import CreditCard.Components.NumberInput as NumberInput
+import CreditCard.Components.StringInput as StringInput
+import CreditCard.Model exposing (Model, Field, CCVPosition(..))
 import String
 import Helpers.CardType as CardType
 import Helpers.Misc as Helper
 import Task
 
 
+{-| A union type representing The Elm Architect's `Msg`
+-}
 type Msg
     = NoOp
     | UpdateNumber NumberInput.Msg
@@ -22,6 +30,8 @@ type Msg
     | Flip Bool
 
 
+{-| The Elm Architect's update function.
+-}
 update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
 update msg model =
     case msg of
@@ -97,7 +107,7 @@ updateStringInput stringInputMsg field =
             }
     in
         field
-            |> toStringInputModel
+            |> Helper.toStringInputModel
             |> StringInput.update stringInputMsg
             |> toField
 
@@ -112,16 +122,6 @@ updateNumberInput numberInputMsg field =
             }
     in
         field
-            |> toNumberInputModel
+            |> Helper.toNumberInputModel
             |> NumberInput.update numberInputMsg
             |> toField
-
-
-toNumberInputModel : Field Int -> NumberInput.Model
-toNumberInputModel field =
-    { value = field.value |> Maybe.map toString |> Maybe.withDefault "", hasFocus = field.hasFocus }
-
-
-toStringInputModel : Field String -> StringInput.Model
-toStringInputModel field =
-    { value = field.value |> Maybe.withDefault "", hasFocus = field.hasFocus }

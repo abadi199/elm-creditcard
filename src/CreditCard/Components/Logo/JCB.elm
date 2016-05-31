@@ -1,4 +1,4 @@
-module Components.Logo.JCB exposing (viewLogo)
+module CreditCard.Components.Logo.JCB exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (path, node, g, style, defs, text, linearGradient, stop)

@@ -1,4 +1,4 @@
-module Components.Logo.Diners exposing (viewLogo)
+module CreditCard.Components.Logo.Diners exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (path, node, g)

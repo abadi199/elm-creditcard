@@ -1,4 +1,4 @@
-module Model
+module CreditCard.Model
     exposing
         ( Model
         , Options
@@ -12,12 +12,23 @@ module Model
         , init
         )
 
-{-| Model
+{-| Model types and all related helper functions
+
+# Model
+@docs Model, Field, Styles,  CardInfo,  CardType
+
+# Styling and Formatting
+@docs Options, CardStyle, CCVPosition, NumberFormat
+
+# Helper Functions
+@docs init
 -}
 
 import Svg exposing (Svg, Attribute)
 
 
+{-| A type representing the Credit Card model.
+-}
 type alias Model msg =
     { options : Options
     , number : Field Int
@@ -30,12 +41,16 @@ type alias Model msg =
     }
 
 
+{-| A type representing the configurable options for the form.
+-}
 type alias Options =
     { showLabel : Bool
     , blankChar : Char
     }
 
 
+{-| A type representing an input field with specific type.
+-}
 type alias Field a =
     { id : String
     , label : Maybe String
@@ -44,11 +59,15 @@ type alias Field a =
     }
 
 
+{-| A type representing the form style.
+-}
 type alias Styles msg =
     { cardStyle : CardStyle msg
     }
 
 
+{-| A type representing the card style.
+-}
 type alias CardStyle msg =
     { background : { attributes : List (Attribute msg), svg : List (Svg msg), defs : List (Svg msg) }
     , textColor : String
@@ -57,6 +76,8 @@ type alias CardStyle msg =
     }
 
 
+{-| A union type representing the credit card type.
+-}
 type CardType
     = Unknown
     | Visa
@@ -71,15 +92,22 @@ type CardType
     | VisaElectron
 
 
+{-| A type representing the format of the number by specifying the size of each group.
+e.g: `[4, 4, 5]` will format the number to be XXXX XXXX XXXXX
+-}
 type alias NumberFormat =
     List Int
 
 
+{-| A union type representing the position of the CCV
+-}
 type CCVPosition
     = Front
     | Back
 
 
+{-| A type representing the card information.
+-}
 type alias CardInfo msg =
     { cardType : CardType
     , validLength : List Int
@@ -89,7 +117,7 @@ type alias CardInfo msg =
     }
 
 
-{-| init
+{-| init function
 -}
 init : Model msg
 init =

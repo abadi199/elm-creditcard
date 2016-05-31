@@ -1,7 +1,7 @@
-module Components.BackCard exposing (viewBackCard)
+module CreditCard.Components.BackCard exposing (viewBackCard)
 
-import Model exposing (Model, CCVPosition(..))
-import Update exposing (Msg)
+import CreditCard.Model exposing (Model, CCVPosition(..))
+import CreditCard.Update exposing (Msg)
 import Svg exposing (Svg, rect, text', text, g)
 import Svg.Attributes exposing (id, x, y, width, height, fill, rx, ry, fontSize)
 import Helpers.CardAnimation exposing (backsideAnimation)

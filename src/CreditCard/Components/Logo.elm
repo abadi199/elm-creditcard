@@ -1,19 +1,19 @@
-module Components.Logo exposing (viewLogo)
+module CreditCard.Components.Logo exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (svg, rect, text', g)
 import Svg.Attributes exposing (transform, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
-import Model exposing (Model, CardType(..))
-import Update exposing (Msg)
+import CreditCard.Model exposing (Model, CardType(..))
+import CreditCard.Update exposing (Msg)
 import String
-import Components.Logo.Visa as Visa
-import Components.Logo.VisaElectron as VisaElectron
-import Components.Logo.Mastercard as Mastercard
-import Components.Logo.Amex as Amex
-import Components.Logo.Discover as Discover
-import Components.Logo.Maestro as Maestro
-import Components.Logo.JCB as JCB
-import Components.Logo.Diners as Diners
+import CreditCard.Components.Logo.Visa as Visa
+import CreditCard.Components.Logo.VisaElectron as VisaElectron
+import CreditCard.Components.Logo.Mastercard as Mastercard
+import CreditCard.Components.Logo.Amex as Amex
+import CreditCard.Components.Logo.Discover as Discover
+import CreditCard.Components.Logo.Maestro as Maestro
+import CreditCard.Components.Logo.JCB as JCB
+import CreditCard.Components.Logo.Diners as Diners
 import Helpers.CardType exposing (unknownCard)
 import Helpers.CardAnimation as CardAnimation
 

@@ -1,6 +1,6 @@
 module Styles.Cards.Visa exposing (style)
 
-import Model exposing (CardStyle)
+import CreditCard.Model exposing (CardStyle)
 import Svg.Attributes as Attributes exposing (fill)
 import Helpers.CardAnimation exposing (transitionAnimation)
 import Styles.Backgrounds.Gradient exposing (background)

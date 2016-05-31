@@ -7,7 +7,10 @@
         "src"
     ],
     "exposed-modules": [
-        "CreditCard"
+        "CreditCard.View",
+        "CreditCard.Model", 
+        "CreditCard.Update",
+        "CreditCard.Components.Card" 
     ],
     "dependencies": {
         "elm-lang/core": "4.0.0 <= v < 5.0.0",

@@ -1,21 +1,47 @@
-module View exposing (view, numberInput, nameInput, monthInput, yearInput, ccvInput)
+module CreditCard.View
+    exposing
+        ( form
+        , numberInput
+        , nameInput
+        , monthInput
+        , yearInput
+        , ccvInput
+        )
 
-{-| View
+{-| View related functions
+
+# Form View
+@docs form
+
+# Individual Fields View
+@docs numberInput, nameInput, monthInput, yearInput, ccvInput
 -}
 
-import Model exposing (Model, Options, Field)
+import CreditCard.Model exposing (Model, Options, Field)
 import Html exposing (Html, Attribute, div, text, input, button, label, ul, li, p)
 import Html.Attributes exposing (class, type', id, value, placeholder, for)
 import Html.App as App
-import Update exposing (Msg(..), toNumberInputModel, toStringInputModel)
-import Components.NumberInput as NumberInput
-import Components.StringInput as StringInput
-import Components.Card exposing (cardView)
+import CreditCard.Update exposing (Msg(..))
+import CreditCard.Components.NumberInput as NumberInput
+import CreditCard.Components.StringInput as StringInput
+import CreditCard.Components.Card exposing (cardView)
 import Helpers.Misc as Helper
 
 
-view : Model Msg -> Html Msg
-view model =
+{-| A view function that will render the whole form fields including the card.
+
+To use this view, just include this function as part of your view function.
+
+Example:
+
+    form []
+        [ Html.App.map CreditCardMsg (CreditCard.View.form model.creditCardModel)
+        , button [] [ text "Checkout "]
+        ]
+
+-}
+form : Model Msg -> Html Msg
+form model =
     div [ class "elm-card" ]
         [ cardView model
         , numberInput "CreditCardNumber" model
@@ -23,20 +49,21 @@ view model =
         , monthInput "CreditCardMonth" model
         , yearInput "CreditCardYear" model
         , ccvInput "CreditCardCcv" model
-          -- , ul []
-          --     [ li [] [ text "AMEX: 378282246310005" ]
-          --     , li [] [ text "VISA: 4242424242424242" ]
-          --     , li [] [ text "Mastercard: 5555555555554444" ]
-          --     , li [] [ text "Discover: 6011111111111117" ]
-          --     , li [] [ text "Maestro: 6759649826438453" ]
-          --     , li [] [ text "JCB: 3530111333300000" ]
-          --     , li [] [ text "Diners: 36700102000000" ]
-          --     , li [] [ text "Visa Electron: 4917300800000000" ]
-          --     ]
-          -- , text (toString model.flipped)
         ]
 
 
+{-| A view function that will render the input field for credit card number.
+
+To use this view, just include this function as part of your view function.
+
+Example:
+
+    form []
+        [ Html.App.map CreditCardMsg (CreditCard.View.numberInput model.creditCardModel)
+        , button [] [ text "Checkout "]
+        ]
+
+-}
 numberInput : String -> Model Msg -> Html Msg
 numberInput id model =
     let
@@ -54,11 +81,35 @@ numberInput id model =
             )
 
 
+{-| A view function that will render the input field for full name.
+
+To use this view, just include this function as part of your view function.
+
+Example:
+
+    form []
+        [ Html.App.map CreditCardMsg (CreditCard.View.nameInput model.creditCardModel)
+        , button [] [ text "Checkout "]
+        ]
+
+-}
 nameInput : String -> List (Attribute StringInput.Msg) -> Model Msg -> Html Msg
 nameInput id attributes model =
     App.map UpdateName (viewStringField id attributes model.options model.name)
 
 
+{-| A view function that will render the input field for credit card expiration month.
+
+To use this view, just include this function as part of your view function. The input field will only accept numeric input with maximum value of 12.
+
+Example:
+
+    form []
+        [ Html.App.map CreditCardMsg (CreditCard.View.monthInput model.creditCardModel)
+        , button [] [ text "Checkout "]
+        ]
+
+-}
 monthInput : String -> Model Msg -> Html Msg
 monthInput id model =
     App.map UpdateExpirationMonth
@@ -72,6 +123,18 @@ monthInput id model =
         )
 
 
+{-| A view function that will render the input field for credit card expiration year.
+
+To use this view, just include this function as part of your view function. The input field will only accept numeric input.
+
+Example:
+
+    form []
+        [ Html.App.map CreditCardMsg (CreditCard.View.yearInput model.creditCardModel)
+        , button [] [ text "Checkout "]
+        ]
+
+-}
 yearInput : String -> Model Msg -> Html Msg
 yearInput id model =
     App.map UpdateExpirationYear
@@ -85,6 +148,18 @@ yearInput id model =
         )
 
 
+{-| A view function that will render the input field for credit card CCV/CVC number.
+
+To use this view, just include this function as part of your view function. The input field will only accept numeric input with maximum length of 4.
+
+Example:
+
+    form []
+        [ Html.App.map CreditCardMsg (CreditCard.View.ccvInput model.creditCardModel)
+        , button [] [ text "Checkout "]
+        ]
+
+-}
 ccvInput : String -> Model Msg -> Html Msg
 ccvInput id model =
     App.map UpdateCCV
@@ -104,7 +179,7 @@ viewStringField id attributes options field =
         stringInput =
             StringInput.stringInput id
                 (List.append attributes [ placeholder options field ])
-                (toStringInputModel field)
+                (Helper.toStringInputModel field)
     in
         if options.showLabel then
             p []
@@ -132,7 +207,7 @@ viewIntFieldWithAttributes id attributes options numberInputOptions field =
                 numberInputOptions
                 identity
                 attributes
-                (toNumberInputModel field)
+                (Helper.toNumberInputModel field)
     in
         if options.showLabel then
             p []

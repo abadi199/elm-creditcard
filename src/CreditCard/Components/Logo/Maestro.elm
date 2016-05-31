@@ -1,4 +1,4 @@
-module Components.Logo.Maestro exposing (viewLogo)
+module CreditCard.Components.Logo.Maestro exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (path, node, g)

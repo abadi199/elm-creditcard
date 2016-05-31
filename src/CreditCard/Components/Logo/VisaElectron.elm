@@ -1,4 +1,4 @@
-module Components.Logo.VisaElectron exposing (viewLogo)
+module CreditCard.Components.Logo.VisaElectron exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (path, node, g)

@@ -9,13 +9,17 @@ module Helpers.Misc
         , formatNumber
         , cardInfo
         , minMaxNumberLength
+        , toNumberInputModel
+        , toStringInputModel
         )
 
 import Html.Events exposing (on, keyCode)
 import String
 import Html exposing (Attribute, Html, input)
 import Json.Decode as Json
-import Model exposing (Model, NumberFormat, CardInfo)
+import CreditCard.Model exposing (Model, NumberFormat, CardInfo, Field)
+import CreditCard.Components.NumberInput as NumberInput
+import CreditCard.Components.StringInput as StringInput
 import Helpers.CardType exposing (unknownCard)
 
 
@@ -106,3 +110,13 @@ minMaxNumberLength model =
 cardInfo : Model msg -> CardInfo msg
 cardInfo model =
     model.cardInfo |> Maybe.withDefault unknownCard
+
+
+toNumberInputModel : Field Int -> NumberInput.Model
+toNumberInputModel field =
+    { value = field.value |> Maybe.map toString |> Maybe.withDefault "", hasFocus = field.hasFocus }
+
+
+toStringInputModel : Field String -> StringInput.Model
+toStringInputModel field =
+    { value = field.value |> Maybe.withDefault "", hasFocus = field.hasFocus }

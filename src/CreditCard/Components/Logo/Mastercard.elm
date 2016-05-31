@@ -1,4 +1,4 @@
-module Components.Logo.Mastercard exposing (viewLogo)
+module CreditCard.Components.Logo.Mastercard exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (path, node, g)

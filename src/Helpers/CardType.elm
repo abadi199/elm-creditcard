@@ -5,7 +5,7 @@ module Helpers.CardType exposing (detect, unknownCard)
 -}
 
 import Regex exposing (Regex, contains, regex)
-import Model exposing (CardStyle, Model, CardType(..), CardInfo, CCVPosition(Back, Front))
+import CreditCard.Model exposing (CardStyle, Model, CardType(..), CardInfo, CCVPosition(Back, Front))
 import Styles.Cards.Visa as VisaStyle
 import Styles.Cards.Mastercard as MastercardStyle
 import Styles.Cards.Amex as AmexStyle
