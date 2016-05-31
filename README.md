@@ -24,28 +24,30 @@ You can use this component in two ways; one is by rendering the whole form toget
 
 **Example of rendering the whole form:**
 ```elm
-import CreditCard 
+import CreditCard.Model
+import CreditCard.Update
+import CreditCard.View
 import Html.App
 
 type alias Model =
-    { creditCard = CreditCard.Model 
+    { creditCard = CreditCard.Model.Model CreditCard.Update.Msg
       ...
     }
 
 view model = 
     form [] 
-        [ Html.App.map CardUpdate CreditCard.form 
+        [ Html.App.map CardUpdate CreditCard.View.form 
         ...
         ]
 
-type Msg = CreditCardMsg CreditCard.Msg
+type Msg = CreditCardMsg CreditCard.Update.Msg
 
 update msg model =
     case msg of
         CreditCardMsg creditCardMsg ->
             let
                 ( creditCardModel, creditCardCmd ) =
-                    CreditCard.update creditCardMsg model.creditCard
+                    CreditCard.Update.update creditCardMsg model.creditCard
             in
                 ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )
         ...
@@ -54,45 +56,48 @@ You can see the full code for this in this [example](https://github.com/abadi199
 
 **Example of rendering each sub-components individually:**
 ```elm
-import CreditCard 
+import CreditCard.Model
+import CreditCard.Update
+import CreditCard.View
+import CreditCard.Components.Card
 import Html.App
 
 type alias Model =
-    { creditCard = CreditCard.Model 
+    { creditCard = CreditCard.Model.Model CreditCard.Update.Msg 
       ...
     }
 
 view model = 
     form [] 
-        [ Html.App.map CreditCardMsg (CreditCard.cardView model.creditCard)
+        [ Html.App.map CreditCardMsg (CreditCard.Components.Card.cardView model.creditCard)
         , p []
             [ label [ for "CreditCardNumber" ] [ text "Number" ]
-            , App.map CreditCardMsg (CreditCard.numberInput "CreditCardNumber" model.creditCard)
+            , App.map CreditCardMsg (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardName" ] [ text "Name" ]
-            , App.map CreditCardMsg (CreditCard.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
+            , App.map CreditCardMsg (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
-            , App.map CreditCardMsg (CreditCard.monthInput "CreditCardMonth" model.creditCard)
-            , App.map CreditCardMsg (CreditCard.yearInput "CreditCardYear" model.creditCard)
+            , App.map CreditCardMsg (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
+            , App.map CreditCardMsg (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardCcv" ] [ text "Number" ]
-            , App.map CreditCardMsg (CreditCard.ccvInput "CreditCardCcv" model.creditCard)
+            , App.map CreditCardMsg (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
             ]
         ...
         ]
 
-type Msg = CreditCardMsg CreditCard.Msg
+type Msg = CreditCardMsg CreditCard.Update.Msg
 
 update msg model =
     case msg of
         CreditCardMsg creditCardMsg ->
             let
                 ( creditCardModel, creditCardCmd ) =
-                    CreditCard.update creditCardMsg model.creditCard
+                    CreditCard.Update.update creditCardMsg model.creditCard
             in
                 ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )
         ...
