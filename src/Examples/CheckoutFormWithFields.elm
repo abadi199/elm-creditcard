@@ -1,11 +1,15 @@
 module CheckoutFormWithFields exposing (main)
 
-import CreditCard
+import CreditCard.View
+import CreditCard.Model
+import CreditCard.Update
+import CreditCard.Components.Card
 import Html.App as App
 import Html exposing (Html, form, button, label, text, input, p, div)
 import Html.Attributes exposing (placeholder, for, id, class)
 
 
+main : Program Never
 main =
     App.program
         { init = ( init, Cmd.none )
@@ -16,7 +20,7 @@ main =
 
 
 type alias Model =
-    { creditCard : CreditCard.Model
+    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg
     , address1 : String
     , address2 : String
     , city : String
@@ -25,8 +29,9 @@ type alias Model =
     }
 
 
+init : Model
 init =
-    { creditCard = CreditCard.init
+    { creditCard = CreditCard.Model.init
     , address1 = ""
     , address2 = ""
     , city = ""
@@ -38,24 +43,24 @@ init =
 view : Model -> Html Msg
 view model =
     form []
-        [ App.map CreditCardMsg (CreditCard.cardView model.creditCard)
+        [ App.map CreditCardMsg (CreditCard.Components.Card.cardView model.creditCard)
         , p [ class "number" ]
             [ label [ for "CreditCardNumber" ] [ text "Number" ]
-            , App.map CreditCardMsg (CreditCard.numberInput "CreditCardNumber" model.creditCard)
+            , App.map CreditCardMsg (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
             ]
         , p [ class "name" ]
             [ label [ for "CreditCardName" ] [ text "Name" ]
-            , App.map CreditCardMsg (CreditCard.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
+            , App.map CreditCardMsg (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
             ]
         , div [ class "container" ]
             [ p [ class "expiration" ]
                 [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
-                , App.map CreditCardMsg (CreditCard.monthInput "CreditCardMonth" model.creditCard)
-                , App.map CreditCardMsg (CreditCard.yearInput "CreditCardYear" model.creditCard)
+                , App.map CreditCardMsg (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
+                , App.map CreditCardMsg (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
                 ]
             , p [ class "ccv" ]
                 [ label [ for "CreditCardCcv" ] [ text "Number" ]
-                , App.map CreditCardMsg (CreditCard.ccvInput "CreditCardCcv" model.creditCard)
+                , App.map CreditCardMsg (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
                 ]
             , button [] [ text "Submit" ]
             ]
@@ -64,9 +69,10 @@ view model =
 
 type Msg
     = NoOp
-    | CreditCardMsg CreditCard.Msg
+    | CreditCardMsg CreditCard.Update.Msg
 
 
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
@@ -75,6 +81,6 @@ update msg model =
         CreditCardMsg creditCardMsg ->
             let
                 ( creditCardModel, creditCardCmd ) =
-                    CreditCard.update creditCardMsg model.creditCard
+                    CreditCard.Update.update creditCardMsg model.creditCard
             in
                 ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )

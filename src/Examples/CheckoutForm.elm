@@ -1,11 +1,14 @@
 module CheckoutForm exposing (main)
 
-import CreditCard
+import CreditCard.View
+import CreditCard.Model
+import CreditCard.Update
 import Html.App as App
 import Html exposing (Html, form, button, label, text, input, p)
 import Html.Attributes exposing (placeholder, for, id, class)
 
 
+main : Program Never
 main =
     App.program
         { init = ( init, Cmd.none )
@@ -16,7 +19,7 @@ main =
 
 
 type alias Model =
-    { creditCard : CreditCard.Model
+    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg
     , address1 : String
     , address2 : String
     , city : String
@@ -25,9 +28,10 @@ type alias Model =
     }
 
 
+init : Model
 init =
     { creditCard =
-        CreditCard.init
+        CreditCard.Model.init
             |> \creditCardModel ->
                 { creditCardModel
                     | options =
@@ -46,7 +50,7 @@ init =
 view : Model -> Html Msg
 view model =
     form []
-        [ App.map CreditCardMsg (CreditCard.form model.creditCard)
+        [ App.map CreditCardMsg (CreditCard.View.form model.creditCard)
         , p []
             [ label [ for "Address1" ] [ text "Address (Line 1)" ]
             , input [ id "Address1", placeholder "Address (Line 1)" ] []
@@ -72,9 +76,10 @@ view model =
 
 type Msg
     = NoOp
-    | CreditCardMsg CreditCard.Msg
+    | CreditCardMsg CreditCard.Update.Msg
 
 
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
@@ -83,6 +88,6 @@ update msg model =
         CreditCardMsg creditCardMsg ->
             let
                 ( creditCardModel, creditCardCmd ) =
-                    CreditCard.update creditCardMsg model.creditCard
+                    CreditCard.Update.update creditCardMsg model.creditCard
             in
                 ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )
