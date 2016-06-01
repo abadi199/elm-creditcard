@@ -2,7 +2,7 @@
 
 Pretty credit card input form inspired by https://github.com/jessepollak/card 
 
-Everything is written in Elm without any external javascript, and css.
+Everything is written in Elm without any external javascript, or css.
 
 
 ![alt text](https://github.com/abadi199/elm-creditcard/raw/master/images/form.gif "Sample of Credit Card Form")
@@ -15,6 +15,13 @@ Everything is written in Elm without any external javascript, and css.
 
 ## Live Demo
 See [here](http://abadi199.github.io/elm-creditcard#live-demo) for live demo
+
+## How to Install
+You can install this package running:
+```
+elm-package install abadi199/elm-creditcard
+```
+or by manually adding `abadi199/elm-creditcard` to your `elm-package.json`.
 
 ## How to Use
 
