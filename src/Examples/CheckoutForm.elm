@@ -32,13 +32,9 @@ init : Model
 init =
     { creditCard =
         CreditCard.Model.init
-            |> \creditCardModel ->
-                { creditCardModel
-                    | options =
-                        { showLabel = True
-                        , blankChar = '•'
-                        }
-                }
+            { showLabel = True
+            , blankChar = '•'
+            }
     , address1 = ""
     , address2 = ""
     , city = ""

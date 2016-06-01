@@ -3,7 +3,6 @@ module CheckoutFormWithFields exposing (main)
 import CreditCard.View
 import CreditCard.Model
 import CreditCard.Update
-import CreditCard.Components.Card
 import Html.App as App
 import Html exposing (Html, form, button, label, text, input, p, div)
 import Html.Attributes exposing (placeholder, for, id, class)
@@ -31,7 +30,7 @@ type alias Model =
 
 init : Model
 init =
-    { creditCard = CreditCard.Model.init
+    { creditCard = CreditCard.Model.init CreditCard.Model.defaultOptions
     , address1 = ""
     , address2 = ""
     , city = ""
@@ -43,7 +42,7 @@ init =
 view : Model -> Html Msg
 view model =
     form []
-        [ App.map CreditCardMsg (CreditCard.Components.Card.cardView model.creditCard)
+        [ App.map CreditCardMsg (CreditCard.View.cardView model.creditCard)
         , p [ class "number" ]
             [ label [ for "CreditCardNumber" ] [ text "Number" ]
             , App.map CreditCardMsg (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
