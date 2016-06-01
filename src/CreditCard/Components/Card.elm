@@ -1,13 +1,5 @@
 module CreditCard.Components.Card exposing (cardView)
 
-{-| Card component that will renders the credit card information such as the number, full name, expiration month/year, ccv, and the card logo.
-This component also provide a card flipping animation for flipping back and forth between the front and back side of the card when displaying CCV number.
-Some type of card has CCV printed on the front side of the card, in this case, the flipping animation will not be performed.
-
-# View
-@docs cardView
--}
-
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
 import CreditCard.Model exposing (Model, CCVPosition(..))
@@ -22,18 +14,6 @@ import Helpers.CardAnimation exposing (flipAnimation, backsideAnimation, keyfram
 import CreditCard.Components.BackCard exposing (viewBackCard)
 
 
-{-| A view function that will render the credit card.
-
-To use this view, just include this function as part of your view function. This will render the card as svg element.
-
-Example:
-
-    form []
-        [ Html.App.map CreditCardMsg (CreditCard.Components.Card.cardView model.creditCardModel)
-        , button [] [ text "Checkout "]
-        ]
-
--}
 cardView : Model Msg -> Html Msg
 cardView model =
     let

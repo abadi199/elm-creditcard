@@ -1,5 +1,5 @@
 {
-    "version": "2.0.0",
+    "version": "3.0.0",
     "summary": "Pretty credit card form built with elm",
     "repository": "https://github.com/abadi199/elm-creditcard.git",
     "license": "MIT",
@@ -9,8 +9,7 @@
     "exposed-modules": [
         "CreditCard.View",
         "CreditCard.Model",
-        "CreditCard.Update",
-        "CreditCard.Components.Card"
+        "CreditCard.Update"
     ],
     "dependencies": {
         "elm-lang/core": "4.0.0 <= v < 5.0.0",

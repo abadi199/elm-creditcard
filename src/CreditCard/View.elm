@@ -6,12 +6,16 @@ module CreditCard.View
         , monthInput
         , yearInput
         , ccvInput
+        , cardView
         )
 
 {-| View related functions
 
 # Form View
 @docs form
+
+# Card View
+@docs cardView
 
 # Individual Fields View
 @docs numberInput, nameInput, monthInput, yearInput, ccvInput
@@ -24,7 +28,7 @@ import Html.App as App
 import CreditCard.Update exposing (Msg(..))
 import CreditCard.Components.NumberInput as NumberInput
 import CreditCard.Components.StringInput as StringInput
-import CreditCard.Components.Card exposing (cardView)
+import CreditCard.Components.Card as Card
 import Helpers.Misc as Helper
 
 
@@ -59,7 +63,7 @@ To use this view, just include this function as part of your view function.
 Example:
 
     form []
-        [ Html.App.map CreditCardMsg (CreditCard.View.numberInput model.creditCardModel)
+        [ Html.App.map CreditCardMsg (CreditCard.View.numberInput "NumberInput" model.creditCardModel)
         , button [] [ text "Checkout "]
         ]
 
@@ -88,7 +92,7 @@ To use this view, just include this function as part of your view function.
 Example:
 
     form []
-        [ Html.App.map CreditCardMsg (CreditCard.View.nameInput model.creditCardModel)
+        [ Html.App.map CreditCardMsg (CreditCard.View.nameInput "NameInput" model.creditCardModel)
         , button [] [ text "Checkout "]
         ]
 
@@ -105,7 +109,7 @@ To use this view, just include this function as part of your view function. The 
 Example:
 
     form []
-        [ Html.App.map CreditCardMsg (CreditCard.View.monthInput model.creditCardModel)
+        [ Html.App.map CreditCardMsg (CreditCard.View.monthInput "MonthInput" model.creditCardModel)
         , button [] [ text "Checkout "]
         ]
 
@@ -130,7 +134,7 @@ To use this view, just include this function as part of your view function. The 
 Example:
 
     form []
-        [ Html.App.map CreditCardMsg (CreditCard.View.yearInput model.creditCardModel)
+        [ Html.App.map CreditCardMsg (CreditCard.View.yearInput "YearInput" model.creditCardModel)
         , button [] [ text "Checkout "]
         ]
 
@@ -155,7 +159,7 @@ To use this view, just include this function as part of your view function. The 
 Example:
 
     form []
-        [ Html.App.map CreditCardMsg (CreditCard.View.ccvInput model.creditCardModel)
+        [ Html.App.map CreditCardMsg (CreditCard.View.ccvInput "CCVInput" model.creditCardModel)
         , button [] [ text "Checkout "]
         ]
 
@@ -171,6 +175,28 @@ ccvInput id model =
             }
             model.ccv
         )
+
+
+{-| A view function that will render the credit card.
+
+This view will renders the credit card information such as the number, full name, expiration month/year, ccv, and the card logo.
+
+This component also provide a card flipping animation for flipping back and forth between the front and back side of the card when displaying CCV number.
+Some type of card has CCV printed on the front side of the card, in this case, the flipping animation will not be performed.
+
+To use this view, just include this function as part of your view function. This will render the card as svg element.
+
+Example:
+
+    form []
+        [ Html.App.map CreditCardMsg (CreditCard.Components.Card.cardView model.creditCardModel)
+        , button [] [ text "Checkout "]
+        ]
+
+-}
+cardView : Model Msg -> Html Msg
+cardView =
+    Card.cardView
 
 
 viewStringField : String -> List (Attribute StringInput.Msg) -> Options -> Field String -> Html StringInput.Msg
