@@ -37,7 +37,12 @@ import CreditCard.View
 import Html.App
 
 type alias Model =
-    { creditCard = CreditCard.Model.Model CreditCard.Update.Msg
+    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg
+      ...
+    }
+
+init =
+    { creditCard = CreditCard.Model.init CreditCard.Model.defaultOptions
       ...
     }
 
@@ -56,7 +61,9 @@ update msg model =
                 ( creditCardModel, creditCardCmd ) =
                     CreditCard.Update.update creditCardMsg model.creditCard
             in
-                ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )
+                ( { model | creditCard = creditCardModel }
+                , Cmd.map CreditCardMsg creditCardCmd 
+                )
         ...
 ```
 You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutForm.elm)
@@ -66,33 +73,42 @@ You can see the full code for this in this [example](https://github.com/abadi199
 import CreditCard.Model
 import CreditCard.Update
 import CreditCard.View
-import CreditCard.Components.Card
 import Html.App
 
 type alias Model =
-    { creditCard = CreditCard.Model.Model CreditCard.Update.Msg 
+    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg 
       ...
     }
-
+    
+init =
+    { creditCard = CreditCard.Model.init CreditCard.Model.defaultOptions
+      ...
+    }
+    
 view model = 
     form [] 
-        [ Html.App.map CreditCardMsg (CreditCard.Components.Card.cardView model.creditCard)
+        [ Html.App.map CreditCardMsg (CreditCard.View.cardView model.creditCard)
         , p []
             [ label [ for "CreditCardNumber" ] [ text "Number" ]
-            , App.map CreditCardMsg (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
+            , App.map CreditCardMsg 
+                (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardName" ] [ text "Name" ]
-            , App.map CreditCardMsg (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
+            , App.map CreditCardMsg 
+                (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
-            , App.map CreditCardMsg (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
-            , App.map CreditCardMsg (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
+            , App.map CreditCardMsg 
+                (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
+            , App.map CreditCardMsg 
+                (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardCcv" ] [ text "Number" ]
-            , App.map CreditCardMsg (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
+            , App.map CreditCardMsg 
+                (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
             ]
         ...
         ]
@@ -106,7 +122,9 @@ update msg model =
                 ( creditCardModel, creditCardCmd ) =
                     CreditCard.Update.update creditCardMsg model.creditCard
             in
-                ( { model | creditCard = creditCardModel }, Cmd.map CreditCardMsg creditCardCmd )
+                ( { model | creditCard = creditCardModel }
+                , Cmd.map CreditCardMsg creditCardCmd 
+                )
         ...
 ```
 You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutFormWithFields.elm)
