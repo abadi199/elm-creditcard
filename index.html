@@ -6,6 +6,7 @@
     <title>Elm Credit Card by abadi199</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/index.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
     <meta name="viewport" content="width=device-width">
     <!--[if lt IE 9]>
@@ -32,8 +33,6 @@
 
 <p>Everything is written in Elm without any external javascript, and css.</p>
 
-<p><img src="https://github.com/abadi199/elm-creditcard/raw/master/images/form.gif" alt="alt text" title="Sample of Credit Card Form"></p>
-
 <h2>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
 
@@ -46,9 +45,21 @@
 
 <h2>
 <a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
-
-<p>See <a href="http://abadi199.github.io/elm-creditcard#live-demo">here</a> for live demo</p>
-
+<p>
+<div id="CheckoutFormWithFields"></div>
+</p>
+<p>
+    <h4>Sample of credit card numbers</h4>
+    <table>
+        <tr><td>MasterCard</td><td>5105105105105100</td></tr>
+        <tr><td>Visa</td><td>4111111111111111</td></tr>
+        <tr><td>AmericanExpress:</td><td>378282246310005</td></tr>
+        <tr><td>Discover</td><td>6011000990139424</td></tr>
+        <tr><td>DinersClub:</td><td>6011000990139424</td></tr>
+        <tr><td>JCB</td><td>3530111333300000</td></tr>
+        <tr><td>Visa Electron</td><td>4917300800000000</td></tr>
+    </table>
+</p>
 <h2>
 <a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Use</h2>
 
@@ -160,6 +171,10 @@ Copyright © 2016 Abadi Kurniawan</p>
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
+    <script src="javascripts/index.js"></script>
+    <script>
+        Elm.CheckoutFormWithFields.embed(document.getElementById("CheckoutFormWithFields"));
+    </script>
     
   </body>
 </html>
