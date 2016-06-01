@@ -112,7 +112,12 @@ update msg model =
 You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutFormWithFields.elm)
 
 ## Options
-TBA
+You can customize the form by specifying these available options:
+* `showLabel` (default: `False`)
+    a flag to indicate wheter to show label for each input fields or not.
+
+* `blankChar` (default: `'•'`)
+    character used for blank input placeholder.
 
 ## Style
 TBA

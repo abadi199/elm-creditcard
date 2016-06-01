@@ -17,7 +17,7 @@ subscriptions model =
 main : Program Never
 main =
     App.program
-        { init = ( Model.init, Cmd.none )
+        { init = ( Model.init Model.defaultOptions, Cmd.none )
         , view = View.form
         , update = Update.update
         , subscriptions = subscriptions

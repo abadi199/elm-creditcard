@@ -10,6 +10,7 @@ module CreditCard.Model
         , CardType(..)
         , CCVPosition(..)
         , init
+        , defaultOptions
         )
 
 {-| Model types and all related helper functions
@@ -21,7 +22,7 @@ module CreditCard.Model
 @docs Options, CardStyle, CCVPosition, NumberFormat
 
 # Helper Functions
-@docs init
+@docs init, defaultOptions
 -}
 
 import Svg exposing (Svg, Attribute)
@@ -117,14 +118,11 @@ type alias CardInfo msg =
     }
 
 
-{-| init function
+{-| Initalize the model by passing in the `Options`
 -}
-init : Model msg
-init =
-    { options =
-        { showLabel = False
-        , blankChar = '•'
-        }
+init : Options -> Model msg
+init options =
+    { options = options
     , number = { id = "", label = Just "Card Number", value = Nothing, hasFocus = False }
     , name = { id = "", label = Just "Full Name", value = Nothing, hasFocus = False }
     , expirationMonth = { id = "", label = Just "MM", value = Nothing, hasFocus = False }
@@ -132,4 +130,13 @@ init =
     , ccv = { id = "", label = Just "CCV", value = Nothing, hasFocus = False }
     , cardInfo = Nothing
     , flipped = Nothing
+    }
+
+
+{-| The default `Options` value
+-}
+defaultOptions : Options
+defaultOptions =
+    { showLabel = False
+    , blankChar = '•'
     }
