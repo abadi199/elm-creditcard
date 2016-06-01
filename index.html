@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
-    <link rel="stylesheet" href="stylesheets/index.css">
     <meta name="viewport" content="width=device-width">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,38 +28,26 @@
         </ul>
       </header>
       <section>
-        <p>Pretty credit card input form built purely with Elm with no external css, javascripts, or images. </p>
+        <p>Pretty credit card input form inspired by <a href="https://github.com/jessepollak/card">https://github.com/jessepollak/card</a> </p>
+
+<p>Everything is written in Elm without any external javascript, and css.</p>
+
+<p><img src="https://github.com/abadi199/elm-creditcard/raw/master/images/form.gif" alt="alt text" title="Sample of Credit Card Form"></p>
 
 <h2>
-<a id="usage" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
-<p>
-    Try out the form yourself. Start typing the credit card numbers and information into this form. 
-</p>
-<p>
-<div id="CheckoutFormWithFields"></div>
-</p>
-<p>
-    <h4>Sample credit card numbers</h4>
-    <table>
-        <tr><td>MasterCard</td><td>5105105105105100</td></tr>
-        <tr><td>Visa</td><td>4111111111111111</td></tr>
-        <tr><td>AmericanExpress:</td><td>378282246310005</td></tr>
-        <tr><td>Discover</td><td>6011000990139424</td></tr>
-        <tr><td>DinersClub:</td><td>6011000990139424</td></tr>
-        <tr><td>JCB</td><td>3530111333300000</td></tr>
-        <tr><td>Visa Electron</td><td>4917300800000000</td></tr>
-    </table>
-</p>
-<h2>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
-<p>
-    <ul>
-        <li>Interactive update of the card type and information.</li>
-        <li>Supports multiple card type: Visa, Mastercard, American Express, Discover, Diners Club, JCB, Laser, Maestro, and Visa Electron</li>
-        <li>No external css or JavaScript dependency. The credit cards and logos are all svg dynamically generated using elm-svg.</li>
-        <li>Implements The Elm Architecture.</li>
-    </ul>
-</p>
+
+<ul>
+<li>Interactive update of the card type and information.</li>
+<li>Supports multiple card type: Visa, Mastercard, American Express, Discover, Diners Club, JCB, Laser, Maestro, and Visa Electron</li>
+<li>No external css or JavaScript dependency. The credit cards and logos are all svg dynamically generated using elm-svg.</li>
+<li>Implements The Elm Architecture.</li>
+</ul>
+
+<h2>
+<a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
+
+<p>See <a href="http://abadi199.github.io/elm-creditcard#live-demo">here</a> for live demo</p>
 
 <h2>
 <a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Use</h2>
@@ -71,78 +58,83 @@
 
 <p><strong>Example of rendering the whole form:</strong></p>
 
-<div class="highlight highlight-source-haskell"><pre><span class="pl-k">import</span> <span class="pl-c1">CreditCard</span> 
+<div class="highlight highlight-source-elm"><pre><span class="pl-k">import</span> <span class="pl-c1">CreditCard.Model</span>
+<span class="pl-k">import</span> <span class="pl-c1">CreditCard.Update</span>
+<span class="pl-k">import</span> <span class="pl-c1">CreditCard.View</span>
 <span class="pl-k">import</span> <span class="pl-c1">Html.App</span>
 
-<span class="pl-k">type</span> alias <span class="pl-c1">Model</span> <span class="pl-k">=</span>
-    { creditCard <span class="pl-k">=</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Model</span> 
+<span class="pl-k">type alias </span><span class="pl-c1">Model</span> <span class="pl-k">=</span>
+    <span class="pl-c1"><span class="pl-c1">{</span></span> creditCard <span class="pl-k">=</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Model</span><span class="pl-k">.</span><span class="pl-c1">Model</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Update</span><span class="pl-k">.</span><span class="pl-c1">Msg</span>
       <span class="pl-k">...</span>
-    }
+    <span class="pl-c1"><span class="pl-c1">}</span></span>
 
-view model <span class="pl-k">=</span> 
-    form <span class="pl-c1">[]</span> 
-        [ <span class="pl-c1">Html</span><span class="pl-k">.</span><span class="pl-c1">App</span><span class="pl-k">.</span><span class="pl-c1">map</span> <span class="pl-c1">CardUpdate</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span>form 
+<span class="pl-en">view </span>model <span class="pl-k">=</span> 
+    form <span class="pl-c1"><span class="pl-c1">[]</span></span> 
+        <span class="pl-c1"><span class="pl-c1">[</span></span> <span class="pl-c1">Html</span><span class="pl-k">.</span><span class="pl-c1">App</span><span class="pl-k">.</span>map <span class="pl-c1">CardUpdate</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">View</span><span class="pl-k">.</span>form 
         <span class="pl-k">...</span>
-        ]
+        <span class="pl-c1"><span class="pl-c1">]</span></span>
 
-<span class="pl-k">type</span> <span class="pl-c1">Msg</span> <span class="pl-k">=</span> <span class="pl-c1">CreditCardMsg</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Msg</span>
+<span class="pl-k">type </span><span class="pl-c1">Msg</span> <span class="pl-k">=</span> <span class="pl-c1">CreditCardMsg</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Update</span><span class="pl-k">.</span><span class="pl-c1">Msg</span>
 
-update msg model <span class="pl-k">=</span>
-    <span class="pl-k">case</span> msg <span class="pl-k">of</span>
+<span class="pl-en">update </span>msg model <span class="pl-k">=</span>
+    <span class="pl-k">case </span>msg <span class="pl-k">of</span>
         <span class="pl-c1">CreditCardMsg</span> creditCardMsg <span class="pl-k">-&gt;</span>
             <span class="pl-k">let</span>
-                ( creditCardModel, creditCardCmd ) <span class="pl-k">=</span>
-                    <span class="pl-c1">CreditCard</span><span class="pl-k">.</span>update creditCardMsg model<span class="pl-k">.</span>creditCard
+                <span class="pl-k">(</span> creditCardModel<span class="pl-c1"><span class="pl-c1">,</span></span> creditCardCmd <span class="pl-k">)</span> <span class="pl-k">=</span>
+                    <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Update</span><span class="pl-k">.</span>update creditCardMsg model<span class="pl-k">.</span>creditCard
             <span class="pl-k">in</span>
-                ( { model <span class="pl-k">|</span> creditCard <span class="pl-k">=</span> creditCardModel }, <span class="pl-c1">Cmd</span><span class="pl-k">.</span><span class="pl-c1">map</span> <span class="pl-c1">CreditCardMsg</span> creditCardCmd )
+                <span class="pl-k">(</span> <span class="pl-c1"><span class="pl-c1">{</span></span> model <span class="pl-k">|</span> creditCard <span class="pl-k">=</span> creditCardModel <span class="pl-c1"><span class="pl-c1">},</span></span> <span class="pl-c1">Cmd</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> creditCardCmd <span class="pl-k">)</span>
         <span class="pl-k">...</span></pre></div>
 
 <p>You can see the full code for this in this <a href="https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutForm.elm">example</a></p>
 
 <p><strong>Example of rendering each sub-components individually:</strong></p>
 
-<div class="highlight highlight-source-haskell"><pre><span class="pl-k">import</span> <span class="pl-c1">CreditCard</span> 
+<div class="highlight highlight-source-elm"><pre><span class="pl-k">import</span> <span class="pl-c1">CreditCard.Model</span>
+<span class="pl-k">import</span> <span class="pl-c1">CreditCard.Update</span>
+<span class="pl-k">import</span> <span class="pl-c1">CreditCard.View</span>
+<span class="pl-k">import</span> <span class="pl-c1">CreditCard.Components.Card</span>
 <span class="pl-k">import</span> <span class="pl-c1">Html.App</span>
 
-<span class="pl-k">type</span> alias <span class="pl-c1">Model</span> <span class="pl-k">=</span>
-    { creditCard <span class="pl-k">=</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Model</span> 
+<span class="pl-k">type alias </span><span class="pl-c1">Model</span> <span class="pl-k">=</span>
+    <span class="pl-c1"><span class="pl-c1">{</span></span> creditCard <span class="pl-k">=</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Model</span><span class="pl-k">.</span><span class="pl-c1">Model</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Update</span><span class="pl-k">.</span><span class="pl-c1">Msg</span> 
       <span class="pl-k">...</span>
-    }
+    <span class="pl-c1"><span class="pl-c1">}</span></span>
 
-view model <span class="pl-k">=</span> 
-    form <span class="pl-c1">[]</span> 
-        [ <span class="pl-c1">Html</span><span class="pl-k">.</span><span class="pl-c1">App</span><span class="pl-k">.</span><span class="pl-c1">map</span> <span class="pl-c1">CreditCardMsg</span> (<span class="pl-c1">CreditCard</span><span class="pl-k">.</span>cardView model<span class="pl-k">.</span>creditCard)
-        , p <span class="pl-c1">[]</span>
-            [ label [ for <span class="pl-s"><span class="pl-pds">"</span>CreditCardNumber<span class="pl-pds">"</span></span> ] [ text <span class="pl-s"><span class="pl-pds">"</span>Number<span class="pl-pds">"</span></span> ]
-            , <span class="pl-c1">App</span><span class="pl-k">.</span><span class="pl-c1">map</span> <span class="pl-c1">CreditCardMsg</span> (<span class="pl-c1">CreditCard</span><span class="pl-k">.</span>numberInput <span class="pl-s"><span class="pl-pds">"</span>CreditCardNumber<span class="pl-pds">"</span></span> model<span class="pl-k">.</span>creditCard)
-            ]
-        , p <span class="pl-c1">[]</span>
-            [ label [ for <span class="pl-s"><span class="pl-pds">"</span>CreditCardName<span class="pl-pds">"</span></span> ] [ text <span class="pl-s"><span class="pl-pds">"</span>Name<span class="pl-pds">"</span></span> ]
-            , <span class="pl-c1">App</span><span class="pl-k">.</span><span class="pl-c1">map</span> <span class="pl-c1">CreditCardMsg</span> (<span class="pl-c1">CreditCard</span><span class="pl-k">.</span>nameInput <span class="pl-s"><span class="pl-pds">"</span>CreditCardName<span class="pl-pds">"</span></span> [ <span class="pl-k">class</span> "<span class="pl-smi">input</span>-<span class="pl-smi">control</span>" ] <span class="pl-smi">model</span>.<span class="pl-smi">creditCard</span>)
-            ]
-        , <span class="pl-smi">p</span> []
-            [ <span class="pl-smi">label</span> [ <span class="pl-smi">for</span> "<span class="pl-e">CreditCardNumber</span>" ] [ <span class="pl-smi">text</span> "<span class="pl-e">Expiration</span> <span class="pl-e">Date</span>" ]
-            , <span class="pl-e">App</span>.<span class="pl-smi">map</span> <span class="pl-e">CreditCardMsg</span> (<span class="pl-e">CreditCard</span>.<span class="pl-smi">monthInput</span> "<span class="pl-e">CreditCardMonth</span>" <span class="pl-smi">model</span>.<span class="pl-smi">creditCard</span>)
-            , <span class="pl-e">App</span>.<span class="pl-smi">map</span> <span class="pl-e">CreditCardMsg</span> (<span class="pl-e">CreditCard</span>.<span class="pl-smi">yearInput</span> "<span class="pl-e">CreditCardYear</span>" <span class="pl-smi">model</span>.<span class="pl-smi">creditCard</span>)
-            ]
-        , <span class="pl-smi">p</span> []
-            [ <span class="pl-smi">label</span> [ <span class="pl-smi">for</span> "<span class="pl-e">CreditCardCcv</span>" ] [ <span class="pl-smi">text</span> "<span class="pl-e">Number</span>" ]
-            , <span class="pl-e">App</span>.<span class="pl-smi">map</span> <span class="pl-e">CreditCardMsg</span> (<span class="pl-e">CreditCard</span>.<span class="pl-smi">ccvInput</span> "<span class="pl-e">CreditCardCcv</span>" <span class="pl-smi">model</span>.<span class="pl-smi">creditCard</span>)
-            ]
-        ...
-        ]
+<span class="pl-en">view </span>model <span class="pl-k">=</span> 
+    form <span class="pl-c1"><span class="pl-c1">[]</span></span> 
+        <span class="pl-c1"><span class="pl-c1">[</span></span> <span class="pl-c1">Html</span><span class="pl-k">.</span><span class="pl-c1">App</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> <span class="pl-k">(</span><span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Components</span><span class="pl-k">.</span><span class="pl-c1">Card</span><span class="pl-k">.</span>cardView model<span class="pl-k">.</span>creditCard<span class="pl-k">)</span>
+        <span class="pl-c1"><span class="pl-c1">,</span></span> p <span class="pl-c1"><span class="pl-c1">[]</span></span>
+            <span class="pl-c1"><span class="pl-c1">[</span></span> label <span class="pl-c1"><span class="pl-c1">[</span></span> for <span class="pl-s"><span class="pl-pds">"</span>CreditCardNumber<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span> <span class="pl-c1"><span class="pl-c1">[</span></span> text <span class="pl-s"><span class="pl-pds">"</span>Number<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span>
+            <span class="pl-c1"><span class="pl-c1">,</span></span> <span class="pl-c1">App</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> <span class="pl-k">(</span><span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">View</span><span class="pl-k">.</span>numberInput <span class="pl-s"><span class="pl-pds">"</span>CreditCardNumber<span class="pl-pds">"</span></span> model<span class="pl-k">.</span>creditCard<span class="pl-k">)</span>
+            <span class="pl-c1"><span class="pl-c1">]</span></span>
+        <span class="pl-c1"><span class="pl-c1">,</span></span> p <span class="pl-c1"><span class="pl-c1">[]</span></span>
+            <span class="pl-c1"><span class="pl-c1">[</span></span> label <span class="pl-c1"><span class="pl-c1">[</span></span> for <span class="pl-s"><span class="pl-pds">"</span>CreditCardName<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span> <span class="pl-c1"><span class="pl-c1">[</span></span> text <span class="pl-s"><span class="pl-pds">"</span>Name<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span>
+            <span class="pl-c1"><span class="pl-c1">,</span></span> <span class="pl-c1">App</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> <span class="pl-k">(</span><span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">View</span><span class="pl-k">.</span>nameInput <span class="pl-s"><span class="pl-pds">"</span>CreditCardName<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">[</span></span> class <span class="pl-s"><span class="pl-pds">"</span>input-control<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span> model<span class="pl-k">.</span>creditCard<span class="pl-k">)</span>
+            <span class="pl-c1"><span class="pl-c1">]</span></span>
+        <span class="pl-c1"><span class="pl-c1">,</span></span> p <span class="pl-c1"><span class="pl-c1">[]</span></span>
+            <span class="pl-c1"><span class="pl-c1">[</span></span> label <span class="pl-c1"><span class="pl-c1">[</span></span> for <span class="pl-s"><span class="pl-pds">"</span>CreditCardNumber<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span> <span class="pl-c1"><span class="pl-c1">[</span></span> text <span class="pl-s"><span class="pl-pds">"</span>Expiration Date<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span>
+            <span class="pl-c1"><span class="pl-c1">,</span></span> <span class="pl-c1">App</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> <span class="pl-k">(</span><span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">View</span><span class="pl-k">.</span>monthInput <span class="pl-s"><span class="pl-pds">"</span>CreditCardMonth<span class="pl-pds">"</span></span> model<span class="pl-k">.</span>creditCard<span class="pl-k">)</span>
+            <span class="pl-c1"><span class="pl-c1">,</span></span> <span class="pl-c1">App</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> <span class="pl-k">(</span><span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">View</span><span class="pl-k">.</span>yearInput <span class="pl-s"><span class="pl-pds">"</span>CreditCardYear<span class="pl-pds">"</span></span> model<span class="pl-k">.</span>creditCard<span class="pl-k">)</span>
+            <span class="pl-c1"><span class="pl-c1">]</span></span>
+        <span class="pl-c1"><span class="pl-c1">,</span></span> p <span class="pl-c1"><span class="pl-c1">[]</span></span>
+            <span class="pl-c1"><span class="pl-c1">[</span></span> label <span class="pl-c1"><span class="pl-c1">[</span></span> for <span class="pl-s"><span class="pl-pds">"</span>CreditCardCcv<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span> <span class="pl-c1"><span class="pl-c1">[</span></span> text <span class="pl-s"><span class="pl-pds">"</span>Number<span class="pl-pds">"</span></span> <span class="pl-c1"><span class="pl-c1">]</span></span>
+            <span class="pl-c1"><span class="pl-c1">,</span></span> <span class="pl-c1">App</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> <span class="pl-k">(</span><span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">View</span><span class="pl-k">.</span>ccvInput <span class="pl-s"><span class="pl-pds">"</span>CreditCardCcv<span class="pl-pds">"</span></span> model<span class="pl-k">.</span>creditCard<span class="pl-k">)</span>
+            <span class="pl-c1"><span class="pl-c1">]</span></span>
+        <span class="pl-k">...</span>
+        <span class="pl-c1"><span class="pl-c1">]</span></span>
 
-<span class="pl-smi">type</span> <span class="pl-e">Msg</span> = <span class="pl-e">CreditCardMsg</span> <span class="pl-e">CreditCard</span>.<span class="pl-e">Msg</span>
+<span class="pl-k">type </span><span class="pl-c1">Msg</span> <span class="pl-k">=</span> <span class="pl-c1">CreditCardMsg</span> <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Update</span><span class="pl-k">.</span><span class="pl-c1">Msg</span>
 
-<span class="pl-smi">update</span> <span class="pl-smi">msg</span> <span class="pl-smi">model</span> =
-    <span class="pl-smi">case</span> <span class="pl-smi">msg</span> <span class="pl-smi">of</span>
-        <span class="pl-e">CreditCardMsg</span> <span class="pl-smi">creditCardMsg</span> -&gt;
-            <span class="pl-smi">let</span>
-                ( <span class="pl-smi">creditCardModel</span>, <span class="pl-smi">creditCardCmd</span> ) =
-                    <span class="pl-e">CreditCard</span>.<span class="pl-smi">update</span> <span class="pl-smi">creditCardMsg</span> <span class="pl-smi">model</span>.<span class="pl-smi">creditCard</span>
-            <span class="pl-smi">in</span>
-                ( { <span class="pl-smi">model</span> | <span class="pl-smi">creditCard</span> = <span class="pl-smi">creditCardModel</span> }, <span class="pl-e">Cmd</span>.<span class="pl-smi">map</span> <span class="pl-e">CreditCardMsg</span> <span class="pl-smi">creditCardCmd</span> )
-        ...</pre></div>
+<span class="pl-en">update </span>msg model <span class="pl-k">=</span>
+    <span class="pl-k">case </span>msg <span class="pl-k">of</span>
+        <span class="pl-c1">CreditCardMsg</span> creditCardMsg <span class="pl-k">-&gt;</span>
+            <span class="pl-k">let</span>
+                <span class="pl-k">(</span> creditCardModel<span class="pl-c1"><span class="pl-c1">,</span></span> creditCardCmd <span class="pl-k">)</span> <span class="pl-k">=</span>
+                    <span class="pl-c1">CreditCard</span><span class="pl-k">.</span><span class="pl-c1">Update</span><span class="pl-k">.</span>update creditCardMsg model<span class="pl-k">.</span>creditCard
+            <span class="pl-k">in</span>
+                <span class="pl-k">(</span> <span class="pl-c1"><span class="pl-c1">{</span></span> model <span class="pl-k">|</span> creditCard <span class="pl-k">=</span> creditCardModel <span class="pl-c1"><span class="pl-c1">},</span></span> <span class="pl-c1">Cmd</span><span class="pl-k">.</span>map <span class="pl-c1">CreditCardMsg</span> creditCardCmd <span class="pl-k">)</span>
+        <span class="pl-k">...</span></pre></div>
 
 <p>You can see the full code for this in this <a href="https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutFormWithFields.elm">example</a></p>
 
@@ -168,9 +160,6 @@ Copyright © 2016 Abadi Kurniawan</p>
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-    <script src="javascripts/index.js"></script>
-    <script>
-        Elm.CheckoutFormWithFields.embed(document.getElementById("CheckoutFormWithFields"));
-    </script>
+    
   </body>
 </html>
