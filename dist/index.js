@@ -7234,43 +7234,46 @@
 	var _elm_lang$svg$Svg$style = _elm_lang$svg$Svg$node('style');
 	var _elm_lang$svg$Svg$view = _elm_lang$svg$Svg$node('view');
 
-	var _abadi199$elm_creditcard$CreditCard_Model$init = {
-		options: {
-			showLabel: false,
-			blankChar: _elm_lang$core$Native_Utils.chr('•')
-		},
-		number: {
-			id: '',
-			label: _elm_lang$core$Maybe$Just('Card Number'),
-			value: _elm_lang$core$Maybe$Nothing,
-			hasFocus: false
-		},
-		name: {
-			id: '',
-			label: _elm_lang$core$Maybe$Just('Full Name'),
-			value: _elm_lang$core$Maybe$Nothing,
-			hasFocus: false
-		},
-		expirationMonth: {
-			id: '',
-			label: _elm_lang$core$Maybe$Just('MM'),
-			value: _elm_lang$core$Maybe$Nothing,
-			hasFocus: false
-		},
-		expirationYear: {
-			id: '',
-			label: _elm_lang$core$Maybe$Just('YYYY'),
-			value: _elm_lang$core$Maybe$Nothing,
-			hasFocus: false
-		},
-		ccv: {
-			id: '',
-			label: _elm_lang$core$Maybe$Just('CCV'),
-			value: _elm_lang$core$Maybe$Nothing,
-			hasFocus: false
-		},
-		cardInfo: _elm_lang$core$Maybe$Nothing,
-		flipped: _elm_lang$core$Maybe$Nothing
+	var _abadi199$elm_creditcard$CreditCard_Model$defaultOptions = {
+		showLabel: false,
+		blankChar: _elm_lang$core$Native_Utils.chr('•')
+	};
+	var _abadi199$elm_creditcard$CreditCard_Model$init = function (options) {
+		return {
+			options: options,
+			number: {
+				id: '',
+				label: _elm_lang$core$Maybe$Just('Card Number'),
+				value: _elm_lang$core$Maybe$Nothing,
+				hasFocus: false
+			},
+			name: {
+				id: '',
+				label: _elm_lang$core$Maybe$Just('Full Name'),
+				value: _elm_lang$core$Maybe$Nothing,
+				hasFocus: false
+			},
+			expirationMonth: {
+				id: '',
+				label: _elm_lang$core$Maybe$Just('MM'),
+				value: _elm_lang$core$Maybe$Nothing,
+				hasFocus: false
+			},
+			expirationYear: {
+				id: '',
+				label: _elm_lang$core$Maybe$Just('YYYY'),
+				value: _elm_lang$core$Maybe$Nothing,
+				hasFocus: false
+			},
+			ccv: {
+				id: '',
+				label: _elm_lang$core$Maybe$Just('CCV'),
+				value: _elm_lang$core$Maybe$Nothing,
+				hasFocus: false
+			},
+			cardInfo: _elm_lang$core$Maybe$Nothing,
+			flipped: _elm_lang$core$Maybe$Nothing
+		};
 	};
 	var _abadi199$elm_creditcard$CreditCard_Model$Model = F8(
 		function (a, b, c, d, e, f, g, h) {
