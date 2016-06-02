@@ -73,17 +73,26 @@ onKeyDown options model tagger =
                 |> Maybe.map ((>=) (String.length model.value))
                 |> Maybe.withDefault True
 
-        isNotNumeric =
+        isNumPad keyCode =
+            keyCode
+                >= 96
+                && keyCode
+                <= 105
+
+        isNumber keyCode =
+            keyCode
+                >= 48
+                && keyCode
+                <= 57
+
+        filterKey =
             (\event ->
                 if event.ctrlKey || event.altKey then
                     Err "modifier key is pressed"
                 else if List.any ((==) event.keyCode) allowedKeyCodes then
                     Err "not arrow"
                 else if
-                    event.keyCode
-                        >= 48
-                        && event.keyCode
-                        <= 57
+                    (isNumber event.keyCode || isNumPad event.keyCode)
                         && not exceedMaxLength
                         && not (exceedMaxValue event.keyCode)
                         && not (lessThanMinValue event.keyCode)
@@ -94,7 +103,7 @@ onKeyDown options model tagger =
             )
 
         decoder =
-            isNotNumeric
+            filterKey
                 |> Json.customDecoder eventDecoder
                 |> Json.map tagger
     in
