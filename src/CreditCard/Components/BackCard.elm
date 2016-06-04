@@ -19,7 +19,6 @@ viewBackCard model =
 
         ccv =
             model.ccv.value
-                |> Maybe.map toString
                 |> Maybe.withDefault "CCV"
     in
         g [ id "elmCardSvgBack", backsideAnimation model.flipped ]

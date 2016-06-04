@@ -49,7 +49,6 @@ cardView model =
 
         expirationMonth =
             model.expirationMonth.value
-                |> Maybe.map toString
                 |> Maybe.withDefault ""
                 |> (\str ->
                         if String.isEmpty str then
@@ -60,7 +59,6 @@ cardView model =
 
         expirationYear =
             model.expirationYear.value
-                |> Maybe.map toString
                 |> Maybe.withDefault ""
                 |> rightPad model.options.blankChar 4
 
@@ -69,7 +67,7 @@ cardView model =
 
         numberLength =
             model.number.value
-                |> Maybe.map (toString >> String.length)
+                |> Maybe.map String.length
                 |> Maybe.withDefault 0
 
         numberFontSize =
@@ -80,7 +78,6 @@ cardView model =
 
         ccv =
             model.ccv.value
-                |> Maybe.map toString
                 |> Maybe.withDefault "CCV"
     in
         div

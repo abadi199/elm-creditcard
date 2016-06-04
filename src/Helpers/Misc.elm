@@ -64,10 +64,9 @@ partitionStep groupSize step xs =
             [ group ]
 
 
-printNumber : NumberFormat -> Int -> Char -> Maybe Int -> String
+printNumber : NumberFormat -> Int -> Char -> Maybe String -> String
 printNumber numberFormat length char maybeNumber =
     maybeNumber
-        |> Maybe.map toString
         |> Maybe.withDefault ""
         |> formatNumber numberFormat length char
 
@@ -112,9 +111,9 @@ cardInfo model =
     model.cardInfo |> Maybe.withDefault unknownCard
 
 
-toNumberInputModel : Field Int -> NumberInput.Model
-toNumberInputModel field =
-    { value = field.value |> Maybe.map toString |> Maybe.withDefault "", hasFocus = field.hasFocus }
+toNumberInputModel : Field String -> NumberInput.Model
+toNumberInputModel =
+    toStringInputModel
 
 
 toStringInputModel : Field String -> StringInput.Model

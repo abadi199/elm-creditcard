@@ -216,7 +216,7 @@ viewStringField id attributes options field =
             stringInput
 
 
-viewIntField : String -> Options -> NumberInput.Options -> Field Int -> Html NumberInput.Msg
+viewIntField : String -> Options -> NumberInput.Options -> Field String -> Html NumberInput.Msg
 viewIntField id options numberInputOptions field =
     viewIntFieldWithAttributes id
         [ placeholder options field ]
@@ -225,7 +225,7 @@ viewIntField id options numberInputOptions field =
         field
 
 
-viewIntFieldWithAttributes : String -> List (Attribute NumberInput.Msg) -> Options -> NumberInput.Options -> Field Int -> Html NumberInput.Msg
+viewIntFieldWithAttributes : String -> List (Attribute NumberInput.Msg) -> Options -> NumberInput.Options -> Field String -> Html NumberInput.Msg
 viewIntFieldWithAttributes id attributes options numberInputOptions field =
     let
         input =

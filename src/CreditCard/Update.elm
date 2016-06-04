@@ -112,12 +112,12 @@ updateStringInput stringInputMsg field =
             |> toField
 
 
-updateNumberInput : NumberInput.Msg -> Field Int -> Field Int
+updateNumberInput : NumberInput.Msg -> Field String -> Field String
 updateNumberInput numberInputMsg field =
     let
         toField numberInputModel =
             { field
-                | value = numberInputModel.value |> String.toInt |> Result.toMaybe
+                | value = Just numberInputModel.value
                 , hasFocus = numberInputModel.hasFocus
             }
     in

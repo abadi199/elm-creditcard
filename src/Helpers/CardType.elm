@@ -30,7 +30,6 @@ detect model =
     let
         number =
             model.number.value
-                |> Maybe.map toString
                 |> Maybe.withDefault ""
     in
         cards

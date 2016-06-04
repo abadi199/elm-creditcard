@@ -32,11 +32,11 @@ import Svg exposing (Svg, Attribute)
 -}
 type alias Model msg =
     { options : Options
-    , number : Field Int
+    , number : Field String
     , name : Field String
-    , expirationMonth : Field Int
-    , expirationYear : Field Int
-    , ccv : Field Int
+    , expirationMonth : Field String
+    , expirationYear : Field String
+    , ccv : Field String
     , cardInfo : Maybe (CardInfo msg)
     , flipped : Maybe Bool
     }

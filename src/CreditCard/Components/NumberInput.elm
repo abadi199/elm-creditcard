@@ -162,7 +162,7 @@ main =
         , update = update
         , view =
             numberInput "NumberInput"
-                { maxLength = Just 5, maxValue = Just 12, minValue = Just 1 }
+                { maxLength = Just 16, maxValue = Nothing, minValue = Nothing }
                 identity
                 []
         }
