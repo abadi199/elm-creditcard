@@ -6,10 +6,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --hot --inline --port 3000",
-    "build": "webpack"
+    "build": "elm-make src/Examples/CheckoutForm.elm src/Examples/CheckoutFormWithFields.elm --output dist/index.js | uglifyjs --compress --noerr --output dist/index.min.js -- dist/index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "abadi199",
+  "license": "MIT",
   "devDependencies": {
     "clean-webpack-plugin": "^0.1.8",
     "copy-webpack-plugin": "^1.1.1",
@@ -19,10 +19,8 @@
     "file-loader": "^0.8.5",
     "pre-commit": "^1.1.3",
     "style-loader": "^0.13.0",
+    "uglify-js": "^2.6.2",
     "webpack": "^1.12.12",
     "webpack-dev-server": "^1.14.1"
-  },
-  "pre-commit": [
-    "build"
-  ]
+  }
 }

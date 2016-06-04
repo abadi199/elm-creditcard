@@ -5,6 +5,15 @@
     <title>elm-webpack-loader example</title>
   </head>
   <body>
-    <script src="index.js"></script>
+    <h2>CheckoutForm</h2>
+    <div id="CheckoutForm"></div>
+    
+    <h2>CheckoutFormWithFields</h2>
+    <div id="CheckoutFormWithFields"></div>
+    <script src="index.min.js"></script>
+    <script>
+        Elm.CheckoutFormWithFields.embed(document.getElementById("CheckoutFormWithFields"));
+        Elm.CheckoutForm.embed(document.getElementById("CheckoutForm"));
+    </script>
   </body>
 </html>
