@@ -9,8 +9,8 @@ module CreditCard.Update exposing (Msg(..), update)
 @docs update
 -}
 
-import CreditCard.Components.NumberInput as NumberInput
-import CreditCard.Components.StringInput as StringInput
+import Input.Number as Number
+import Input.Text as Text
 import CreditCard.Model exposing (Model, Field, CCVPosition(..))
 import String
 import Helpers.CardType as CardType
@@ -22,11 +22,11 @@ import Task
 -}
 type Msg
     = NoOp
-    | UpdateNumber NumberInput.Msg
-    | UpdateName StringInput.Msg
-    | UpdateExpirationMonth NumberInput.Msg
-    | UpdateExpirationYear NumberInput.Msg
-    | UpdateCCV NumberInput.Msg
+    | UpdateNumber Number.Msg
+    | UpdateName Text.Msg
+    | UpdateExpirationMonth Number.Msg
+    | UpdateExpirationYear Number.Msg
+    | UpdateCCV Number.Msg
     | Flip Bool
 
 
@@ -38,8 +38,8 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        UpdateNumber numberInputMsg ->
-            ( updateNumber numberInputMsg model
+        UpdateNumber numberMsg ->
+            ( updateNumber numberMsg model
             , Cmd.none
             )
 
@@ -48,20 +48,20 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateExpirationMonth numberInputMsg ->
-            ( { model | expirationMonth = updateNumberInput numberInputMsg model.expirationMonth }
+        UpdateExpirationMonth numberMsg ->
+            ( { model | expirationMonth = updateNumberInput numberMsg model.expirationMonth }
             , Cmd.none
             )
 
-        UpdateExpirationYear numberInputMsg ->
-            ( { model | expirationYear = updateNumberInput numberInputMsg model.expirationYear }
+        UpdateExpirationYear numberMsg ->
+            ( { model | expirationYear = updateNumberInput numberMsg model.expirationYear }
             , Cmd.none
             )
 
-        UpdateCCV numberInputMsg ->
+        UpdateCCV numberMsg ->
             let
                 updatedCcv =
-                    updateNumberInput numberInputMsg model.ccv
+                    updateNumberInput numberMsg model.ccv
             in
                 ( { model | ccv = updatedCcv }
                 , Task.succeed updatedCcv.hasFocus |> Task.perform (\_ -> NoOp) Flip
@@ -74,11 +74,11 @@ update msg model =
                 ( { model | flipped = Just flipped }, Cmd.none )
 
 
-updateNumber : NumberInput.Msg -> Model Msg -> Model Msg
-updateNumber numberInputMsg model =
+updateNumber : Number.Msg -> Model Msg -> Model Msg
+updateNumber numberMsg model =
     let
         newField =
-            updateNumberInput numberInputMsg model.number
+            updateNumberInput numberMsg model.number
 
         modelWithUpdatedNumber =
             { model | number = newField }
@@ -97,7 +97,7 @@ updateFieldValue newValue field =
     { field | value = newValue }
 
 
-updateStringInput : StringInput.Msg -> Field String -> Field String
+updateStringInput : Text.Msg -> Field String -> Field String
 updateStringInput stringInputMsg field =
     let
         toField stringInputModel =
@@ -108,12 +108,12 @@ updateStringInput stringInputMsg field =
     in
         field
             |> Helper.toStringInputModel
-            |> StringInput.update stringInputMsg
+            |> Text.update stringInputMsg
             |> toField
 
 
-updateNumberInput : NumberInput.Msg -> Field String -> Field String
-updateNumberInput numberInputMsg field =
+updateNumberInput : Number.Msg -> Field String -> Field String
+updateNumberInput numberMsg field =
     let
         toField numberInputModel =
             { field
@@ -123,5 +123,5 @@ updateNumberInput numberInputMsg field =
     in
         field
             |> Helper.toNumberInputModel
-            |> NumberInput.update numberInputMsg
+            |> Number.update numberMsg
             |> toField

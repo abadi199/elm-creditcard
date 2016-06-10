@@ -18,8 +18,8 @@ import String
 import Html exposing (Attribute, Html, input)
 import Json.Decode as Json
 import CreditCard.Model exposing (Model, NumberFormat, CardInfo, Field)
-import CreditCard.Components.NumberInput as NumberInput
-import CreditCard.Components.StringInput as StringInput
+import Input.Number as Number
+import Input.Text as Text
 import Helpers.CardType exposing (unknownCard)
 
 
@@ -111,11 +111,11 @@ cardInfo model =
     model.cardInfo |> Maybe.withDefault unknownCard
 
 
-toNumberInputModel : Field String -> NumberInput.Model
+toNumberInputModel : Field String -> Number.Model
 toNumberInputModel =
     toStringInputModel
 
 
-toStringInputModel : Field String -> StringInput.Model
+toStringInputModel : Field String -> Text.Model
 toStringInputModel field =
     { value = field.value |> Maybe.withDefault "", hasFocus = field.hasFocus }

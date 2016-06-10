@@ -26,8 +26,8 @@ import Html exposing (Html, Attribute, div, text, input, button, label, ul, li, 
 import Html.Attributes exposing (class, type', id, value, placeholder, for)
 import Html.App as App
 import CreditCard.Update exposing (Msg(..))
-import CreditCard.Components.NumberInput as NumberInput
-import CreditCard.Components.StringInput as StringInput
+import Input.Number as Number
+import Input.Text as Text
 import CreditCard.Components.Card as Card
 import Helpers.Misc as Helper
 
@@ -63,7 +63,7 @@ To use this view, just include this function as part of your view function.
 Example:
 
     form []
-        [ Html.App.map CreditCardMsg (CreditCard.View.numberInput "NumberInput" model.creditCardModel)
+        [ Html.App.map CreditCardMsg (CreditCard.View.numberInput "Number" model.creditCardModel)
         , button [] [ text "Checkout "]
         ]
 
@@ -75,9 +75,9 @@ numberInput id model =
             Helper.minMaxNumberLength model
     in
         App.map UpdateNumber
-            (viewIntField id
-                model.options
-                { maxLength = Just maxNumberLength
+            (viewIntField model.options
+                { id = id
+                , maxLength = Just maxNumberLength
                 , maxValue = Nothing
                 , minValue = Nothing
                 }
@@ -97,9 +97,14 @@ Example:
         ]
 
 -}
-nameInput : String -> List (Attribute StringInput.Msg) -> Model Msg -> Html Msg
+nameInput : String -> List (Attribute Text.Msg) -> Model Msg -> Html Msg
 nameInput id attributes model =
-    App.map UpdateName (viewStringField id attributes model.options model.name)
+    App.map UpdateName
+        (viewStringField model.options
+            (Text.defaultOptions id)
+            attributes
+            model.name
+        )
 
 
 {-| A view function that will render the input field for credit card expiration month.
@@ -117,9 +122,9 @@ Example:
 monthInput : String -> Model Msg -> Html Msg
 monthInput id model =
     App.map UpdateExpirationMonth
-        (viewIntField id
-            model.options
-            { maxLength = Just 2
+        (viewIntField model.options
+            { id = id
+            , maxLength = Just 2
             , maxValue = Just 12
             , minValue = Just 1
             }
@@ -142,9 +147,9 @@ Example:
 yearInput : String -> Model Msg -> Html Msg
 yearInput id model =
     App.map UpdateExpirationYear
-        (viewIntField id
-            model.options
-            { maxLength = Just 4
+        (viewIntField model.options
+            { id = id
+            , maxLength = Just 4
             , maxValue = Nothing
             , minValue = Nothing
             }
@@ -167,9 +172,9 @@ Example:
 ccvInput : String -> Model Msg -> Html Msg
 ccvInput id model =
     App.map UpdateCCV
-        (viewIntField id
-            model.options
-            { maxLength = Just 4
+        (viewIntField model.options
+            { id = id
+            , maxLength = Just 4
             , maxValue = Nothing
             , minValue = Nothing
             }
@@ -199,45 +204,42 @@ cardView =
     Card.cardView
 
 
-viewStringField : String -> List (Attribute StringInput.Msg) -> Options -> Field String -> Html StringInput.Msg
-viewStringField id attributes options field =
+viewStringField : Options -> Text.Options -> List (Attribute Text.Msg) -> Field String -> Html Text.Msg
+viewStringField options textOptions attributes field =
     let
         stringInput =
-            StringInput.stringInput id
+            Text.input textOptions
                 (List.append attributes [ placeholder options field ])
                 (Helper.toStringInputModel field)
     in
         if options.showLabel then
             p []
-                [ viewLabel id options field
+                [ viewLabel textOptions.id options field
                 , stringInput
                 ]
         else
             stringInput
 
 
-viewIntField : String -> Options -> NumberInput.Options -> Field String -> Html NumberInput.Msg
-viewIntField id options numberInputOptions field =
-    viewIntFieldWithAttributes id
-        [ placeholder options field ]
-        options
+viewIntField : Options -> Number.Options -> Field String -> Html Number.Msg
+viewIntField options numberInputOptions field =
+    viewIntFieldWithAttributes options
         numberInputOptions
+        [ placeholder options field ]
         field
 
 
-viewIntFieldWithAttributes : String -> List (Attribute NumberInput.Msg) -> Options -> NumberInput.Options -> Field String -> Html NumberInput.Msg
-viewIntFieldWithAttributes id attributes options numberInputOptions field =
+viewIntFieldWithAttributes : Options -> Number.Options -> List (Attribute Number.Msg) -> Field String -> Html Number.Msg
+viewIntFieldWithAttributes options numberInputOptions attributes field =
     let
         input =
-            NumberInput.numberInput id
-                numberInputOptions
-                identity
+            Number.input numberInputOptions
                 attributes
                 (Helper.toNumberInputModel field)
     in
         if options.showLabel then
             p []
-                [ viewLabel id options field
+                [ viewLabel numberInputOptions.id options field
                 , input
                 ]
         else
