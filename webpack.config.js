@@ -19,7 +19,7 @@ module.exports = {
       {
         test: /\.html$/,
         exclude: /node_modules/,
-        loader: 'file?name=[name].[ext]'
+        loader: 'file-loader?name=[name].[ext]'
       },
       {
         test: /\.css$/,
@@ -29,7 +29,7 @@ module.exports = {
       {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        loader: 'elm-hot!elm-webpack'
+        loader: 'elm-hot-loader!elm-webpack'
       },      
     ],
 
