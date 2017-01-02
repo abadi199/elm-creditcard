@@ -3,14 +3,13 @@ module CheckoutForm exposing (main)
 import CreditCard.View
 import CreditCard.Model
 import CreditCard.Update
-import Html.App as App
 import Html exposing (Html, form, button, label, text, input, p)
 import Html.Attributes exposing (placeholder, for, id, class)
 
 
 main : Program Never
 main =
-    App.program
+    Html.program
         { init = ( init, Cmd.none )
         , view = view
         , update = update
@@ -46,7 +45,7 @@ init =
 view : Model -> Html Msg
 view model =
     form []
-        [ App.map CreditCardMsg (CreditCard.View.form model.creditCard)
+        [ Html.map CreditCardMsg (CreditCard.View.form model.creditCard)
         , p []
             [ label [ for "Address1" ] [ text "Address (Line 1)" ]
             , input [ id "Address1", placeholder "Address (Line 1)" ] []

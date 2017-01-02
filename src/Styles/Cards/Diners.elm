@@ -1,6 +1,6 @@
 module Styles.Cards.Diners exposing (style)
 
-import CreditCard.Model exposing (CardStyle, Model, CardType(..), CardInfo)
+import CreditCard.Internal exposing (CardStyle)
 import Svg.Attributes as Attributes exposing (fill)
 import Helpers.CardAnimation exposing (transitionAnimation)
 import Styles.Backgrounds.Gradient exposing (background)

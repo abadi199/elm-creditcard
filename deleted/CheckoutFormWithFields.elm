@@ -3,14 +3,13 @@ module CheckoutFormWithFields exposing (main)
 import CreditCard.View
 import CreditCard.Model
 import CreditCard.Update
-import Html.App as App
 import Html exposing (Html, form, button, label, text, input, p, div)
 import Html.Attributes exposing (placeholder, for, id, class)
 
 
 main : Program Never
 main =
-    App.program
+    Html.program
         { init = ( init, Cmd.none )
         , view = view
         , update = update
@@ -42,24 +41,24 @@ init =
 view : Model -> Html Msg
 view model =
     form []
-        [ App.map CreditCardMsg (CreditCard.View.cardView model.creditCard)
+        [ Html.map CreditCardMsg (CreditCard.View.cardView model.creditCard)
         , p [ class "number" ]
             [ label [ for "CreditCardNumber" ] [ text "Number" ]
-            , App.map CreditCardMsg (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
+            , Html.map CreditCardMsg (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
             ]
         , p [ class "name" ]
             [ label [ for "CreditCardName" ] [ text "Name" ]
-            , App.map CreditCardMsg (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
+            , Html.map CreditCardMsg (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
             ]
         , div [ class "container" ]
             [ p [ class "expiration" ]
                 [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
-                , App.map CreditCardMsg (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
-                , App.map CreditCardMsg (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
+                , Html.map CreditCardMsg (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
+                , Html.map CreditCardMsg (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
                 ]
             , p [ class "ccv" ]
                 [ label [ for "CreditCardCcv" ] [ text "Number" ]
-                , App.map CreditCardMsg (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
+                , Html.map CreditCardMsg (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
                 ]
             , button [] [ text "Submit" ]
             ]

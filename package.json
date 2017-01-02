@@ -6,8 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --hot --inline --port 3000",
-    "make": "elm-make src/Examples/CheckoutForm.elm src/Examples/CheckoutFormWithFields.elm --output dist/index.js",
-    "build": "elm-make src/Examples/CheckoutForm.elm src/Examples/CheckoutFormWithFields.elm --output dist/index.js && uglifyjs --compress --noerr --output dist/index.min.js -- dist/index.js && cp dist/index.min.js docs/javascripts/index.min.js"
+    "make": "elm-make --output dist/elm.js"
   },
   "author": "abadi199",
   "license": "MIT",

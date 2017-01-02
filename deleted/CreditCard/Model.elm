@@ -1,7 +1,6 @@
-module CreditCard.Model
+module CreditCard.Internal
     exposing
-        ( Model
-        , Options
+        ( InternalState
         , Field
         , Styles
         , CardStyle
@@ -10,7 +9,7 @@ module CreditCard.Model
         , CardType(..)
         , CCVPosition(..)
         , init
-        , defaultOptions
+        , defaultConfig
         )
 
 {-| Model types and all related helper functions
@@ -19,34 +18,25 @@ module CreditCard.Model
 @docs Model, Field, Styles,  CardInfo,  CardType
 
 # Styling and Formatting
-@docs Options, CardStyle, CCVPosition, NumberFormat
+@docs Config, CardStyle, CCVPosition, NumberFormat
 
 # Helper Functions
-@docs init, defaultOptions
+@docs init, defaultConfig
 -}
 
 import Svg exposing (Svg, Attribute)
+import CreditCard.Config exposing (Config)
+
+
+type InternalState
+    = InternalState
 
 
 {-| A type representing the Credit Card model.
 -}
-type alias Model msg =
-    { options : Options
-    , number : Field String
-    , name : Field String
-    , expirationMonth : Field String
-    , expirationYear : Field String
-    , ccv : Field String
-    , cardInfo : Maybe (CardInfo msg)
+type alias StateValue msg =
+    { cardInfo : Maybe (CardInfo msg)
     , flipped : Maybe Bool
-    }
-
-
-{-| A type representing the configurable options for the form.
--}
-type alias Options =
-    { showLabel : Bool
-    , blankChar : Char
     }
 
 
@@ -118,12 +108,11 @@ type alias CardInfo msg =
     }
 
 
-{-| Initalize the model by passing in the `Options`
+{-| Initalize the model by passing in the `Config`
 -}
-init : Options -> Model msg
-init options =
-    { options = options
-    , number = { id = "", label = Just "Card Number", value = Nothing, hasFocus = False }
+init : Model msg
+init =
+    { number = { id = "", label = Just "Card Number", value = Nothing, hasFocus = False }
     , name = { id = "", label = Just "Full Name", value = Nothing, hasFocus = False }
     , expirationMonth = { id = "", label = Just "MM", value = Nothing, hasFocus = False }
     , expirationYear = { id = "", label = Just "YYYY", value = Nothing, hasFocus = False }
@@ -133,10 +122,9 @@ init options =
     }
 
 
-{-| The default `Options` value
+{-| The default `Config` value
 -}
-defaultOptions : Options
-defaultOptions =
-    { showLabel = False
-    , blankChar = '•'
+defaultConfig : Config
+defaultConfig =
+    { blankChar = '•'
     }
