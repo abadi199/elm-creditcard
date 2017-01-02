@@ -8,7 +8,9 @@ module CreditCard.Config exposing (Config, defaultConfig)
 {-| Configuration for card view
 -}
 type alias Config =
-    { blankChar : Char }
+    { blankChar : Char
+    , blankName : String
+    }
 
 
 {-| The default `Config` value
@@ -16,4 +18,5 @@ type alias Config =
 defaultConfig : Config
 defaultConfig =
     { blankChar = '•'
+    , blankName = "YOUR NAME"
     }

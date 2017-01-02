@@ -11,22 +11,23 @@ import Helpers.Misc as Helper exposing (printNumber, rightPad, leftPad)
 import String
 import CreditCard.Components.Chip exposing (viewChip, viewChipAlt)
 import Helpers.CardAnimation exposing (flipAnimation, backsideAnimation, keyframeAnimationDefs)
+import CreditCard.Components.BackCard exposing (viewBackCard)
 
 
--- import CreditCard.Components.BackCard exposing (viewBackCard)
-
-
-card : Config -> CardInfo msg -> CardData msg model -> Html msg
+card : Config -> CardInfo msg -> CardData model -> Html msg
 card config cardInfo cardData =
     let
         number =
             printNumber cardInfo.numberFormat
-                16
+                minNumberLength
                 config.blankChar
                 cardData.number
 
+        ( minNumberLength, maxNumberLength ) =
+            Helper.minMaxNumberLength cardInfo
+
         blankName =
-            "YOUR NAME"
+            config.blankName
 
         name =
             cardData.name
@@ -116,6 +117,6 @@ card config cardInfo cardData =
                               )
                             ]
                     )
-                  -- , viewBackCard model
+                , viewBackCard cardInfo cardData
                 ]
             ]

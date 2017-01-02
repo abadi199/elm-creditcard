@@ -1,6 +1,6 @@
 # Elm Credit Card
 
-Pretty credit card input form inspired by https://github.com/jessepollak/card 
+Pretty credit card input form inspired by https://github.com/jessepollak/card
 
 Everything is written in Elm without any external javascript, or css.
 
@@ -46,9 +46,9 @@ init =
       ...
     }
 
-view model = 
-    form [] 
-        [ Html.App.map CardUpdate CreditCard.View.form 
+view model =
+    form []
+        [ Html.App.map CardUpdate CreditCard.View.form
         ...
         ]
 
@@ -62,7 +62,7 @@ update msg model =
                     CreditCard.Update.update creditCardMsg model.creditCard
             in
                 ( { model | creditCard = creditCardModel }
-                , Cmd.map CreditCardMsg creditCardCmd 
+                , Cmd.map CreditCardMsg creditCardCmd
                 )
         ...
 ```
@@ -76,38 +76,38 @@ import CreditCard.View
 import Html.App
 
 type alias Model =
-    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg 
+    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg
       ...
     }
-    
+
 init =
     { creditCard = CreditCard.Model.init CreditCard.Model.defaultOptions
       ...
     }
-    
-view model = 
-    form [] 
+
+view model =
+    form []
         [ Html.App.map CreditCardMsg (CreditCard.View.cardView model.creditCard)
         , p []
             [ label [ for "CreditCardNumber" ] [ text "Number" ]
-            , App.map CreditCardMsg 
+            , App.map CreditCardMsg
                 (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardName" ] [ text "Name" ]
-            , App.map CreditCardMsg 
+            , App.map CreditCardMsg
                 (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
-            , App.map CreditCardMsg 
+            , App.map CreditCardMsg
                 (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
-            , App.map CreditCardMsg 
+            , App.map CreditCardMsg
                 (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
             ]
         , p []
             [ label [ for "CreditCardCcv" ] [ text "Number" ]
-            , App.map CreditCardMsg 
+            , App.map CreditCardMsg
                 (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
             ]
         ...
@@ -123,7 +123,7 @@ update msg model =
                     CreditCard.Update.update creditCardMsg model.creditCard
             in
                 ( { model | creditCard = creditCardModel }
-                , Cmd.map CreditCardMsg creditCardCmd 
+                , Cmd.map CreditCardMsg creditCardCmd
                 )
         ...
 ```
@@ -137,9 +137,5 @@ You can customize the form by specifying these available options:
 * `blankChar` (default: `'•'`)
     character used for blank input placeholder.
 
-## Style
-TBA
-
 ## License
 The MIT License (MIT)
-Copyright &copy; 2016 Abadi Kurniawan

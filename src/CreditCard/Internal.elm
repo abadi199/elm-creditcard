@@ -1,6 +1,6 @@
 module CreditCard.Internal
     exposing
-        ( InternalState
+        ( InternalState(..)
         , StateValue
         , initialState
         , getStateValue
@@ -16,24 +16,23 @@ import Html exposing (Attribute)
 import Svg exposing (Svg)
 
 
-type InternalState msg
-    = InternalState (StateValue msg)
+type InternalState
+    = InternalState StateValue
 
 
 {-| A type representing the Credit Card model.
 -}
-type alias StateValue msg =
-    { cardInfo : Maybe (CardInfo msg)
-    , flipped : Maybe Bool
+type alias StateValue =
+    { flipped : Maybe Bool
     }
 
 
-initialState : InternalState msg
+initialState : InternalState
 initialState =
-    InternalState { cardInfo = Nothing, flipped = Nothing }
+    InternalState { flipped = Nothing }
 
 
-getStateValue : InternalState msg -> StateValue msg
+getStateValue : InternalState -> StateValue
 getStateValue state =
     case state of
         InternalState stateValue ->
@@ -80,14 +79,14 @@ type CCVPosition
     | Back
 
 
-type alias CardData msg model =
+type alias CardData model =
     { model
         | number : Maybe String
         , name : Maybe String
         , month : Maybe String
         , year : Maybe String
         , ccv : Maybe String
-        , state : InternalState msg
+        , state : InternalState
     }
 
 

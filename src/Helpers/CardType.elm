@@ -25,7 +25,7 @@ type alias CardRegex msg =
 
 {-| detect the type of card
 -}
-detect : CardData msg model -> CardInfo msg
+detect : CardData model -> CardInfo msg
 detect model =
     let
         number =

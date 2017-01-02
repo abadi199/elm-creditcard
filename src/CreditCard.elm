@@ -1,8 +1,8 @@
-module CreditCard exposing (card, State, initialState)
+module CreditCard exposing (card, State, initialState, CardData)
 
 {-|
 # View
-@docs card
+@docs card, CardData
 
 # Internal State
 @docs State, initialState
@@ -10,20 +10,20 @@ module CreditCard exposing (card, State, initialState)
 
 import Html exposing (Html)
 import CreditCard.Internal
-import CreditCard.Config
+import CreditCard.Config exposing (Config)
 import CreditCard.Components.Card
 import Helpers.CardType
 
 
 {-| Internal State of the card view
 -}
-type alias State msg =
-    CreditCard.Internal.InternalState msg
+type alias State =
+    CreditCard.Internal.InternalState
 
 
 {-| Initial state of the card view
 -}
-initialState : State msg
+initialState : State
 initialState =
     CreditCard.Internal.initialState
 
@@ -32,13 +32,22 @@ initialState =
 -- VIEW
 
 
-type alias CardData msg model =
-    CreditCard.Internal.CardData msg model
+{-| Card Data
+-}
+type alias CardData model =
+    { model
+        | number : Maybe String
+        , name : Maybe String
+        , month : Maybe String
+        , year : Maybe String
+        , ccv : Maybe String
+        , state : State
+    }
 
 
 {-| Card view
 -}
-card : CreditCard.Config.Config -> State msg -> CardData msg model -> Html msg
+card : Config -> State -> CardData model -> Html msg
 card config state cardData =
     let
         cardInfo =

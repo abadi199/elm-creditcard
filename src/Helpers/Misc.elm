@@ -7,8 +7,8 @@ module Helpers.Misc
         , rightPad
         , leftPad
         , formatNumber
+        , minMaxNumberLength
           -- , cardInfo
-          -- , minMaxNumberLength
           -- , toNumberInputModel
           -- , toStringInputModel
         )
@@ -95,10 +95,8 @@ formatNumber numberFormat length char number =
         |> String.fromList
 
 
-
--- minMaxNumberLength : Model msg -> ( Int, Int )
--- minMaxNumberLength model =
---     model
---         |> cardInfo
---         |> .validLength
---         |> \numbers -> ( List.minimum numbers |> Maybe.withDefault 16, List.maximum numbers |> Maybe.withDefault 16 )
+minMaxNumberLength : CardInfo msg -> ( Int, Int )
+minMaxNumberLength cardInfo =
+    cardInfo
+        |> .validLength
+        |> \numbers -> ( List.minimum numbers |> Maybe.withDefault 16, List.maximum numbers |> Maybe.withDefault 16 )
