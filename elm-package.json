@@ -11,7 +11,7 @@
         "CreditCard.Config"
     ],
     "dependencies": {
-        "abadi199/elm-input-extra": "4.3.0 <= v < 5.0.0",
+        "abadi199/elm-input-extra": "5.1.0 <= v < 6.0.0",
         "elm-lang/core": "5.0.0 <= v < 6.0.0",
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/svg": "2.0.0 <= v < 3.0.0"

@@ -11,8 +11,14 @@ module CreditCard.Config
         )
 
 {-|
-@docs Config, defaultConfig, FormConfig, Form, defaultFormConfig, defaultClasses, defaultLabels
+# Configuration
+@docs Config, FormConfig, Form, Updaters
+
+# Default Configuration
+@docs defaultConfig, defaultFormConfig, defaultClasses, defaultLabels, defaultFormConfig
 -}
+
+import CreditCard.Internal exposing (State)
 
 
 {-| Configuration for card view
@@ -32,6 +38,7 @@ type alias Updaters msg =
     , updateMonth : Maybe String -> msg
     , updateYear : Maybe String -> msg
     , updateCCV : Maybe String -> msg
+    , updateState : State -> msg
     }
 
 
@@ -42,6 +49,7 @@ type alias FormConfig updaters =
         | showLabel : Bool
         , classes : Form
         , labels : Form
+        , placeholders : Form
     }
 
 
@@ -76,9 +84,11 @@ defaultFormConfig updaters =
     , updateMonth = updaters.updateMonth
     , updateYear = updaters.updateYear
     , updateCCV = updaters.updateCCV
+    , updateState = updaters.updateState
     , showLabel = True
     , classes = defaultClasses
     , labels = defaultLabels
+    , placeholders = defaultPlaceholders
     }
 
 
@@ -98,9 +108,21 @@ defaultClasses =
 -}
 defaultLabels : Form
 defaultLabels =
-    { number = "Card Number"
+    { number = "Number"
     , name = "Full Name"
     , month = "Month"
     , year = "Year"
-    , ccv = "Ccv"
+    , ccv = "CCV"
+    }
+
+
+{-| Default placeholder text for form view
+-}
+defaultPlaceholders : Form
+defaultPlaceholders =
+    { number = "Credit Card Number"
+    , name = "First Last"
+    , month = "MM"
+    , year = "YYYY"
+    , ccv = "CCV"
     }

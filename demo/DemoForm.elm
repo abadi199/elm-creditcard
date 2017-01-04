@@ -1,11 +1,8 @@
 module DemoForm exposing (main)
 
 import Html exposing (Html, div, input, label, text, p, form)
-import Html.Attributes exposing (type_, value)
-import Html.Events exposing (onInput)
 import CreditCard
 import CreditCard.Config
-import CreditCard.Events exposing (onCCVFocus, onCCVBlur)
 
 
 main : Program Never Model Msg
@@ -60,6 +57,7 @@ view model =
                 , updateMonth = UpdateMonth
                 , updateYear = UpdateYear
                 , updateCCV = UpdateCCV
+                , updateState = UpdateState
                 }
     in
         form []

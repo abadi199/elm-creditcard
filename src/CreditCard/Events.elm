@@ -1,13 +1,13 @@
-module CreditCard.Events exposing (onCCVFocus, onCCVBlur)
+module CreditCard.Events exposing (onCCVFocus, onCCVBlur, updateCCVFocus)
 
-import CreditCard.Internal exposing (CCVPosition(..), CardData, InternalState(..), getStateValue)
+import CreditCard.Internal exposing (CCVPosition(..), CardData, State(..), getStateValue)
 import Helpers.CardType
 import Html
 import Html.Events exposing (onBlur, onFocus)
 
 
-onCCVFocus : (InternalState -> msg) -> CardData model -> Html.Attribute msg
-onCCVFocus tagger cardData =
+updateCCVFocus : Bool -> CardData model -> CardData model
+updateCCVFocus isFocused cardData =
     let
         stateValue =
             getStateValue cardData.state
@@ -15,33 +15,39 @@ onCCVFocus tagger cardData =
         cardInfo =
             Helpers.CardType.detect cardData
 
+        updatedStateValue =
+            case ( isFocused, cardInfo.ccvPosition ) of
+                ( False, _ ) ->
+                    flip False
+
+                ( _, Front ) ->
+                    flip False
+
+                ( _, Back ) ->
+                    flip True
+
         flip value =
             { stateValue | flipped = Just value }
 
-        updatedStateValue =
-            case cardInfo.ccvPosition of
-                Front ->
-                    flip False
-
-                Back ->
-                    flip True
-
         updatedState =
             InternalState updatedStateValue
     in
-        onFocus (tagger updatedState)
+        { cardData | state = updatedState }
 
 
-onCCVBlur : (InternalState -> msg) -> CardData model -> Html.Attribute msg
+onCCVFocus : (State -> msg) -> CardData model -> Html.Attribute msg
+onCCVFocus tagger cardData =
+    let
+        updatedCardData =
+            updateCCVFocus True cardData
+    in
+        onFocus (tagger updatedCardData.state)
+
+
+onCCVBlur : (State -> msg) -> CardData model -> Html.Attribute msg
 onCCVBlur tagger cardData =
     let
-        stateValue =
-            getStateValue cardData.state
-
-        updatedStateValue =
-            { stateValue | flipped = Just False }
-
-        updatedState =
-            InternalState updatedStateValue
+        updatedCardData =
+            updateCCVFocus False cardData
     in
-        onBlur (tagger updatedState)
+        onBlur (tagger updatedCardData.state)

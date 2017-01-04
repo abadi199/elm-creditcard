@@ -14,10 +14,13 @@ module CreditCard exposing (card, State, initialState, CardData, form)
 import CreditCard.Components.Card
 import CreditCard.Config exposing (Config, FormConfig, Updaters)
 import CreditCard.Internal
+import CreditCard.Events exposing (onCCVFocus, onCCVBlur)
 import Helpers.CardType
 import Helpers.Misc
-import Html exposing (Html, div, label, p, text)
-import Html.Attributes exposing (class)
+import Html exposing (Html, div, label, p, text, input)
+import Html.Attributes exposing (class, type_, value, placeholder)
+import Html.Events exposing (onInput)
+import Input.BigNumber
 import Input.Number
 import String
 
@@ -25,7 +28,7 @@ import String
 {-| Internal State of the card view
 -}
 type alias State =
-    CreditCard.Internal.InternalState
+    CreditCard.Internal.State
 
 
 {-| Initial state of the card view
@@ -71,24 +74,62 @@ form config cardData =
         cardInfo =
             Helpers.CardType.detect cardData
 
-        ( minLength, maxLength ) =
+        ( _, maxLength ) =
             Helpers.Misc.minMaxNumberLength cardInfo
 
-        numberConfig =
-            let
-                default =
-                    Input.Number.defaultOptions <| toMaybeInt config.updateNumber
-            in
-                { default | maxLength = Just maxLength }
+        unwrap : (Maybe String -> msg) -> (String -> msg)
+        unwrap msg =
+            (\str -> msg <| Just str)
 
         toMaybeInt : (Maybe String -> msg) -> (Maybe Int -> msg)
         toMaybeInt msg =
             (\maybeInt -> msg <| Maybe.map toString maybeInt)
+
+        field getter inputElement =
+            p [ class <| getter config.classes ]
+                [ label [] [ text <| getter config.labels, inputElement ]
+                ]
+
+        numberConfig =
+            let
+                default =
+                    Input.BigNumber.defaultOptions <| unwrap config.updateNumber
+            in
+                { default | maxLength = Just maxLength }
+
+        monthConfig =
+            let
+                default =
+                    Input.Number.defaultOptions <| toMaybeInt config.updateMonth
+            in
+                { default | maxValue = Just 12, minValue = Just 1 }
+
+        yearConfig =
+            let
+                default =
+                    Input.Number.defaultOptions <| toMaybeInt config.updateYear
+            in
+                { default | minValue = Just 1, maxValue = Just 9999 }
+
+        focusHandler hasFocus =
+            let
+                updatedCardData =
+                    CreditCard.Events.updateCCVFocus hasFocus cardData
+            in
+                config.updateState updatedCardData.state
+
+        ccvConfig =
+            let
+                default =
+                    Input.Number.defaultOptions <| toMaybeInt config.updateCCV
+            in
+                { default | minValue = Just 1, maxValue = Just 9999, hasFocus = Just focusHandler }
     in
         div []
             [ CreditCard.Components.Card.card config cardInfo cardData
-            , p [ class config.classes.number ]
-                [ label [] [ text config.labels.number ]
-                , Input.Number.input numberConfig [] (cardData.number |> Maybe.andThen (String.toInt >> Result.toMaybe))
-                ]
+            , field .number <| Input.BigNumber.input numberConfig [ placeholder config.placeholders.number ] (Maybe.withDefault "" cardData.number)
+            , field .name <| input [ type_ "text", value <| Maybe.withDefault "" cardData.name, onInput (Just >> config.updateName), placeholder config.placeholders.name ] []
+            , field .month <| Input.Number.input monthConfig [ placeholder config.placeholders.month ] (cardData.month |> Maybe.andThen (String.toInt >> Result.toMaybe))
+            , field .year <| Input.Number.input yearConfig [ placeholder config.placeholders.year ] (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
+            , field .ccv <| Input.Number.input ccvConfig [ placeholder config.placeholders.ccv ] (cardData.ccv |> Maybe.andThen (String.toInt >> Result.toMaybe))
             ]

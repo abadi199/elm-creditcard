@@ -1,6 +1,6 @@
 module CreditCard.Components.Card exposing (card)
 
-import CreditCard.Internal exposing (CardInfo, CardData, InternalState, getStateValue)
+import CreditCard.Internal exposing (CardInfo, CardData, getStateValue)
 import CreditCard.Config exposing (Config)
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
