@@ -14,11 +14,10 @@ import CreditCard.Components.Logo.Discover as Discover
 import CreditCard.Components.Logo.Maestro as Maestro
 import CreditCard.Components.Logo.JCB as JCB
 import CreditCard.Components.Logo.Diners as Diners
-import Helpers.CardType exposing (unknownCard)
 import Helpers.CardAnimation as CardAnimation
 
 
-viewLogo : Config -> CardInfo msg -> Html msg
+viewLogo : Config config -> CardInfo msg -> Html msg
 viewLogo config cardInfo =
     let
         cardType =

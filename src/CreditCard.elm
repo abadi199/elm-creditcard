@@ -1,18 +1,25 @@
-module CreditCard exposing (card, State, initialState, CardData)
+module CreditCard exposing (card, State, initialState, CardData, form)
 
 {-|
 # View
-@docs card, CardData
+@docs card,  form
+
+# Data
+@docs CardData
 
 # Internal State
 @docs State, initialState
 -}
 
-import Html exposing (Html)
-import CreditCard.Internal
-import CreditCard.Config exposing (Config)
 import CreditCard.Components.Card
+import CreditCard.Config exposing (Config, FormConfig, Updaters)
+import CreditCard.Internal
 import Helpers.CardType
+import Helpers.Misc
+import Html exposing (Html, div, label, p, text)
+import Html.Attributes exposing (class)
+import Input.Number
+import String
 
 
 {-| Internal State of the card view
@@ -47,10 +54,41 @@ type alias CardData model =
 
 {-| Card view
 -}
-card : Config -> State -> CardData model -> Html msg
-card config state cardData =
+card : Config {} -> CardData model -> Html msg
+card config cardData =
     let
         cardInfo =
             Helpers.CardType.detect cardData
     in
         CreditCard.Components.Card.card config cardInfo cardData
+
+
+{-| Form view
+-}
+form : Config (FormConfig (Updaters msg)) -> CardData model -> Html msg
+form config cardData =
+    let
+        cardInfo =
+            Helpers.CardType.detect cardData
+
+        ( minLength, maxLength ) =
+            Helpers.Misc.minMaxNumberLength cardInfo
+
+        numberConfig =
+            let
+                default =
+                    Input.Number.defaultOptions <| toMaybeInt config.updateNumber
+            in
+                { default | maxLength = Just maxLength }
+
+        toMaybeInt : (Maybe String -> msg) -> (Maybe Int -> msg)
+        toMaybeInt msg =
+            (\maybeInt -> msg <| Maybe.map toString maybeInt)
+    in
+        div []
+            [ CreditCard.Components.Card.card config cardInfo cardData
+            , p [ class config.classes.number ]
+                [ label [] [ text config.labels.number ]
+                , Input.Number.input numberConfig [] (cardData.number |> Maybe.andThen (String.toInt >> Result.toMaybe))
+                ]
+            ]

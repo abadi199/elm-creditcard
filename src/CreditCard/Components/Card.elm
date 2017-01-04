@@ -14,7 +14,7 @@ import Helpers.CardAnimation exposing (flipAnimation, backsideAnimation, keyfram
 import CreditCard.Components.BackCard exposing (viewBackCard)
 
 
-card : Config -> CardInfo msg -> CardData model -> Html msg
+card : Config config -> CardInfo msg -> CardData model -> Html msg
 card config cardInfo cardData =
     let
         number =

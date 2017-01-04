@@ -1,4 +1,4 @@
-module Demo exposing (main)
+module DemoCard exposing (main)
 
 import Html exposing (Html, div, input, label, text, p, form)
 import Html.Attributes exposing (type_, value)
@@ -77,7 +77,6 @@ view model =
         form []
             [ CreditCard.card
                 config
-                model.state
                 model
             , field "Number" "number" model.number UpdateCardNumber
             , field "Name" "text" model.name UpdateName
