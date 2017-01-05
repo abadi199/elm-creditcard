@@ -9,9 +9,10 @@ Everything is written in Elm without any external javascript, or css.
 
 ## Features
  * Interactive update of the card type and information.
+ * Can be used as just the card view, or as part of the credit card form.
  * Supports multiple card type: Visa, Mastercard, American Express, Discover, Diners Club, JCB, Laser, Maestro, and Visa Electron
- * No external css or JavaScript dependency. The credit cards and logos are all svg dynamically generated using elm-svg.
- * Implements The Elm Architecture.
+ * No external CSS or JavaScript dependency. The credit cards and logos are all svg dynamically generated using elm-svg.
+ * Implemented as reusable views that will fit nicely with The Elm Architecture.
 
 ## Live Demo
 See [here](http://abadi199.github.io/elm-creditcard#live-demo) for live demo
@@ -29,113 +30,65 @@ This component implements [The Elm Architecture (TEA)](http://guide.elm-lang.org
 
 You can use this component in two ways; one is by rendering the whole form together, or rendering each input fields and card individually.
 
-**Example of rendering the whole form:**
+**Example of using `form` view:**
 ```elm
-import CreditCard.Model
-import CreditCard.Update
-import CreditCard.View
-import Html.App
+import CreditCard
+import CreditCard.Config
 
 type alias Model =
-    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg
-      ...
-    }
-
-init =
-    { creditCard = CreditCard.Model.init CreditCard.Model.defaultOptions
-      ...
+    { number : Maybe String
+    , name : Maybe String
+    , month : Maybe String
+    , year : Maybe String
+    , ccv : Maybe String
+    , state : CreditCard.State
     }
 
 view model =
-    form []
-        [ Html.App.map CardUpdate CreditCard.View.form
-        ...
-        ]
+    CreditCard.card CreditCard.Config.defaultConfig model
 
-type Msg = CreditCardMsg CreditCard.Update.Msg
-
-update msg model =
-    case msg of
-        CreditCardMsg creditCardMsg ->
-            let
-                ( creditCardModel, creditCardCmd ) =
-                    CreditCard.Update.update creditCardMsg model.creditCard
-            in
-                ( { model | creditCard = creditCardModel }
-                , Cmd.map CreditCardMsg creditCardCmd
-                )
-        ...
 ```
-You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutForm.elm)
-
-**Example of rendering each sub-components individually:**
+**Example of the `card` view:**
 ```elm
-import CreditCard.Model
-import CreditCard.Update
-import CreditCard.View
-import Html.App
+import CreditCard
+import CreditCard.Config
 
 type alias Model =
-    { creditCard : CreditCard.Model.Model CreditCard.Update.Msg
-      ...
+    { number : Maybe String
+    , name : Maybe String
+    , month : Maybe String
+    , year : Maybe String
+    , ccv : Maybe String
+    , state : CreditCard.State
+    ...
     }
 
-init =
-    { creditCard = CreditCard.Model.init CreditCard.Model.defaultOptions
-      ...
-    }
+type Msg
+  = UpdateCardData Model
+  ...
 
 view model =
-    form []
-        [ Html.App.map CreditCardMsg (CreditCard.View.cardView model.creditCard)
-        , p []
-            [ label [ for "CreditCardNumber" ] [ text "Number" ]
-            , App.map CreditCardMsg
-                (CreditCard.View.numberInput "CreditCardNumber" model.creditCard)
-            ]
-        , p []
-            [ label [ for "CreditCardName" ] [ text "Name" ]
-            , App.map CreditCardMsg
-                (CreditCard.View.nameInput "CreditCardName" [ class "input-control" ] model.creditCard)
-            ]
-        , p []
-            [ label [ for "CreditCardNumber" ] [ text "Expiration Date" ]
-            , App.map CreditCardMsg
-                (CreditCard.View.monthInput "CreditCardMonth" model.creditCard)
-            , App.map CreditCardMsg
-                (CreditCard.View.yearInput "CreditCardYear" model.creditCard)
-            ]
-        , p []
-            [ label [ for "CreditCardCcv" ] [ text "Number" ]
-            , App.map CreditCardMsg
-                (CreditCard.View.ccvInput "CreditCardCcv" model.creditCard)
-            ]
-        ...
-        ]
-
-type Msg = CreditCardMsg CreditCard.Update.Msg
+    ...
+    CreditCard.form (CreditCard.defaultFormConfig UpdateCardData) model
+    ...
 
 update msg model =
     case msg of
-        CreditCardMsg creditCardMsg ->
-            let
-                ( creditCardModel, creditCardCmd ) =
-                    CreditCard.Update.update creditCardMsg model.creditCard
-            in
-                ( { model | creditCard = creditCardModel }
-                , Cmd.map CreditCardMsg creditCardCmd
-                )
+        UpdateCardData updatedModel ->
+            ( updatedModel, Cmd.none )
+
         ...
+
 ```
-You can see the full code for this in this [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/CheckoutFormWithFields.elm)
+You can see the full code for this in the [example](https://github.com/abadi199/elm-creditcard/blob/master/src/Examples/) folder.
 
-## Options
-You can customize the form by specifying these available options:
-* `showLabel` (default: `False`)
-    a flag to indicate wheter to show label for each input fields or not.
+## Documentations
+Please see [Elm Package](http://package.elm-lang.org/packages/abadi199/elm-creditcard/latest) for complete documentation.
 
-* `blankChar` (default: `'•'`)
-    character used for blank input placeholder.
+## Contributing
+- [Submit a pull request](https://github.com/abadi199/elm-creditcard)! If you're missing a feature you want to have, or just found a bug, or found an error in the docs, please submit a pull request.
+- [Create an issue](https://github.com/abadi199/elm-creditcard/issues)! If you found a bug or want a new feature that you think will make the library better, but don't have time to do it yourself, please submit an issue.
+- Message me on slack or [twitter](https://twitter.com/abadikurniawan) if you just want to give me a feedback or thank me. I'm [abadi199](https://elmlang.slack.com/team/abadi199) on [elm-lang](https://elmlang.herokuapp.com/) slack channel.
 
 ## License
 The MIT License (MIT)

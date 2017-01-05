@@ -1,4 +1,4 @@
-module DemoForm exposing (main)
+module DemoFormModel exposing (main)
 
 import Html exposing (Html, div, input, label, text, p, form)
 import CreditCard
@@ -16,18 +16,33 @@ main =
 
 
 type alias Model =
-    { cardData : CreditCard.CardData {}
+    { number : Maybe String
+    , name : Maybe String
+    , month : Maybe String
+    , year : Maybe String
+    , ccv : Maybe String
+    , state : CreditCard.State
+    , shippingAddress : Maybe String
+    , shippingState : Maybe String
     }
 
 
 type Msg
     = NoOp
-    | UpdateCardData (CreditCard.CardData {})
+    | UpdateCardData Model
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model CreditCard.emptyCardData
+    ( { number = Nothing
+      , name = Nothing
+      , month = Nothing
+      , year = Nothing
+      , ccv = Nothing
+      , state = CreditCard.initialState
+      , shippingAddress = Nothing
+      , shippingState = Nothing
+      }
     , Cmd.none
     )
 
@@ -46,7 +61,7 @@ view model =
         form []
             [ CreditCard.form
                 config
-                model.cardData
+                model
             ]
 
 
@@ -57,4 +72,4 @@ update msg model =
             ( model, Cmd.none )
 
         UpdateCardData cardData ->
-            ( { model | cardData = cardData }, Cmd.none )
+            ( cardData, Cmd.none )
