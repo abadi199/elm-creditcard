@@ -14286,7 +14286,11 @@ var _abadi199$elm_creditcard$FormDemo$view = function (model) {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$button,
-					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$type_('button'),
+						_1: {ctor: '[]'}
+					},
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html$text('Checkout'),

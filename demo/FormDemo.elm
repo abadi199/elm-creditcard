@@ -1,6 +1,7 @@
 module FormDemo exposing (main)
 
 import Html exposing (Html, div, input, label, text, p, form, button)
+import Html.Attributes exposing (type_)
 import CreditCard
 import CreditCard.Config
 
@@ -62,7 +63,7 @@ view model =
             [ CreditCard.form
                 config
                 model
-            , button [] [ text "Checkout" ]
+            , button [ type_ "button" ] [ text "Checkout" ]
             ]
 
 
