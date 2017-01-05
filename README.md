@@ -30,7 +30,7 @@ This component implements [The Elm Architecture (TEA)](http://guide.elm-lang.org
 
 You can use this component in two ways; one is by rendering the whole form together, or rendering each input fields and card individually.
 
-**Example of using `form` view:**
+**Example of using `card` view:**
 ```elm
 import CreditCard
 import CreditCard.Config
@@ -48,7 +48,7 @@ view model =
     CreditCard.card CreditCard.Config.defaultConfig model
 
 ```
-**Example of using `card` view:**
+**Example of using `form` view:**
 ```elm
 import CreditCard
 import CreditCard.Config
