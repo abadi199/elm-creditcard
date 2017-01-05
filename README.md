@@ -48,7 +48,7 @@ view model =
     CreditCard.card CreditCard.Config.defaultConfig model
 
 ```
-**Example of the `card` view:**
+**Example of using `card` view:**
 ```elm
 import CreditCard
 import CreditCard.Config
