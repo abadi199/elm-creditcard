@@ -91,4 +91,4 @@ Please see [Elm Package](http://package.elm-lang.org/packages/abadi199/elm-credi
 - Message me on slack or [twitter](https://twitter.com/abadikurniawan) if you just want to give me a feedback or thank me. I'm [abadi199](https://elmlang.slack.com/team/abadi199) on [elm-lang](https://elmlang.herokuapp.com/) slack channel.
 
 ## License
-The MIT License (MIT)
+Apache 2.0
