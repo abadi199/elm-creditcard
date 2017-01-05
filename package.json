@@ -1,0 +1,21 @@
+{
+  "name": "elm-creditcard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "make": "elm-make demo/*.elm --output javascripts/elm.js",
+    "debug": "elm-make demo/*.elm --output javascripts/elm.js --debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abadi199/elm-creditcard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abadi199/elm-creditcard/issues"
+  },
+  "homepage": "https://github.com/abadi199/elm-creditcard#readme"
+}

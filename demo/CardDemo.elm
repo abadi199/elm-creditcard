@@ -1,11 +1,13 @@
 module CardDemo exposing (main)
 
-import Html exposing (Html, div, input, label, text, p, form)
-import Html.Attributes exposing (type_, value)
-import Html.Events exposing (onInput)
+import Html exposing (Html, form, text, select, label, option, input)
+import Html.Attributes exposing (class, type_)
+import Html.Events exposing (onCheck)
 import CreditCard
 import CreditCard.Config
-import CreditCard.Events exposing (onCCVFocus, onCCVBlur)
+import CreditCard.Events
+import Dict
+import Dropdown
 
 
 main : Program Never Model Msg
@@ -28,19 +30,34 @@ type alias Model =
     }
 
 
+cardNumbers : Dict.Dict String String
+cardNumbers =
+    Dict.fromList
+        [ ( "MasterCard", "5105105105105100" )
+        , ( "Visa", "4111111111111111" )
+        , ( "AmericanExpress", "378282246310005" )
+        , ( "Discover", "6011000990139424" )
+        , ( "DinersClub", "30569309025904" )
+        , ( "JCB", "3530111333300000" )
+        , ( "Visa Electron", "4917300800000000" )
+        ]
+
+
 type Msg
     = NoOp
-    | UpdateCardNumber (Maybe String)
-    | UpdateName (Maybe String)
-    | UpdateMonth (Maybe String)
-    | UpdateYear (Maybe String)
-    | UpdateCCV (Maybe String)
-    | UpdateState CreditCard.State
+    | SelectCardNumber (Maybe String)
+    | ViewCCV Bool
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Nothing Nothing Nothing Nothing Nothing CreditCard.initialState
+    ( { number = Nothing
+      , name = Just "John Smith"
+      , month = Just "12"
+      , year = Just "2025"
+      , ccv = Just "1234"
+      , state = CreditCard.initialState
+      }
     , Cmd.none
     )
 
@@ -56,41 +73,31 @@ view model =
         config =
             CreditCard.Config.defaultConfig
 
-        field labelText typeValue val msg =
-            fieldWithAttributes [] labelText typeValue val msg
+        toItems name number =
+            { value = number, text = name, enabled = True }
 
-        fieldWithAttributes attributes labelText typeValue val msg =
-            p []
-                [ label []
-                    [ text labelText
-                    , input
-                        ([ type_ typeValue
-                         , value <| Maybe.withDefault "" val
-                         , onInput (Just >> msg)
-                         ]
-                            ++ attributes
-                        )
-                        []
-                    ]
-                ]
+        defaultOptions =
+            Dropdown.defaultOptions SelectCardNumber
     in
         form []
             [ CreditCard.card
                 config
                 model
-            , field "Number" "number" model.number UpdateCardNumber
-            , field "Name" "text" model.name UpdateName
-            , field "Month" "number" model.month UpdateMonth
-            , field "Year" "number" model.year UpdateYear
-            , fieldWithAttributes
-                [ onCCVFocus UpdateState model
-                , onCCVBlur UpdateState model
-                , onInput (Just >> UpdateCCV)
+            , label [ class "card-type-dropdown" ]
+                [ text "Card Type"
+                , Dropdown.dropdown
+                    { defaultOptions
+                        | emptyItem = Just { value = "", text = "-Please select-", enabled = True }
+                        , items = cardNumbers |> Dict.map toItems |> Dict.values
+                    }
+                    []
+                    model.number
                 ]
-                "Ccv"
-                "number"
-                model.ccv
-                UpdateCCV
+            , label [ class "see-ccv-checkbox" ]
+                [ input [ type_ "checkbox", onCheck <| ViewCCV ]
+                    []
+                , text "View CCV"
+                ]
             ]
 
 
@@ -100,22 +107,10 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        UpdateCardNumber value ->
-            ( { model | number = value }, Cmd.none )
+        SelectCardNumber number ->
+            ( { model | number = number }, Cmd.none )
 
-        UpdateName value ->
-            ( { model | name = value }, Cmd.none )
-
-        UpdateMonth value ->
-            ( { model | month = value }, Cmd.none )
-
-        UpdateYear value ->
-            ( { model | year = value }, Cmd.none )
-
-        UpdateCCV value ->
-            ( { model | ccv = value }, Cmd.none )
-
-        UpdateState state ->
-            ( { model | state = state }
+        ViewCCV bool ->
+            ( CreditCard.Events.updateCCVFocus bool model
             , Cmd.none
             )

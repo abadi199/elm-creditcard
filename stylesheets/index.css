@@ -1,12 +1,19 @@
 * { box-sizing: border-box; }
 form { width: 24rem; background: #efefef; padding: 1rem; }
-label { width: 8rem; display: block; font-family: 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif; color: #555; }
+label { width: 100%; display: block; font-family: 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif; color: #555; }
 input { padding: 0.5rem; width: 100%; box-shadow: inset 0 1px 1px rgba(0,0,0,.075); border: 1px solid #ccc;}
-input#CreditCardMonth { width: 3rem; }
-input#CreditCardYear { width: 5rem; }
-input#CreditCardCcv { width: 5rem; }
+
+p.Month { width: 55px; display: inline-block; }
+.Month input { width: 100%; }
+
+p.Year { width: 70px; display: inline-block;  }
+.Year input { width: 100%; }
+
+p.CCV { width: 70px; display: inline-block; margin-left: 1em;}
+.CCV input { width: 100%; }
 div.container { display: flex; flex-direction: row; align-items: flex-end;}
 form p { margin: 0.5rem 0; }
-form p.expiration { margin-right: 1rem; }
-form p.ccv { width: 6.5rem; }
-button { background: #26A69A; border: none; padding: 0.5rem 2rem; color: #fff; border-radius: 0.2rem; height: 2.5rem; margin: 0.5rem 5rem 0.5rem 0}
+button { background: #26A69A; border: none; padding: 0.5rem 2rem; color: #fff; border-radius: 0.2rem; height: 2.5rem; margin: 0.5rem 5rem 0.5rem 0; }
+select { padding: 0.5rem; width: 100%;}
+input[type=checkbox] { width: auto; vertical-align: middle; }
+label.see-ccv-checkbox { margin-top: 10px; }

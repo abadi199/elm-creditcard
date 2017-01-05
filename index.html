@@ -45,17 +45,22 @@
 
 <h2>
 <a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
+<h3>Card View</h3>
 <p>
-<div id="CheckoutFormWithFields"></div>
+<div id="CardDemo"></div>
 </p>
+<h3>Form View</h3>
+<p>
+<div id="FormDemo"></div>
+</p>    
 <p>
     <h4>Sample of credit card numbers</h4>
     <table>
         <tr><td>MasterCard</td><td>5105105105105100</td></tr>
         <tr><td>Visa</td><td>4111111111111111</td></tr>
-        <tr><td>AmericanExpress:</td><td>378282246310005</td></tr>
+        <tr><td>AmericanExpress</td><td>378282246310005</td></tr>
         <tr><td>Discover</td><td>6011000990139424</td></tr>
-        <tr><td>DinersClub:</td><td>6011000990139424</td></tr>
+        <tr><td>DinersClub</td><td>30569309025904</td></tr>
         <tr><td>JCB</td><td>3530111333300000</td></tr>
         <tr><td>Visa Electron</td><td>4917300800000000</td></tr>
     </table>
@@ -195,9 +200,10 @@ Copyright © 2016 Abadi Kurniawan</p>
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-    <script src="javascripts/index.js"></script>
+    <script src="javascripts/elm.js"></script>
     <script>
-        Elm.CheckoutFormWithFields.embed(document.getElementById("CheckoutFormWithFields"));
+        Elm.CardDemo.embed(document.getElementById("CardDemo"));
+        Elm.FormDemo.embed(document.getElementById("FormDemo"));
     </script>
     
   </body>
