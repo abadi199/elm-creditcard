@@ -7,20 +7,17 @@ module Helpers.Misc
         , rightPad
         , leftPad
         , formatNumber
-        , cardInfo
         , minMaxNumberLength
-        , toNumberInputModel
-        , toStringInputModel
+          -- , cardInfo
+          -- , toNumberInputModel
+          -- , toStringInputModel
         )
 
 import Html.Events exposing (on, keyCode)
 import String
 import Html exposing (Attribute, Html, input)
 import Json.Decode as Json
-import CreditCard.Model exposing (Model, NumberFormat, CardInfo, Field)
-import Input.Number as Number
-import Input.Text as Text
-import Helpers.CardType exposing (unknownCard)
+import CreditCard.Internal exposing (NumberFormat, CardInfo)
 
 
 onKeyDown : (Int -> msg) -> Attribute msg
@@ -38,8 +35,8 @@ partition numberFormat xs =
             List.take n xs :: (partition tail (List.drop n xs))
 
 
-partition' : Int -> List a -> List (List a)
-partition' groupSize xs =
+partition_ : Int -> List a -> List (List a)
+partition_ groupSize xs =
     partitionStep groupSize groupSize xs
 
 
@@ -49,7 +46,7 @@ partitionStep groupSize step xs =
         group =
             List.take groupSize xs
 
-        xs' =
+        xs_ =
             List.drop step xs
 
         okayArgs =
@@ -59,7 +56,7 @@ partitionStep groupSize step xs =
             groupSize == List.length group
     in
         if okayArgs && okayLength then
-            group :: partitionStep groupSize step xs'
+            group :: partitionStep groupSize step xs_
         else
             [ group ]
 
@@ -98,24 +95,8 @@ formatNumber numberFormat length char number =
         |> String.fromList
 
 
-minMaxNumberLength : Model msg -> ( Int, Int )
-minMaxNumberLength model =
-    model
-        |> cardInfo
+minMaxNumberLength : CardInfo msg -> ( Int, Int )
+minMaxNumberLength cardInfo =
+    cardInfo
         |> .validLength
         |> \numbers -> ( List.minimum numbers |> Maybe.withDefault 16, List.maximum numbers |> Maybe.withDefault 16 )
-
-
-cardInfo : Model msg -> CardInfo msg
-cardInfo model =
-    model.cardInfo |> Maybe.withDefault unknownCard
-
-
-toNumberInputModel : Field String -> Number.Model
-toNumberInputModel =
-    toStringInputModel
-
-
-toStringInputModel : Field String -> Text.Model
-toStringInputModel field =
-    { value = field.value |> Maybe.withDefault "", hasFocus = field.hasFocus }

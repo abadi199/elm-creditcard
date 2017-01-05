@@ -1,6 +1,6 @@
 module Styles.Cards.Unknown exposing (style)
 
-import CreditCard.Model exposing (CardStyle, Model, CardType(..), CardInfo)
+import CreditCard.Internal exposing (CardStyle)
 import Svg.Attributes as Attributes exposing (fill)
 import Helpers.CardAnimation exposing (transitionAnimation)
 

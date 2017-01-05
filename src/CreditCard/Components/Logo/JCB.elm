@@ -2,14 +2,14 @@ module CreditCard.Components.Logo.JCB exposing (viewLogo)
 
 import Html exposing (Html)
 import Svg exposing (path, node, g, style, defs, text, linearGradient, stop)
-import Svg.Attributes exposing (type', d, transform, id, x1, y1, x2, y2, gradientUnits, stopColor, offset, fill, class)
+import Svg.Attributes exposing (type_, d, transform, id, x1, y1, x2, y2, gradientUnits, stopColor, offset, fill, class)
 
 
 viewLogo : Html msg
 viewLogo =
     g []
         [ defs []
-            [ style [ type' "text/css" ]
+            [ style [ type_ "text/css" ]
                 [ text ".fil0 {fill:white}.fil1 {fill:url(#id0)}.fil3 {fill:url(#id1)}.fil2 {fill:url(#id2)}" ]
             , linearGradient [ id "id0", y2 "43.335", gradientUnits "userSpaceOnUse", x2 "106.25", y1 "43.335", x1 "75.414" ]
                 [ stop [ stopColor "#007B40", offset "0" ] []

@@ -4,13 +4,13 @@ import Svg exposing (Svg, radialGradient, stop, rect, linearGradient, g)
 import Svg.Attributes as Attributes exposing (stopColor, offset, id, x1, y1, x2, y2, stopOpacity, x, y, width, height, rx, ry, fill)
 
 
-type alias Options =
+type alias Config =
     { darkColor : String
     , lightColor : String
     }
 
 
-background : Options -> Svg msg
+background : Config -> Svg msg
 background options =
     g []
         [ linearGradient [ id "Gradient1", x1 "0", x2 "1", y1 "0", y2 "0.5" ]

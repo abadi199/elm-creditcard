@@ -5,7 +5,7 @@ module Helpers.CardType exposing (detect, unknownCard)
 -}
 
 import Regex exposing (Regex, contains, regex)
-import CreditCard.Model exposing (CardStyle, Model, CardType(..), CardInfo, CCVPosition(Back, Front))
+import CreditCard.Internal exposing (CardStyle, CardType(..), CardData, CardInfo, CCVPosition(Back, Front))
 import Styles.Cards.Visa as VisaStyle
 import Styles.Cards.Mastercard as MastercardStyle
 import Styles.Cards.Amex as AmexStyle
@@ -25,11 +25,11 @@ type alias CardRegex msg =
 
 {-| detect the type of card
 -}
-detect : Model msg -> CardInfo msg
+detect : CardData model -> CardInfo msg
 detect model =
     let
         number =
-            model.number.value
+            model.number
                 |> Maybe.withDefault ""
     in
         cards

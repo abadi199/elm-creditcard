@@ -1,12 +1,12 @@
-module CreditCard.Components.Card exposing (cardView)
+module CreditCard.Components.Card exposing (card)
 
+import CreditCard.Internal exposing (CardInfo, CardData, getStateValue)
+import CreditCard.Config exposing (Config)
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
-import CreditCard.Model exposing (Model, CCVPosition(..))
-import CreditCard.Update exposing (Msg)
-import Svg exposing (svg, rect, text', text, foreignObject, defs, g)
+import Svg exposing (svg, rect, text_, text, foreignObject, defs, g)
 import Svg.Attributes as Attributes exposing (transform, id, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
-import CreditCard.Components.Logo exposing (viewLogo)
+import CreditCard.Components.Logo
 import Helpers.Misc as Helper exposing (printNumber, rightPad, leftPad)
 import String
 import CreditCard.Components.Chip exposing (viewChip, viewChipAlt)
@@ -14,26 +14,23 @@ import Helpers.CardAnimation exposing (flipAnimation, backsideAnimation, keyfram
 import CreditCard.Components.BackCard exposing (viewBackCard)
 
 
-cardView : Model Msg -> Html Msg
-cardView model =
+card : Config config -> CardInfo msg -> CardData model -> Html msg
+card config cardInfo cardData =
     let
-        cardInfo =
-            Helper.cardInfo model
-
-        ( minNumberLength, maxNumberLength ) =
-            Helper.minMaxNumberLength model
-
         number =
             printNumber cardInfo.numberFormat
                 minNumberLength
-                model.options.blankChar
-                model.number.value
+                config.blankChar
+                cardData.number
+
+        ( minNumberLength, maxNumberLength ) =
+            Helper.minMaxNumberLength cardInfo
 
         blankName =
-            "YOUR NAME"
+            config.blankName
 
         name =
-            model.name.value
+            cardData.name
                 |> Maybe.map String.toUpper
                 |> Maybe.withDefault ""
                 |> (\name ->
@@ -44,11 +41,11 @@ cardView model =
                    )
 
         blankMonth =
-            List.repeat 2 model.options.blankChar
+            List.repeat 2 config.blankChar
                 |> String.fromList
 
         expirationMonth =
-            model.expirationMonth.value
+            cardData.month
                 |> Maybe.withDefault ""
                 |> (\str ->
                         if String.isEmpty str then
@@ -58,15 +55,15 @@ cardView model =
                    )
 
         expirationYear =
-            model.expirationYear.value
+            cardData.year
                 |> Maybe.withDefault ""
-                |> rightPad model.options.blankChar 4
+                |> rightPad config.blankChar 4
 
         cardStyle =
             cardInfo.cardStyle
 
         numberLength =
-            model.number.value
+            cardData.number
                 |> Maybe.map String.length
                 |> Maybe.withDefault 0
 
@@ -77,8 +74,11 @@ cardView model =
                 fontSize "22"
 
         ccv =
-            model.ccv.value
+            cardData.ccv
                 |> Maybe.withDefault "CCV"
+
+        stateValue =
+            getStateValue cardData.state
     in
         div
             [ Html.Attributes.class "elm-card-svg"
@@ -89,7 +89,7 @@ cardView model =
                 , height "220"
                 , viewBox "0 0 350 220"
                 , fontFamily "monospace"
-                , flipAnimation model.flipped
+                , flipAnimation stateValue.flipped
                 ]
                 [ keyframeAnimationDefs
                 , g [ id "elmCardSvgFront" ]
@@ -100,23 +100,23 @@ cardView model =
                         cardStyle.background.svg
                         |> flip List.append
                             [ viewChip 40 70
-                            , viewLogo model
-                            , text' [ x "40", y "130", numberFontSize, fill cardStyle.textColor ] [ text number ]
+                            , CreditCard.Components.Logo.viewLogo config cardInfo
+                            , text_ [ x "40", y "130", numberFontSize, fill cardStyle.textColor ] [ text number ]
                             , foreignObject [ x "40", y "160", fontSize "16", width "170", fill cardStyle.textColor ]
                                 [ Html.p [ style [ ( "color", cardStyle.textColor ) ] ]
                                     [ Html.text name ]
                                 ]
-                            , text' [ x "250", y "160", fontSize "10", fill cardStyle.lightTextColor ] [ text "MONTH/YEAR" ]
-                            , text' [ x "215", y "170", fontSize "8", fill cardStyle.lightTextColor ] [ text "valid" ]
-                            , text' [ x "220", y "180", fontSize "8", fill cardStyle.lightTextColor ] [ text "thru" ]
-                            , text' [ x "250", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
-                            , (if (cardInfo.ccvPosition == Front) then
-                                text' [ x "290", y "110", fontSize "14", fill cardStyle.darkTextColor ] [ text ccv ]
+                            , text_ [ x "250", y "160", fontSize "10", fill cardStyle.lightTextColor ] [ text "MONTH/YEAR" ]
+                            , text_ [ x "215", y "170", fontSize "8", fill cardStyle.lightTextColor ] [ text "valid" ]
+                            , text_ [ x "220", y "180", fontSize "8", fill cardStyle.lightTextColor ] [ text "thru" ]
+                            , text_ [ x "250", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
+                            , (if (cardInfo.ccvPosition == CreditCard.Internal.Front) then
+                                text_ [ x "290", y "110", fontSize "14", fill cardStyle.darkTextColor ] [ text ccv ]
                                else
                                 text ""
                               )
                             ]
                     )
-                , viewBackCard model
+                , viewBackCard cardInfo cardData
                 ]
             ]

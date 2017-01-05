@@ -1,10 +1,10 @@
 module CreditCard.Components.Logo exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (svg, rect, text', g)
+import Svg exposing (svg, rect, text_, g)
 import Svg.Attributes exposing (transform, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
-import CreditCard.Model exposing (Model, CardType(..))
-import CreditCard.Update exposing (Msg)
+import CreditCard.Internal exposing (CardInfo, CardType(..))
+import CreditCard.Config exposing (Config)
 import String
 import CreditCard.Components.Logo.Visa as Visa
 import CreditCard.Components.Logo.VisaElectron as VisaElectron
@@ -14,21 +14,17 @@ import CreditCard.Components.Logo.Discover as Discover
 import CreditCard.Components.Logo.Maestro as Maestro
 import CreditCard.Components.Logo.JCB as JCB
 import CreditCard.Components.Logo.Diners as Diners
-import Helpers.CardType exposing (unknownCard)
 import Helpers.CardAnimation as CardAnimation
 
 
-viewLogo : Model Msg -> Html Msg
-viewLogo model =
+viewLogo : Config config -> CardInfo msg -> Html msg
+viewLogo config cardInfo =
     let
-        cardInfo =
-            model.cardInfo |> Maybe.withDefault unknownCard
-
         cardType =
             cardInfo.cardType
 
         unknownLogo =
-            model.options.blankChar
+            config.blankChar
                 |> List.repeat 4
                 |> String.fromList
 
@@ -57,7 +53,7 @@ viewLogo model =
             g [ transform "translate(270,20)" ] [ VisaElectron.viewLogo ]
 
         viewUnknown =
-            text' [ x "280", y "40", fontSize "12", fill cardInfo.cardStyle.textColor ] [ Svg.text unknownLogo ]
+            text_ [ x "280", y "40", fontSize "12", fill cardInfo.cardStyle.textColor ] [ Svg.text unknownLogo ]
     in
         g [ CardAnimation.fadeInAnimation ]
             [ case cardType of
