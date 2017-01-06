@@ -1,16 +1,21 @@
 module CreditCard
     exposing
         ( card
+        , form
+        , number
+        , name
+        , month
+        , year
+        , ccv
         , State
         , initialState
         , CardData
-        , form
         , emptyCardData
         )
 
 {-|
 # View
-@docs card,  form
+@docs card, form, number, name, month, year, ccv
 
 # Data
 @docs CardData, emptyCardData
@@ -20,7 +25,7 @@ module CreditCard
 -}
 
 import CreditCard.Components.Card
-import CreditCard.Config exposing (Config, FormConfig)
+import CreditCard.Config exposing (Config, FormConfig, Form)
 import CreditCard.Internal
 import CreditCard.Events exposing (onCCVFocus, onCCVBlur)
 import Helpers.CardType
@@ -118,8 +123,18 @@ type alias CardData model =
 
 
 {-| Card view
+
+Render the card view individually.
+Example:
+
+    view model =
+        let
+            config =
+                CreditCard.Config.defaultConfig
+        in
+            CreditCard.card config model
 -}
-card : Config {} -> CardData model -> Html msg
+card : Config config -> CardData model -> Html msg
 card config cardData =
     let
         cardInfo =
@@ -129,52 +144,58 @@ card config cardData =
 
 
 {-| Form view
+
+Render the card view with the full form fields.
+Example:
+
+    type Msg = UpdateCardData Model
+
+    view model =
+        let
+            config =
+                CreditCard.Config.defaultFormConfig UpdateCardData
+        in
+            CreditCard.card config model
+
 -}
 form : FormConfig model msg -> CardData model -> Html msg
 form config cardData =
+    div []
+        [ card config cardData
+        , number config cardData
+        , name config cardData
+        , month config cardData
+        , year config cardData
+        ]
+
+
+{-| CCV form field
+
+Render the CCV field individually.
+Example:
+
+    type Msg = UpdateCardData Model
+
+    view model =
+        let
+            config =
+                CreditCard.Config.defaultFormConfig UpdateCardData
+        in
+            form []
+                [ CreditCard.card config model
+                , CreditCard.ccv config model
+                ...
+
+-}
+ccv : FormConfig model msg -> CardData model -> Html msg
+ccv config cardData =
     let
-        cardInfo =
-            Helpers.CardType.detect cardData
-
-        ( _, maxLength ) =
-            Helpers.Misc.minMaxNumberLength cardInfo
-
-        unwrap : (Maybe String -> msg) -> (String -> msg)
-        unwrap msg =
-            (\str -> msg <| Just str)
-
-        toMaybeInt : (Maybe String -> msg) -> (Maybe Int -> msg)
-        toMaybeInt msg =
-            (\maybeInt -> msg <| Maybe.map toString maybeInt)
-
-        field getter inputElement =
-            p [ class <| getter config.classes ]
-                [ if config.showLabel then
-                    label [] [ text <| getter config.labels, inputElement ]
-                  else
-                    inputElement
-                ]
-
-        numberConfig =
+        ccvConfig =
             let
                 default =
-                    Input.BigNumber.defaultOptions <| updateNumber config cardData
+                    Input.Number.defaultOptions <| updateCCV config cardData
             in
-                { default | maxLength = Just maxLength }
-
-        monthConfig =
-            let
-                default =
-                    Input.Number.defaultOptions <| updateMonth config cardData
-            in
-                { default | maxValue = Just 12, minValue = Just 1 }
-
-        yearConfig =
-            let
-                default =
-                    Input.Number.defaultOptions <| updateYear config cardData
-            in
-                { default | minValue = Just 1, maxValue = Just 9999 }
+                { default | minValue = Just 1, maxValue = Just 9999, hasFocus = Just focusHandler }
 
         focusHandler hasFocus =
             let
@@ -182,22 +203,144 @@ form config cardData =
                     CreditCard.Events.updateCCVFocus hasFocus cardData
             in
                 config.onChange updatedCardData
+    in
+        field .ccv config <| Input.Number.input ccvConfig [ placeholder config.placeholders.ccv ] (cardData.ccv |> Maybe.andThen (String.toInt >> Result.toMaybe))
 
-        ccvConfig =
+
+{-| Year form field
+
+Render the year field individually.
+Example:
+
+    type Msg = UpdateCardData Model
+
+    view model =
+        let
+            config =
+                CreditCard.Config.defaultFormConfig UpdateCardData
+        in
+            form []
+                [ CreditCard.card config model
+                , CreditCard.year config model
+                ...
+
+-}
+year : FormConfig model msg -> CardData model -> Html msg
+year config cardData =
+    let
+        yearConfig =
             let
                 default =
-                    Input.Number.defaultOptions <| updateCCV config cardData
+                    Input.Number.defaultOptions <| updateYear config cardData
             in
-                { default | minValue = Just 1, maxValue = Just 9999, hasFocus = Just focusHandler }
+                { default | minValue = Just 1, maxValue = Just 9999 }
     in
-        div []
-            [ CreditCard.Components.Card.card config cardInfo cardData
-            , field .number <| Input.BigNumber.input numberConfig [ placeholder config.placeholders.number ] (Maybe.withDefault "" cardData.number)
-            , field .name <| input [ type_ "text", value <| Maybe.withDefault "" cardData.name, onInput <| updateName config cardData, placeholder config.placeholders.name ] []
-            , field .month <| Input.Number.input monthConfig [ placeholder config.placeholders.month ] (cardData.month |> Maybe.andThen (String.toInt >> Result.toMaybe))
-            , field .year <| Input.Number.input yearConfig [ placeholder config.placeholders.year ] (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
-            , field .ccv <| Input.Number.input ccvConfig [ placeholder config.placeholders.ccv ] (cardData.ccv |> Maybe.andThen (String.toInt >> Result.toMaybe))
-            ]
+        field .year config <| Input.Number.input yearConfig [ placeholder config.placeholders.year ] (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
+
+
+{-| Month form field
+
+Render the month field individually.
+Example:
+
+    type Msg = UpdateCardData Model
+
+    view model =
+        let
+            config =
+                CreditCard.Config.defaultFormConfig UpdateCardData
+        in
+            form []
+                [ CreditCard.card config model
+                , CreditCard.month config model
+                ...
+
+-}
+month : FormConfig model msg -> CardData model -> Html msg
+month config cardData =
+    let
+        monthConfig =
+            let
+                default =
+                    Input.Number.defaultOptions <| updateMonth config cardData
+            in
+                { default | maxValue = Just 12, minValue = Just 1 }
+    in
+        field .month config <| Input.Number.input monthConfig [ placeholder config.placeholders.month ] (cardData.month |> Maybe.andThen (String.toInt >> Result.toMaybe))
+
+
+{-| Name form field
+
+Render the name field individually.
+Example:
+
+    type Msg = UpdateCardData Model
+
+    view model =
+        let
+            config =
+                CreditCard.Config.defaultFormConfig UpdateCardData
+        in
+            form []
+                [ CreditCard.card config model
+                , CreditCard.name config model
+                ...
+
+-}
+name : FormConfig model msg -> CardData model -> Html msg
+name config cardData =
+    field .name config <| input [ type_ "text", value <| Maybe.withDefault "" cardData.name, onInput <| updateName config cardData, placeholder config.placeholders.name ] []
+
+
+{-| Number form field
+
+Render the number field individually.
+Example:
+
+    type Msg = UpdateCardData Model
+
+    view model =
+        let
+            config =
+                CreditCard.Config.defaultFormConfig UpdateCardData
+        in
+            form []
+                [ CreditCard.card config model
+                , CreditCard.number config model
+                ...
+
+-}
+number : FormConfig model msg -> CardData model -> Html msg
+number config cardData =
+    let
+        cardInfo =
+            Helpers.CardType.detect cardData
+
+        ( _, maxLength ) =
+            Helpers.Misc.minMaxNumberLength cardInfo
+
+        numberConfig =
+            let
+                default =
+                    Input.BigNumber.defaultOptions <| updateNumber config cardData
+            in
+                { default | maxLength = Just maxLength }
+    in
+        field .number config <| Input.BigNumber.input numberConfig [ placeholder config.placeholders.number ] (Maybe.withDefault "" cardData.number)
+
+
+
+-- HELPERS
+
+
+field : (Form -> String) -> FormConfig model msg -> Html msg -> Html msg
+field getter config inputElement =
+    p [ class <| getter config.classes ]
+        [ if config.showLabel then
+            label [] [ text <| getter config.labels, inputElement ]
+          else
+            inputElement
+        ]
 
 
 updateCCV : Config (FormConfig model msg) -> CardData model -> (Maybe Int -> msg)

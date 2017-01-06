@@ -1,5 +1,5 @@
 {
-    "version": "6.1.0",
+    "version": "7.0.0",
     "summary": "Pretty credit card form built with elm",
     "repository": "https://github.com/abadi199/elm-creditcard.git",
     "license": "MIT",
