@@ -1,10 +1,9 @@
 module Test.CardAnimation exposing (..)
 
 import Html exposing (Html, button, div, text, form)
-import Html.Attributes exposing (type')
+import Html.Attributes exposing (type_)
 import Html.Events exposing (onClick)
-import Html.App as App
-import Svg exposing (svg, rect, text', foreignObject, defs, g)
+import Svg exposing (svg, rect, text_, foreignObject, defs, g)
 import Svg.Attributes as Attributes exposing (id, style, viewBox, x, y, width, height, rx, ry, fill)
 
 
@@ -17,9 +16,9 @@ init =
     { isFlipped = Nothing }
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    App.beginnerProgram { model = init, view = view, update = update }
+    Html.beginnerProgram { model = init, view = view, update = update }
 
 
 flipStyle : Model -> Svg.Attribute Msg
@@ -66,15 +65,15 @@ view model =
                 ]
             , g [ id "elmCardSvg" ]
                 [ rect [ x "20", y "20", width "350", height "220", rx "5", ry "5", fill "gray" ] []
-                , Svg.text' [ x "200", y "160", fill "white" ] [ Svg.text "FRONT" ]
+                , Svg.text_ [ x "200", y "160", fill "white" ] [ Svg.text "FRONT" ]
                 ]
             , g [ id "elmCardSvg", backsideAnimation model ]
                 [ rect [ x "20", y "20", width "350", height "220", rx "5", ry "5", fill "gray" ]
                     []
-                , Svg.text' [ x "100", y "160", fill "white" ] [ Svg.text "BACK" ]
+                , Svg.text_ [ x "100", y "160", fill "white" ] [ Svg.text "BACK" ]
                 ]
             ]
-        , form [] [ button [ type' "button", onClick Flip ] [ text "Flip" ] ]
+        , form [] [ button [ type_ "button", onClick Flip ] [ text "Flip" ] ]
         ]
 
 
