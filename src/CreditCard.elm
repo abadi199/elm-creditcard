@@ -166,6 +166,7 @@ form config cardData =
         , name config cardData
         , month config cardData
         , year config cardData
+        , ccv config cardData
         ]
 
 
@@ -193,9 +194,9 @@ ccv config cardData =
         ccvConfig =
             let
                 default =
-                    Input.Number.defaultOptions <| updateCCV config cardData
+                    Input.BigNumber.defaultOptions <| updateCCV config cardData
             in
-                { default | minValue = Just 1, maxValue = Just 9999, hasFocus = Just focusHandler }
+                { default | maxLength = Just 4, hasFocus = Just focusHandler }
 
         focusHandler hasFocus =
             let
@@ -204,7 +205,7 @@ ccv config cardData =
             in
                 config.onChange updatedCardData
     in
-        field .ccv config <| Input.Number.input ccvConfig [ placeholder config.placeholders.ccv ] (cardData.ccv |> Maybe.andThen (String.toInt >> Result.toMaybe))
+        field .ccv config <| Input.BigNumber.input ccvConfig [ placeholder config.placeholders.ccv ] <| Maybe.withDefault "" cardData.ccv
 
 
 {-| Year form field
@@ -262,11 +263,11 @@ month config cardData =
         monthConfig =
             let
                 default =
-                    Input.Number.defaultOptions <| updateMonth config cardData
+                    Input.Number.defaultStringOptions <| updateMonth config cardData
             in
-                { default | maxValue = Just 12, minValue = Just 1 }
+                { default | maxLength = Just 2, maxValue = Just 12, minValue = Just 1 }
     in
-        field .month config <| Input.Number.input monthConfig [ placeholder config.placeholders.month ] (cardData.month |> Maybe.andThen (String.toInt >> Result.toMaybe))
+        field .month config <| Input.Number.inputString monthConfig [ placeholder config.placeholders.month ] <| Maybe.withDefault "" cardData.month
 
 
 {-| Name form field
@@ -343,13 +344,13 @@ field getter config inputElement =
         ]
 
 
-updateCCV : Config (FormConfig model msg) -> CardData model -> (Maybe Int -> msg)
+updateCCV : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateCCV config cardData =
     let
-        updatedCardData maybeInt =
-            { cardData | ccv = Maybe.map toString maybeInt }
+        updatedCardData ccv =
+            { cardData | ccv = Just ccv }
     in
-        (\maybeInt -> config.onChange (updatedCardData maybeInt))
+        (\ccv -> config.onChange (updatedCardData ccv))
 
 
 updateYear : Config (FormConfig model msg) -> CardData model -> (Maybe Int -> msg)
@@ -361,13 +362,13 @@ updateYear config cardData =
         (\maybeInt -> config.onChange (updatedCardData maybeInt))
 
 
-updateMonth : Config (FormConfig model msg) -> CardData model -> (Maybe Int -> msg)
+updateMonth : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateMonth config cardData =
     let
-        updatedCardData maybeInt =
-            { cardData | month = Maybe.map toString maybeInt }
+        updatedCardData month =
+            { cardData | month = Just month }
     in
-        (\maybeInt -> config.onChange (updatedCardData maybeInt))
+        (\month -> config.onChange (updatedCardData month))
 
 
 updateNumber : Config (FormConfig model msg) -> CardData model -> (String -> msg)
