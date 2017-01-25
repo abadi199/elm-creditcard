@@ -1564,8 +1564,7 @@ function toString(v)
 	var type = typeof v;
 	if (type === 'function')
 	{
-		var name = v.func ? v.func.name : v.name;
-		return '<function' + (name === '' ? '' : ':') + name + '>';
+		return '<function>';
 	}
 
 	if (type === 'boolean')
@@ -2072,6 +2071,13 @@ var _elm_lang$core$List$sortWith = _elm_lang$core$Native_List.sortWith;
 var _elm_lang$core$List$sortBy = _elm_lang$core$Native_List.sortBy;
 var _elm_lang$core$List$sort = function (xs) {
 	return A2(_elm_lang$core$List$sortBy, _elm_lang$core$Basics$identity, xs);
+};
+var _elm_lang$core$List$singleton = function (value) {
+	return {
+		ctor: '::',
+		_0: value,
+		_1: {ctor: '[]'}
+	};
 };
 var _elm_lang$core$List$drop = F2(
 	function (n, list) {
@@ -2891,7 +2897,7 @@ function endsWith(sub, str)
 function indexes(sub, str)
 {
 	var subLen = sub.length;
-	
+
 	if (subLen < 1)
 	{
 		return _elm_lang$core$Native_List.Nil;
@@ -2904,74 +2910,78 @@ function indexes(sub, str)
 	{
 		is.push(i);
 		i = i + subLen;
-	}	
-	
+	}
+
 	return _elm_lang$core$Native_List.fromArray(is);
 }
+
 
 function toInt(s)
 {
 	var len = s.length;
+
+	// if empty
 	if (len === 0)
 	{
-		return _elm_lang$core$Result$Err("could not convert string '" + s + "' to an Int" );
+		return intErr(s);
 	}
-	var start = 0;
-	if (s[0] === '-')
+
+	// if hex
+	var c = s[0];
+	if (c === '0' && s[1] === 'x')
 	{
-		if (len === 1)
+		for (var i = 2; i < len; ++i)
 		{
-			return _elm_lang$core$Result$Err("could not convert string '" + s + "' to an Int" );
+			var c = s[i];
+			if (('0' <= c && c <= '9') || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f'))
+			{
+				continue;
+			}
+			return intErr(s);
 		}
-		start = 1;
+		return _elm_lang$core$Result$Ok(parseInt(s, 16));
 	}
-	for (var i = start; i < len; ++i)
+
+	// is decimal
+	if (c > '9' || (c < '0' && c !== '-' && c !== '+'))
+	{
+		return intErr(s);
+	}
+	for (var i = 1; i < len; ++i)
 	{
 		var c = s[i];
 		if (c < '0' || '9' < c)
 		{
-			return _elm_lang$core$Result$Err("could not convert string '" + s + "' to an Int" );
+			return intErr(s);
 		}
 	}
+
 	return _elm_lang$core$Result$Ok(parseInt(s, 10));
 }
 
+function intErr(s)
+{
+	return _elm_lang$core$Result$Err("could not convert string '" + s + "' to an Int");
+}
+
+
 function toFloat(s)
 {
-	var len = s.length;
-	if (len === 0)
+	// check if it is a hex, octal, or binary number
+	if (s.length === 0 || /[\sxbo]/.test(s))
 	{
-		return _elm_lang$core$Result$Err("could not convert string '" + s + "' to a Float" );
+		return floatErr(s);
 	}
-	var start = 0;
-	if (s[0] === '-')
-	{
-		if (len === 1)
-		{
-			return _elm_lang$core$Result$Err("could not convert string '" + s + "' to a Float" );
-		}
-		start = 1;
-	}
-	var dotCount = 0;
-	for (var i = start; i < len; ++i)
-	{
-		var c = s[i];
-		if ('0' <= c && c <= '9')
-		{
-			continue;
-		}
-		if (c === '.')
-		{
-			dotCount += 1;
-			if (dotCount <= 1)
-			{
-				continue;
-			}
-		}
-		return _elm_lang$core$Result$Err("could not convert string '" + s + "' to a Float" );
-	}
-	return _elm_lang$core$Result$Ok(parseFloat(s));
+	var n = +s;
+	// faster isNaN check
+	return n === n ? _elm_lang$core$Result$Ok(n) : floatErr(s);
 }
+
+function floatErr(s)
+{
+	return _elm_lang$core$Result$Err("could not convert string '" + s + "' to a Float");
+}
+
 
 function toList(str)
 {
@@ -4407,11 +4417,6 @@ function badToString(problem)
 				problem = problem.rest;
 				break;
 
-			case 'index':
-				context += '[' + problem.index + ']';
-				problem = problem.rest;
-				break;
-
 			case 'oneOf':
 				var problems = problem.problems;
 				for (var i = 0; i < problems.length; i++)
@@ -5112,9 +5117,9 @@ function on(name, options, decoder)
 
 function equalEvents(a, b)
 {
-	if (!a.options === b.options)
+	if (a.options !== b.options)
 	{
-		if (a.stopPropagation !== b.stopPropagation || a.preventDefault !== b.preventDefault)
+		if (a.options.stopPropagation !== b.options.stopPropagation || a.options.preventDefault !== b.options.preventDefault)
 		{
 			return false;
 		}
@@ -6390,7 +6395,7 @@ function normalRenderer(parentNode, view)
 var rAF =
 	typeof requestAnimationFrame !== 'undefined'
 		? requestAnimationFrame
-		: function(callback) { callback(); };
+		: function(callback) { setTimeout(callback, 1000 / 60); };
 
 function makeStepper(domNode, view, initialVirtualNode, eventNode)
 {
@@ -7275,15 +7280,8 @@ function setupIncomingPort(name, callback)
 		sentBeforeInit.push(value);
 	}
 
-	function postInitSend(incomingValue)
+	function postInitSend(value)
 	{
-		var result = A2(_elm_lang$core$Json_Decode$decodeValue, converter, incomingValue);
-		if (result.ctor === 'Err')
-		{
-			throw new Error('Trying to send an unexpected type of value through port `' + name + '`:\n' + result._0);
-		}
-
-		var value = result._0;
 		var temp = subs;
 		while (temp.ctor !== '[]')
 		{
@@ -7294,7 +7292,13 @@ function setupIncomingPort(name, callback)
 
 	function send(incomingValue)
 	{
-		currentSend(incomingValue);
+		var result = A2(_elm_lang$core$Json_Decode$decodeValue, converter, incomingValue);
+		if (result.ctor === 'Err')
+		{
+			throw new Error('Trying to send an unexpected type of value through port `' + name + '`:\n' + result._0);
+		}
+
+		currentSend(result._0);
 	}
 
 	return { send: send };
@@ -13457,7 +13461,7 @@ var _abadi199$elm_input_extra$Input_BigNumber$Options = F3(
 	});
 
 var _abadi199$elm_input_extra$Input_Number$exceedMaxLength = F2(
-	function (options, value) {
+	function (maxLength, value) {
 		return A2(
 			_elm_lang$core$Maybe$withDefault,
 			false,
@@ -13471,10 +13475,10 @@ var _abadi199$elm_input_extra$Input_Number$exceedMaxLength = F2(
 							maxLength,
 							_elm_lang$core$String$length(value)) > -1;
 					},
-					options.maxLength)));
+					maxLength)));
 	});
 var _abadi199$elm_input_extra$Input_Number$exceedMaxValue = F2(
-	function (options, number) {
+	function (maxValue, number) {
 		return A2(
 			_elm_lang$core$Maybe$withDefault,
 			false,
@@ -13484,11 +13488,11 @@ var _abadi199$elm_input_extra$Input_Number$exceedMaxValue = F2(
 					function (max, number) {
 						return _elm_lang$core$Native_Utils.cmp(number, max) > 0;
 					}),
-				options.maxValue,
+				maxValue,
 				number));
 	});
 var _abadi199$elm_input_extra$Input_Number$lessThanMinValue = F2(
-	function (options, number) {
+	function (minValue, number) {
 		return A2(
 			_elm_lang$core$Maybe$withDefault,
 			false,
@@ -13498,15 +13502,58 @@ var _abadi199$elm_input_extra$Input_Number$lessThanMinValue = F2(
 					function (min, number) {
 						return _elm_lang$core$Native_Utils.cmp(number, min) < 0;
 					}),
-				options.minValue,
+				minValue,
 				number));
 	});
-var _abadi199$elm_input_extra$Input_Number$onChange = function (options) {
+var _abadi199$elm_input_extra$Input_Number$onChangeString = function (options) {
 	var checkWithMaxValue = function (number) {
-		return A2(_abadi199$elm_input_extra$Input_Number$exceedMaxValue, options, number) ? options.maxValue : number;
+		return A2(_abadi199$elm_input_extra$Input_Number$exceedMaxValue, options.maxValue, number) ? options.maxValue : number;
 	};
 	var checkWithMinValue = function (number) {
-		return A2(_abadi199$elm_input_extra$Input_Number$lessThanMinValue, options, number) ? options.minValue : number;
+		return A2(_abadi199$elm_input_extra$Input_Number$lessThanMinValue, options.minValue, number) ? options.minValue : number;
+	};
+	var leadingZeroRegex = _elm_lang$core$Regex$regex('0*');
+	var leadingZero = function (string) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'',
+			A2(
+				_elm_lang$core$Maybe$map,
+				function (_) {
+					return _.match;
+				},
+				_elm_lang$core$List$head(
+					A3(
+						_elm_lang$core$Regex$find,
+						_elm_lang$core$Regex$AtMost(1),
+						leadingZeroRegex,
+						string))));
+	};
+	var toInt = function (string) {
+		return A3(
+			_elm_lang$core$Basics$flip,
+			F2(
+				function (x, y) {
+					return A2(_elm_lang$core$Basics_ops['++'], x, y);
+				}),
+			leadingZero(string),
+			_elm_lang$core$Basics$toString(
+				checkWithMaxValue(
+					checkWithMinValue(
+						_elm_lang$core$Result$toMaybe(
+							_elm_lang$core$String$toInt(string))))));
+	};
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(_elm_lang$core$Json_Decode$map, options.onInput, _elm_lang$html$Html_Events$targetValue));
+};
+var _abadi199$elm_input_extra$Input_Number$onChange = function (options) {
+	var checkWithMaxValue = function (number) {
+		return A2(_abadi199$elm_input_extra$Input_Number$exceedMaxValue, options.maxValue, number) ? options.maxValue : number;
+	};
+	var checkWithMinValue = function (number) {
+		return A2(_abadi199$elm_input_extra$Input_Number$lessThanMinValue, options.minValue, number) ? options.minValue : number;
 	};
 	var toInt = function (string) {
 		return checkWithMaxValue(
@@ -13529,7 +13576,7 @@ var _abadi199$elm_input_extra$Input_Number$isValid = F2(
 	function (newValue, options) {
 		var updatedNumber = _elm_lang$core$Result$toMaybe(
 			_elm_lang$core$String$toInt(newValue));
-		return (!A2(_abadi199$elm_input_extra$Input_Number$exceedMaxLength, options, newValue)) && (!A2(_abadi199$elm_input_extra$Input_Number$exceedMaxValue, options, updatedNumber));
+		return (!A2(_abadi199$elm_input_extra$Input_Number$exceedMaxLength, options.maxLength, newValue)) && (!A2(_abadi199$elm_input_extra$Input_Number$exceedMaxValue, options.maxValue, updatedNumber));
 	});
 var _abadi199$elm_input_extra$Input_Number$onKeyDown = F2(
 	function (options, currentValue) {
@@ -13573,6 +13620,45 @@ var _abadi199$elm_input_extra$Input_Number$onKeyDown = F2(
 		var eventOptions = {stopPropagation: false, preventDefault: true};
 		return A3(_elm_lang$html$Html_Events$onWithOptions, 'keydown', eventOptions, decoder);
 	});
+var _abadi199$elm_input_extra$Input_Number$onKeyDownString = F2(
+	function (options, currentValue) {
+		var isNumber = function (keyCode) {
+			return (_elm_lang$core$Native_Utils.cmp(keyCode, 48) > -1) && (_elm_lang$core$Native_Utils.cmp(keyCode, 57) < 1);
+		};
+		var isNumPad = function (keyCode) {
+			return (_elm_lang$core$Native_Utils.cmp(keyCode, 96) > -1) && (_elm_lang$core$Native_Utils.cmp(keyCode, 105) < 1);
+		};
+		var newValue = function (keyCode) {
+			return A2(
+				F2(
+					function (x, y) {
+						return A2(_elm_lang$core$Basics_ops['++'], x, y);
+					}),
+				currentValue,
+				_elm_lang$core$String$fromChar(
+					_elm_lang$core$Char$fromCode(keyCode)));
+		};
+		var filterKey = function (event) {
+			return (event.ctrlKey || (event.altKey || event.metaKey)) ? _elm_lang$core$Json_Decode$fail('modifier key is pressed') : (A2(
+				_elm_lang$core$List$any,
+				F2(
+					function (x, y) {
+						return _elm_lang$core$Native_Utils.eq(x, y);
+					})(event.keyCode),
+				_abadi199$elm_input_extra$Input_KeyCode$allowedKeyCodes) ? _elm_lang$core$Json_Decode$fail('allowedKeys') : (((isNumber(event.keyCode) || isNumPad(event.keyCode)) && A2(
+				_abadi199$elm_input_extra$Input_Number$isValid,
+				newValue(event.keyCode),
+				options)) ? _elm_lang$core$Json_Decode$fail('numeric') : _elm_lang$core$Json_Decode$succeed(event.keyCode)));
+		};
+		var decoder = A2(
+			_elm_lang$core$Json_Decode$map,
+			function (_p2) {
+				return options.onInput(currentValue);
+			},
+			A2(_elm_lang$core$Json_Decode$andThen, filterKey, _abadi199$elm_input_extra$Input_Decoder$eventDecoder));
+		var eventOptions = {stopPropagation: false, preventDefault: true};
+		return A3(_elm_lang$html$Html_Events$onWithOptions, 'keydown', eventOptions, decoder);
+	});
 var _abadi199$elm_input_extra$Input_Number$filterNonDigit = function (value) {
 	return _elm_lang$core$String$fromList(
 		A2(
@@ -13580,6 +13666,105 @@ var _abadi199$elm_input_extra$Input_Number$filterNonDigit = function (value) {
 			_elm_lang$core$Char$isDigit,
 			_elm_lang$core$String$toList(value)));
 };
+var _abadi199$elm_input_extra$Input_Number$inputString = F3(
+	function (options, attributes, currentValue) {
+		var toArray = A2(
+			_elm_lang$core$Basics$flip,
+			F2(
+				function (x, y) {
+					return {ctor: '::', _0: x, _1: y};
+				}),
+			{ctor: '[]'});
+		var onFocusAttribute = A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '[]'},
+			A2(
+				_elm_lang$core$Maybe$map,
+				toArray,
+				A2(
+					_elm_lang$core$Maybe$map,
+					_elm_lang$html$Html_Events$onFocus,
+					A2(
+						_elm_lang$core$Maybe$map,
+						function (f) {
+							return f(true);
+						},
+						options.hasFocus))));
+		var onBlurAttribute = A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '[]'},
+			A2(
+				_elm_lang$core$Maybe$map,
+				toArray,
+				A2(
+					_elm_lang$core$Maybe$map,
+					_elm_lang$html$Html_Events$onBlur,
+					A2(
+						_elm_lang$core$Maybe$map,
+						function (f) {
+							return f(false);
+						},
+						options.hasFocus))));
+		var maxAttribute = A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '[]'},
+			A2(
+				_elm_lang$core$Maybe$map,
+				toArray,
+				A2(
+					_elm_lang$core$Maybe$map,
+					_elm_lang$html$Html_Attributes$max,
+					A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, options.maxValue))));
+		var minAttribute = A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '[]'},
+			A2(
+				_elm_lang$core$Maybe$map,
+				toArray,
+				A2(
+					_elm_lang$core$Maybe$map,
+					_elm_lang$html$Html_Attributes$min,
+					A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, options.minValue))));
+		return A2(
+			_elm_lang$html$Html$input,
+			A2(
+				_elm_lang$core$List$append,
+				minAttribute,
+				A2(
+					_elm_lang$core$List$append,
+					maxAttribute,
+					A2(
+						_elm_lang$core$List$append,
+						onBlurAttribute,
+						A2(
+							_elm_lang$core$List$append,
+							onFocusAttribute,
+							A2(
+								_elm_lang$core$List$append,
+								attributes,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$value(currentValue),
+									_1: {
+										ctor: '::',
+										_0: A2(_abadi199$elm_input_extra$Input_Number$onKeyDownString, options, currentValue),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(options.onInput),
+											_1: {
+												ctor: '::',
+												_0: _abadi199$elm_input_extra$Input_Number$onChangeString(options),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$type_('number'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}))))),
+			{ctor: '[]'});
+	});
 var _abadi199$elm_input_extra$Input_Number$input = F3(
 	function (options, attributes, currentValue) {
 		var toArray = A2(
@@ -13669,10 +13854,10 @@ var _abadi199$elm_input_extra$Input_Number$input = F3(
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Events$onInput(
-												function (_p2) {
+												function (_p3) {
 													return options.onInput(
 														_elm_lang$core$Result$toMaybe(
-															_elm_lang$core$String$toInt(_p2)));
+															_elm_lang$core$String$toInt(_p3)));
 												}),
 											_1: {
 												ctor: '::',
@@ -13688,10 +13873,17 @@ var _abadi199$elm_input_extra$Input_Number$input = F3(
 								}))))),
 			{ctor: '[]'});
 	});
+var _abadi199$elm_input_extra$Input_Number$defaultStringOptions = function (onInput) {
+	return {onInput: onInput, maxLength: _elm_lang$core$Maybe$Nothing, maxValue: _elm_lang$core$Maybe$Nothing, minValue: _elm_lang$core$Maybe$Nothing, hasFocus: _elm_lang$core$Maybe$Nothing};
+};
 var _abadi199$elm_input_extra$Input_Number$defaultOptions = function (onInput) {
 	return {onInput: onInput, maxLength: _elm_lang$core$Maybe$Nothing, maxValue: _elm_lang$core$Maybe$Nothing, minValue: _elm_lang$core$Maybe$Nothing, hasFocus: _elm_lang$core$Maybe$Nothing};
 };
 var _abadi199$elm_input_extra$Input_Number$Options = F5(
+	function (a, b, c, d, e) {
+		return {maxLength: a, maxValue: b, minValue: c, onInput: d, hasFocus: e};
+	});
+var _abadi199$elm_input_extra$Input_Number$StringOptions = F5(
 	function (a, b, c, d, e) {
 		return {maxLength: a, maxValue: b, minValue: c, onInput: d, hasFocus: e};
 	});
@@ -13726,16 +13918,16 @@ var _abadi199$elm_creditcard$CreditCard$updateNumber = F2(
 	});
 var _abadi199$elm_creditcard$CreditCard$updateMonth = F2(
 	function (config, cardData) {
-		var updatedCardData = function (maybeInt) {
+		var updatedCardData = function (month) {
 			return _elm_lang$core$Native_Utils.update(
 				cardData,
 				{
-					month: A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, maybeInt)
+					month: _elm_lang$core$Maybe$Just(month)
 				});
 		};
-		return function (maybeInt) {
+		return function (month) {
 			return config.onChange(
-				updatedCardData(maybeInt));
+				updatedCardData(month));
 		};
 	});
 var _abadi199$elm_creditcard$CreditCard$updateYear = F2(
@@ -13754,93 +13946,48 @@ var _abadi199$elm_creditcard$CreditCard$updateYear = F2(
 	});
 var _abadi199$elm_creditcard$CreditCard$updateCCV = F2(
 	function (config, cardData) {
-		var updatedCardData = function (maybeInt) {
+		var updatedCardData = function (ccv) {
 			return _elm_lang$core$Native_Utils.update(
 				cardData,
 				{
-					ccv: A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, maybeInt)
+					ccv: _elm_lang$core$Maybe$Just(ccv)
 				});
 		};
-		return function (maybeInt) {
+		return function (ccv) {
 			return config.onChange(
-				updatedCardData(maybeInt));
+				updatedCardData(ccv));
 		};
 	});
-var _abadi199$elm_creditcard$CreditCard$form = F2(
+var _abadi199$elm_creditcard$CreditCard$field = F3(
+	function (getter, config, inputElement) {
+		return A2(
+			_elm_lang$html$Html$p,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(
+					getter(config.classes)),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: config.showLabel ? A2(
+					_elm_lang$html$Html$label,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							getter(config.labels)),
+						_1: {
+							ctor: '::',
+							_0: inputElement,
+							_1: {ctor: '[]'}
+						}
+					}) : inputElement,
+				_1: {ctor: '[]'}
+			});
+	});
+var _abadi199$elm_creditcard$CreditCard$number = F2(
 	function (config, cardData) {
-		var focusHandler = function (hasFocus) {
-			var updatedCardData = A2(_abadi199$elm_creditcard$CreditCard_Events$updateCCVFocus, hasFocus, cardData);
-			return config.onChange(updatedCardData);
-		};
-		var ccvConfig = function () {
-			var $default = _abadi199$elm_input_extra$Input_Number$defaultOptions(
-				A2(_abadi199$elm_creditcard$CreditCard$updateCCV, config, cardData));
-			return _elm_lang$core$Native_Utils.update(
-				$default,
-				{
-					minValue: _elm_lang$core$Maybe$Just(1),
-					maxValue: _elm_lang$core$Maybe$Just(9999),
-					hasFocus: _elm_lang$core$Maybe$Just(focusHandler)
-				});
-		}();
-		var yearConfig = function () {
-			var $default = _abadi199$elm_input_extra$Input_Number$defaultOptions(
-				A2(_abadi199$elm_creditcard$CreditCard$updateYear, config, cardData));
-			return _elm_lang$core$Native_Utils.update(
-				$default,
-				{
-					minValue: _elm_lang$core$Maybe$Just(1),
-					maxValue: _elm_lang$core$Maybe$Just(9999)
-				});
-		}();
-		var monthConfig = function () {
-			var $default = _abadi199$elm_input_extra$Input_Number$defaultOptions(
-				A2(_abadi199$elm_creditcard$CreditCard$updateMonth, config, cardData));
-			return _elm_lang$core$Native_Utils.update(
-				$default,
-				{
-					maxValue: _elm_lang$core$Maybe$Just(12),
-					minValue: _elm_lang$core$Maybe$Just(1)
-				});
-		}();
-		var field = F2(
-			function (getter, inputElement) {
-				return A2(
-					_elm_lang$html$Html$p,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class(
-							getter(config.classes)),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: config.showLabel ? A2(
-							_elm_lang$html$Html$label,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									getter(config.labels)),
-								_1: {
-									ctor: '::',
-									_0: inputElement,
-									_1: {ctor: '[]'}
-								}
-							}) : inputElement,
-						_1: {ctor: '[]'}
-					});
-			});
-		var toMaybeInt = F2(
-			function (msg, maybeInt) {
-				return msg(
-					A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, maybeInt));
-			});
-		var unwrap = F2(
-			function (msg, str) {
-				return msg(
-					_elm_lang$core$Maybe$Just(str));
-			});
 		var cardInfo = _abadi199$elm_creditcard$Helpers_CardType$detect(cardData);
 		var _p0 = _abadi199$elm_creditcard$Helpers_Misc$minMaxNumberLength(cardInfo);
 		var maxLength = _p0._1;
@@ -13853,123 +14000,176 @@ var _abadi199$elm_creditcard$CreditCard$form = F2(
 					maxLength: _elm_lang$core$Maybe$Just(maxLength)
 				});
 		}();
+		return A3(
+			_abadi199$elm_creditcard$CreditCard$field,
+			function (_) {
+				return _.number;
+			},
+			config,
+			A3(
+				_abadi199$elm_input_extra$Input_BigNumber$input,
+				numberConfig,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.number),
+					_1: {ctor: '[]'}
+				},
+				A2(_elm_lang$core$Maybe$withDefault, '', cardData.number)));
+	});
+var _abadi199$elm_creditcard$CreditCard$name = F2(
+	function (config, cardData) {
+		return A3(
+			_abadi199$elm_creditcard$CreditCard$field,
+			function (_) {
+				return _.name;
+			},
+			config,
+			A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$type_('text'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$value(
+							A2(_elm_lang$core$Maybe$withDefault, '', cardData.name)),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onInput(
+								A2(_abadi199$elm_creditcard$CreditCard$updateName, config, cardData)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.name),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				},
+				{ctor: '[]'}));
+	});
+var _abadi199$elm_creditcard$CreditCard$month = F2(
+	function (config, cardData) {
+		var monthConfig = function () {
+			var $default = _abadi199$elm_input_extra$Input_Number$defaultStringOptions(
+				A2(_abadi199$elm_creditcard$CreditCard$updateMonth, config, cardData));
+			return _elm_lang$core$Native_Utils.update(
+				$default,
+				{
+					maxLength: _elm_lang$core$Maybe$Just(2),
+					maxValue: _elm_lang$core$Maybe$Just(12),
+					minValue: _elm_lang$core$Maybe$Just(1)
+				});
+		}();
+		return A3(
+			_abadi199$elm_creditcard$CreditCard$field,
+			function (_) {
+				return _.month;
+			},
+			config,
+			A3(
+				_abadi199$elm_input_extra$Input_Number$inputString,
+				monthConfig,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.month),
+					_1: {ctor: '[]'}
+				},
+				A2(_elm_lang$core$Maybe$withDefault, '', cardData.month)));
+	});
+var _abadi199$elm_creditcard$CreditCard$year = F2(
+	function (config, cardData) {
+		var yearConfig = function () {
+			var $default = _abadi199$elm_input_extra$Input_Number$defaultOptions(
+				A2(_abadi199$elm_creditcard$CreditCard$updateYear, config, cardData));
+			return _elm_lang$core$Native_Utils.update(
+				$default,
+				{
+					minValue: _elm_lang$core$Maybe$Just(1),
+					maxValue: _elm_lang$core$Maybe$Just(9999)
+				});
+		}();
+		return A3(
+			_abadi199$elm_creditcard$CreditCard$field,
+			function (_) {
+				return _.year;
+			},
+			config,
+			A3(
+				_abadi199$elm_input_extra$Input_Number$input,
+				yearConfig,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.year),
+					_1: {ctor: '[]'}
+				},
+				A2(
+					_elm_lang$core$Maybe$andThen,
+					function (_p1) {
+						return _elm_lang$core$Result$toMaybe(
+							_elm_lang$core$String$toInt(_p1));
+					},
+					cardData.year)));
+	});
+var _abadi199$elm_creditcard$CreditCard$ccv = F2(
+	function (config, cardData) {
+		var focusHandler = function (hasFocus) {
+			var updatedCardData = A2(_abadi199$elm_creditcard$CreditCard_Events$updateCCVFocus, hasFocus, cardData);
+			return config.onChange(updatedCardData);
+		};
+		var ccvConfig = function () {
+			var $default = _abadi199$elm_input_extra$Input_BigNumber$defaultOptions(
+				A2(_abadi199$elm_creditcard$CreditCard$updateCCV, config, cardData));
+			return _elm_lang$core$Native_Utils.update(
+				$default,
+				{
+					maxLength: _elm_lang$core$Maybe$Just(4),
+					hasFocus: _elm_lang$core$Maybe$Just(focusHandler)
+				});
+		}();
+		return A3(
+			_abadi199$elm_creditcard$CreditCard$field,
+			function (_) {
+				return _.ccv;
+			},
+			config,
+			A3(
+				_abadi199$elm_input_extra$Input_BigNumber$input,
+				ccvConfig,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.ccv),
+					_1: {ctor: '[]'}
+				},
+				A2(_elm_lang$core$Maybe$withDefault, '', cardData.ccv)));
+	});
+var _abadi199$elm_creditcard$CreditCard$card = F2(
+	function (config, cardData) {
+		var cardInfo = _abadi199$elm_creditcard$Helpers_CardType$detect(cardData);
+		return A3(_abadi199$elm_creditcard$CreditCard_Components_Card$card, config, cardInfo, cardData);
+	});
+var _abadi199$elm_creditcard$CreditCard$form = F2(
+	function (config, cardData) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A3(_abadi199$elm_creditcard$CreditCard_Components_Card$card, config, cardInfo, cardData),
+				_0: A2(_abadi199$elm_creditcard$CreditCard$card, config, cardData),
 				_1: {
 					ctor: '::',
-					_0: A2(
-						field,
-						function (_) {
-							return _.number;
-						},
-						A3(
-							_abadi199$elm_input_extra$Input_BigNumber$input,
-							numberConfig,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.number),
-								_1: {ctor: '[]'}
-							},
-							A2(_elm_lang$core$Maybe$withDefault, '', cardData.number))),
+					_0: A2(_abadi199$elm_creditcard$CreditCard$number, config, cardData),
 					_1: {
 						ctor: '::',
-						_0: A2(
-							field,
-							function (_) {
-								return _.name;
-							},
-							A2(
-								_elm_lang$html$Html$input,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$type_('text'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$value(
-											A2(_elm_lang$core$Maybe$withDefault, '', cardData.name)),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$html$Html_Events$onInput(
-												A2(_abadi199$elm_creditcard$CreditCard$updateName, config, cardData)),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.name),
-												_1: {ctor: '[]'}
-											}
-										}
-									}
-								},
-								{ctor: '[]'})),
+						_0: A2(_abadi199$elm_creditcard$CreditCard$name, config, cardData),
 						_1: {
 							ctor: '::',
-							_0: A2(
-								field,
-								function (_) {
-									return _.month;
-								},
-								A3(
-									_abadi199$elm_input_extra$Input_Number$input,
-									monthConfig,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.month),
-										_1: {ctor: '[]'}
-									},
-									A2(
-										_elm_lang$core$Maybe$andThen,
-										function (_p1) {
-											return _elm_lang$core$Result$toMaybe(
-												_elm_lang$core$String$toInt(_p1));
-										},
-										cardData.month))),
+							_0: A2(_abadi199$elm_creditcard$CreditCard$month, config, cardData),
 							_1: {
 								ctor: '::',
-								_0: A2(
-									field,
-									function (_) {
-										return _.year;
-									},
-									A3(
-										_abadi199$elm_input_extra$Input_Number$input,
-										yearConfig,
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.year),
-											_1: {ctor: '[]'}
-										},
-										A2(
-											_elm_lang$core$Maybe$andThen,
-											function (_p2) {
-												return _elm_lang$core$Result$toMaybe(
-													_elm_lang$core$String$toInt(_p2));
-											},
-											cardData.year))),
+								_0: A2(_abadi199$elm_creditcard$CreditCard$year, config, cardData),
 								_1: {
 									ctor: '::',
-									_0: A2(
-										field,
-										function (_) {
-											return _.ccv;
-										},
-										A3(
-											_abadi199$elm_input_extra$Input_Number$input,
-											ccvConfig,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$placeholder(config.placeholders.ccv),
-												_1: {ctor: '[]'}
-											},
-											A2(
-												_elm_lang$core$Maybe$andThen,
-												function (_p3) {
-													return _elm_lang$core$Result$toMaybe(
-														_elm_lang$core$String$toInt(_p3));
-												},
-												cardData.ccv))),
+									_0: A2(_abadi199$elm_creditcard$CreditCard$ccv, config, cardData),
 									_1: {ctor: '[]'}
 								}
 							}
@@ -13977,11 +14177,6 @@ var _abadi199$elm_creditcard$CreditCard$form = F2(
 					}
 				}
 			});
-	});
-var _abadi199$elm_creditcard$CreditCard$card = F2(
-	function (config, cardData) {
-		var cardInfo = _abadi199$elm_creditcard$Helpers_CardType$detect(cardData);
-		return A3(_abadi199$elm_creditcard$CreditCard_Components_Card$card, config, cardInfo, cardData);
 	});
 var _abadi199$elm_creditcard$CreditCard$initialState = _abadi199$elm_creditcard$CreditCard_Internal$initialState;
 var _abadi199$elm_creditcard$CreditCard$emptyCardData = {number: _elm_lang$core$Maybe$Nothing, name: _elm_lang$core$Maybe$Nothing, month: _elm_lang$core$Maybe$Nothing, year: _elm_lang$core$Maybe$Nothing, ccv: _elm_lang$core$Maybe$Nothing, state: _abadi199$elm_creditcard$CreditCard$initialState};
