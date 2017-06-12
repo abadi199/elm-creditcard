@@ -1,8 +1,8 @@
 module DemoFormModel exposing (main)
 
-import Html exposing (Html, div, input, label, text, p, form)
 import CreditCard
 import CreditCard.Config
+import Html exposing (Html, div, form, input, label, p, text)
 
 
 main : Program Never Model Msg
@@ -20,7 +20,7 @@ type alias Model =
     , name : Maybe String
     , month : Maybe String
     , year : Maybe String
-    , ccv : Maybe String
+    , cvv : Maybe String
     , state : CreditCard.State
     , shippingAddress : Maybe String
     , shippingState : Maybe String
@@ -38,7 +38,7 @@ init =
       , name = Nothing
       , month = Nothing
       , year = Nothing
-      , ccv = Nothing
+      , cvv = Nothing
       , state = CreditCard.initialState
       , shippingAddress = Nothing
       , shippingState = Nothing
@@ -58,11 +58,11 @@ view model =
         config =
             CreditCard.Config.defaultFormConfig UpdateCardData
     in
-        form []
-            [ CreditCard.form
-                config
-                model
-            ]
+    form []
+        [ CreditCard.form
+            config
+            model
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

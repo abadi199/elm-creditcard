@@ -40,7 +40,7 @@ type alias Model =
     , name : Maybe String
     , month : Maybe String
     , year : Maybe String
-    , ccv : Maybe String
+    , cvv : Maybe String
     , state : CreditCard.State
     }
 
@@ -58,7 +58,7 @@ type alias Model =
     , name : Maybe String
     , month : Maybe String
     , year : Maybe String
-    , ccv : Maybe String
+    , cvv : Maybe String
     , state : CreditCard.State
     ...
     }

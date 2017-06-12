@@ -1,22 +1,25 @@
-module CreditCard.Events exposing (onCCVFocus, onCCVBlur, updateCCVFocus)
+module CreditCard.Events exposing (onCVVBlur, onCVVFocus, updateCVVFocus)
 
-{-| Helpers function for all events related to focus/blur of CCV field for card flipping effects.
+{-| Helpers function for all events related to focus/blur of CVV field for card flipping effects.
 See examples in the demo folder of the git repo for some example on how to use this module.
 
+
 # Events
-@docs updateCCVFocus, onCCVFocus, onCCVBlur
+
+@docs updateCVVFocus, onCVVFocus, onCVVBlur
+
 -}
 
-import CreditCard.Internal exposing (CCVPosition(..), CardData, State(..), getStateValue)
+import CreditCard.Internal exposing (CVVPosition(..), CardData, State(..), getStateValue)
 import Helpers.CardType
 import Html
 import Html.Events exposing (onBlur, onFocus)
 
 
-{-| Helper function to update the focus state of the ccv field in the internal state
+{-| Helper function to update the focus state of the cvv field in the internal state
 -}
-updateCCVFocus : Bool -> CardData model -> CardData model
-updateCCVFocus isFocused cardData =
+updateCVVFocus : Bool -> CardData model -> CardData model
+updateCVVFocus isFocused cardData =
     let
         stateValue =
             getStateValue cardData.state
@@ -25,7 +28,7 @@ updateCCVFocus isFocused cardData =
             Helpers.CardType.detect cardData
 
         updatedStateValue =
-            case ( isFocused, cardInfo.ccvPosition ) of
+            case ( isFocused, cardInfo.cvvPosition ) of
                 ( False, _ ) ->
                     flip False
 
@@ -41,28 +44,28 @@ updateCCVFocus isFocused cardData =
         updatedState =
             InternalState updatedStateValue
     in
-        { cardData | state = updatedState }
+    { cardData | state = updatedState }
 
 
-{-| `onFocus` event for the CCV field.
-This will update the focus state of the ccv field to `True` in the internal state
+{-| `onFocus` event for the CVV field.
+This will update the focus state of the cvv field to `True` in the internal state
 -}
-onCCVFocus : (State -> msg) -> CardData model -> Html.Attribute msg
-onCCVFocus tagger cardData =
+onCVVFocus : (State -> msg) -> CardData model -> Html.Attribute msg
+onCVVFocus tagger cardData =
     let
         updatedCardData =
-            updateCCVFocus True cardData
+            updateCVVFocus True cardData
     in
-        onFocus (tagger updatedCardData.state)
+    onFocus (tagger updatedCardData.state)
 
 
-{-| `onBlur` event for the CCV field.
-This will update the focus state of the ccv field to `False` in the internal state
+{-| `onBlur` event for the CVV field.
+This will update the focus state of the cvv field to `False` in the internal state
 -}
-onCCVBlur : (State -> msg) -> CardData model -> Html.Attribute msg
-onCCVBlur tagger cardData =
+onCVVBlur : (State -> msg) -> CardData model -> Html.Attribute msg
+onCVVBlur tagger cardData =
     let
         updatedCardData =
-            updateCCVFocus False cardData
+            updateCVVFocus False cardData
     in
-        onBlur (tagger updatedCardData.state)
+    onBlur (tagger updatedCardData.state)

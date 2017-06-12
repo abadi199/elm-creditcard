@@ -1,15 +1,15 @@
 module CreditCard.Internal
     exposing
-        ( State(..)
-        , StateValue
-        , initialState
-        , getStateValue
+        ( CVVPosition(..)
+        , CardData
+        , CardInfo
         , CardStyle
         , CardType(..)
         , NumberFormat
-        , CCVPosition(..)
-        , CardData
-        , CardInfo
+        , State(..)
+        , StateValue
+        , getStateValue
+        , initialState
         )
 
 import Html exposing (Attribute)
@@ -72,9 +72,9 @@ type alias NumberFormat =
     List Int
 
 
-{-| A union type representing the position of the CCV
+{-| A union type representing the position of the CVV
 -}
-type CCVPosition
+type CVVPosition
     = Front
     | Back
 
@@ -85,7 +85,7 @@ type alias CardData model =
         , name : Maybe String
         , month : Maybe String
         , year : Maybe String
-        , ccv : Maybe String
+        , cvv : Maybe String
         , state : State
     }
 
@@ -97,5 +97,5 @@ type alias CardInfo msg =
     , validLength : List Int
     , numberFormat : NumberFormat
     , cardStyle : CardStyle msg
-    , ccvPosition : CCVPosition
+    , cvvPosition : CVVPosition
     }

@@ -1,37 +1,45 @@
 module CreditCard
     exposing
-        ( card
-        , form
-        , number
-        , name
-        , month
-        , year
-        , ccv
+        ( CardData
         , State
-        , initialState
-        , CardData
+        , card
+        , cvv
         , emptyCardData
+        , form
+        , initialState
+        , month
+        , name
+        , number
+        , year
         )
 
 {-|
+
+
 # View
-@docs card, form, number, name, month, year, ccv
+
+@docs card, form, number, name, month, year, cvv
+
 
 # Data
+
 @docs CardData, emptyCardData
 
+
 # Internal State
+
 @docs State, initialState
+
 -}
 
 import CreditCard.Components.Card
-import CreditCard.Config exposing (Config, FormConfig, Form)
+import CreditCard.Config exposing (Config, Form, FormConfig)
+import CreditCard.Events exposing (onCVVBlur, onCVVFocus)
 import CreditCard.Internal
-import CreditCard.Events exposing (onCCVFocus, onCCVBlur)
 import Helpers.CardType
 import Helpers.Misc
-import Html exposing (Html, div, label, p, text, input)
-import Html.Attributes exposing (class, type_, value, placeholder)
+import Html exposing (Html, div, input, label, p, text)
+import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onInput)
 import Input.BigNumber
 import Input.Number
@@ -59,7 +67,7 @@ emptyCardData =
     , name = Nothing
     , month = Nothing
     , year = Nothing
-    , ccv = Nothing
+    , cvv = Nothing
     , state = initialState
     }
 
@@ -94,7 +102,7 @@ Example 2:
         , name : Maybe String
         , month : Maybe String
         , year : Maybe String
-        , ccv : Maybe String
+        , cvv : Maybe String
         , state : CreditCard.State
         , shippingAddress : Maybe String
         ...
@@ -110,6 +118,7 @@ Example 2:
             shippingAddress = Nothing
             ...
             }
+
 -}
 type alias CardData model =
     { model
@@ -117,7 +126,7 @@ type alias CardData model =
         , name : Maybe String
         , month : Maybe String
         , year : Maybe String
-        , ccv : Maybe String
+        , cvv : Maybe String
         , state : State
     }
 
@@ -132,7 +141,8 @@ Example:
             config =
                 CreditCard.Config.defaultConfig
         in
-            CreditCard.card config model
+        CreditCard.card config model
+
 -}
 card : Config config -> CardData model -> Html msg
 card config cardData =
@@ -140,7 +150,7 @@ card config cardData =
         cardInfo =
             Helpers.CardType.detect cardData
     in
-        CreditCard.Components.Card.card config cardInfo cardData
+    CreditCard.Components.Card.card config cardInfo cardData
 
 
 {-| Form view
@@ -148,14 +158,15 @@ card config cardData =
 Render the card view with the full form fields.
 Example:
 
-    type Msg = UpdateCardData Model
+    type Msg
+        = UpdateCardData Model
 
     view model =
         let
             config =
                 CreditCard.Config.defaultFormConfig UpdateCardData
         in
-            CreditCard.card config model
+        CreditCard.card config model
 
 -}
 form : FormConfig model msg -> CardData model -> Html msg
@@ -166,13 +177,13 @@ form config cardData =
         , name config cardData
         , month config cardData
         , year config cardData
-        , ccv config cardData
+        , cvv config cardData
         ]
 
 
-{-| CCV form field
+{-| CVV form field
 
-Render the CCV field individually.
+Render the CVV field individually.
 Example:
 
     type Msg = UpdateCardData Model
@@ -184,28 +195,28 @@ Example:
         in
             form []
                 [ CreditCard.card config model
-                , CreditCard.ccv config model
+                , CreditCard.cvv config model
                 ...
 
 -}
-ccv : FormConfig model msg -> CardData model -> Html msg
-ccv config cardData =
+cvv : FormConfig model msg -> CardData model -> Html msg
+cvv config cardData =
     let
-        ccvConfig =
+        cvvConfig =
             let
                 default =
-                    Input.BigNumber.defaultOptions <| updateCCV config cardData
+                    Input.BigNumber.defaultOptions <| updateCVV config cardData
             in
-                { default | maxLength = Just 4, hasFocus = Just focusHandler }
+            { default | maxLength = Just 4, hasFocus = Just focusHandler }
 
         focusHandler hasFocus =
             let
                 updatedCardData =
-                    CreditCard.Events.updateCCVFocus hasFocus cardData
+                    CreditCard.Events.updateCVVFocus hasFocus cardData
             in
-                config.onChange updatedCardData
+            config.onChange updatedCardData
     in
-        field .ccv config <| Input.BigNumber.input ccvConfig [ placeholder config.placeholders.ccv ] <| Maybe.withDefault "" cardData.ccv
+    field .cvv config <| Input.BigNumber.input cvvConfig [ placeholder config.placeholders.cvv ] <| Maybe.withDefault "" cardData.cvv
 
 
 {-| Year form field
@@ -234,9 +245,9 @@ year config cardData =
                 default =
                     Input.Number.defaultOptions <| updateYear config cardData
             in
-                { default | minValue = Just 1, maxValue = Just 9999 }
+            { default | minValue = Just 1, maxValue = Just 9999 }
     in
-        field .year config <| Input.Number.input yearConfig [ placeholder config.placeholders.year ] (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
+    field .year config <| Input.Number.input yearConfig [ placeholder config.placeholders.year ] (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
 
 
 {-| Month form field
@@ -265,9 +276,9 @@ month config cardData =
                 default =
                     Input.Number.defaultStringOptions <| updateMonth config cardData
             in
-                { default | maxLength = Just 2, maxValue = Just 12, minValue = Just 1 }
+            { default | maxLength = Just 2, maxValue = Just 12, minValue = Just 1 }
     in
-        field .month config <| Input.Number.inputString monthConfig [ placeholder config.placeholders.month ] <| Maybe.withDefault "" cardData.month
+    field .month config <| Input.Number.inputString monthConfig [ placeholder config.placeholders.month ] <| Maybe.withDefault "" cardData.month
 
 
 {-| Name form field
@@ -325,9 +336,9 @@ number config cardData =
                 default =
                     Input.BigNumber.defaultOptions <| updateNumber config cardData
             in
-                { default | maxLength = Just maxLength }
+            { default | maxLength = Just maxLength }
     in
-        field .number config <| Input.BigNumber.input numberConfig [ placeholder config.placeholders.number ] (Maybe.withDefault "" cardData.number)
+    field .number config <| Input.BigNumber.input numberConfig [ placeholder config.placeholders.number ] (Maybe.withDefault "" cardData.number)
 
 
 
@@ -344,13 +355,13 @@ field getter config inputElement =
         ]
 
 
-updateCCV : Config (FormConfig model msg) -> CardData model -> (String -> msg)
-updateCCV config cardData =
+updateCVV : Config (FormConfig model msg) -> CardData model -> (String -> msg)
+updateCVV config cardData =
     let
-        updatedCardData ccv =
-            { cardData | ccv = Just ccv }
+        updatedCardData cvv =
+            { cardData | cvv = Just cvv }
     in
-        (\ccv -> config.onChange (updatedCardData ccv))
+    \cvv -> config.onChange (updatedCardData cvv)
 
 
 updateYear : Config (FormConfig model msg) -> CardData model -> (Maybe Int -> msg)
@@ -359,7 +370,7 @@ updateYear config cardData =
         updatedCardData maybeInt =
             { cardData | year = Maybe.map toString maybeInt }
     in
-        (\maybeInt -> config.onChange (updatedCardData maybeInt))
+    \maybeInt -> config.onChange (updatedCardData maybeInt)
 
 
 updateMonth : Config (FormConfig model msg) -> CardData model -> (String -> msg)
@@ -368,7 +379,7 @@ updateMonth config cardData =
         updatedCardData month =
             { cardData | month = Just month }
     in
-        (\month -> config.onChange (updatedCardData month))
+    \month -> config.onChange (updatedCardData month)
 
 
 updateNumber : Config (FormConfig model msg) -> CardData model -> (String -> msg)
@@ -377,7 +388,7 @@ updateNumber config cardData =
         updatedCardData number =
             { cardData | number = Just number }
     in
-        (\number -> config.onChange (updatedCardData number))
+    \number -> config.onChange (updatedCardData number)
 
 
 updateName : Config (FormConfig model msg) -> CardData model -> (String -> msg)
@@ -386,4 +397,4 @@ updateName config cardData =
         updatedCardData name =
             { cardData | name = Just name }
     in
-        (\name -> config.onChange (updatedCardData name))
+    \name -> config.onChange (updatedCardData name)

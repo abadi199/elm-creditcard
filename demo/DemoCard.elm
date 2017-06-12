@@ -1,11 +1,11 @@
 module DemoCard exposing (main)
 
-import Html exposing (Html, div, input, label, text, p, form)
-import Html.Attributes exposing (type_, value)
-import Html.Events exposing (onInput)
 import CreditCard
 import CreditCard.Config
-import CreditCard.Events exposing (onCCVFocus, onCCVBlur)
+import CreditCard.Events exposing (onCVVBlur, onCVVFocus)
+import Html exposing (Html, div, form, input, label, p, text)
+import Html.Attributes exposing (type_, value)
+import Html.Events exposing (onInput)
 
 
 main : Program Never Model Msg
@@ -23,7 +23,7 @@ type alias Model =
     , name : Maybe String
     , month : Maybe String
     , year : Maybe String
-    , ccv : Maybe String
+    , cvv : Maybe String
     , state : CreditCard.State
     }
 
@@ -34,7 +34,7 @@ type Msg
     | UpdateName (Maybe String)
     | UpdateMonth (Maybe String)
     | UpdateYear (Maybe String)
-    | UpdateCCV (Maybe String)
+    | UpdateCVV (Maybe String)
     | UpdateState CreditCard.State
 
 
@@ -74,24 +74,24 @@ view model =
                     ]
                 ]
     in
-        form []
-            [ CreditCard.card
-                config
-                model
-            , field "Number" "number" model.number UpdateCardNumber
-            , field "Name" "text" model.name UpdateName
-            , field "Month" "number" model.month UpdateMonth
-            , field "Year" "number" model.year UpdateYear
-            , fieldWithAttributes
-                [ onCCVFocus UpdateState model
-                , onCCVBlur UpdateState model
-                , onInput (Just >> UpdateCCV)
-                ]
-                "Ccv"
-                "number"
-                model.ccv
-                UpdateCCV
+    form []
+        [ CreditCard.card
+            config
+            model
+        , field "Number" "number" model.number UpdateCardNumber
+        , field "Name" "text" model.name UpdateName
+        , field "Month" "number" model.month UpdateMonth
+        , field "Year" "number" model.year UpdateYear
+        , fieldWithAttributes
+            [ onCVVFocus UpdateState model
+            , onCVVBlur UpdateState model
+            , onInput (Just >> UpdateCVV)
             ]
+            "Cvv"
+            "number"
+            model.cvv
+            UpdateCVV
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -112,8 +112,8 @@ update msg model =
         UpdateYear value ->
             ( { model | year = value }, Cmd.none )
 
-        UpdateCCV value ->
-            ( { model | ccv = value }, Cmd.none )
+        UpdateCVV value ->
+            ( { model | cvv = value }, Cmd.none )
 
         UpdateState state ->
             ( { model | state = state }
