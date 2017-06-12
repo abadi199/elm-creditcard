@@ -173,11 +173,11 @@ form : FormConfig model msg -> CardData model -> Html msg
 form config cardData =
     div []
         [ card config cardData
-        , number config cardData
-        , name config cardData
-        , month config cardData
-        , year config cardData
-        , cvv config cardData
+        , number config [] cardData
+        , name config [] cardData
+        , month config [] cardData
+        , year config [] cardData
+        , cvv config [] cardData
         ]
 
 
@@ -195,12 +195,12 @@ Example:
         in
             form []
                 [ CreditCard.card config model
-                , CreditCard.cvv config model
+                , CreditCard.cvv config [] model
                 ...
 
 -}
-cvv : FormConfig model msg -> CardData model -> Html msg
-cvv config cardData =
+cvv : FormConfig model msg -> List (Html.Attribute msg) -> CardData model -> Html msg
+cvv config attributes cardData =
     let
         cvvConfig =
             let
@@ -216,7 +216,7 @@ cvv config cardData =
             in
             config.onChange updatedCardData
     in
-    field .cvv config <| Input.BigNumber.input cvvConfig [ placeholder config.placeholders.cvv ] <| Maybe.withDefault "" cardData.cvv
+    field .cvv config <| Input.BigNumber.input cvvConfig (placeholder config.placeholders.cvv :: attributes) <| Maybe.withDefault "" cardData.cvv
 
 
 {-| Year form field
@@ -233,12 +233,12 @@ Example:
         in
             form []
                 [ CreditCard.card config model
-                , CreditCard.year config model
+                , CreditCard.year config [] model
                 ...
 
 -}
-year : FormConfig model msg -> CardData model -> Html msg
-year config cardData =
+year : FormConfig model msg -> List (Html.Attribute msg) -> CardData model -> Html msg
+year config attributes cardData =
     let
         yearConfig =
             let
@@ -247,7 +247,7 @@ year config cardData =
             in
             { default | minValue = Just 1, maxValue = Just 9999 }
     in
-    field .year config <| Input.Number.input yearConfig [ placeholder config.placeholders.year ] (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
+    field .year config <| Input.Number.input yearConfig (placeholder config.placeholders.year :: attributes) (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
 
 
 {-| Month form field
@@ -264,12 +264,12 @@ Example:
         in
             form []
                 [ CreditCard.card config model
-                , CreditCard.month config model
+                , CreditCard.month config [] model
                 ...
 
 -}
-month : FormConfig model msg -> CardData model -> Html msg
-month config cardData =
+month : FormConfig model msg -> List (Html.Attribute msg) -> CardData model -> Html msg
+month config attributes cardData =
     let
         monthConfig =
             let
@@ -278,7 +278,7 @@ month config cardData =
             in
             { default | maxLength = Just 2, maxValue = Just 12, minValue = Just 1 }
     in
-    field .month config <| Input.Number.inputString monthConfig [ placeholder config.placeholders.month ] <| Maybe.withDefault "" cardData.month
+    field .month config <| Input.Number.inputString monthConfig (placeholder config.placeholders.month :: attributes) <| Maybe.withDefault "" cardData.month
 
 
 {-| Name form field
@@ -295,13 +295,13 @@ Example:
         in
             form []
                 [ CreditCard.card config model
-                , CreditCard.name config model
+                , CreditCard.name config [] model
                 ...
 
 -}
-name : FormConfig model msg -> CardData model -> Html msg
-name config cardData =
-    field .name config <| input [ type_ "text", value <| Maybe.withDefault "" cardData.name, onInput <| updateName config cardData, placeholder config.placeholders.name ] []
+name : FormConfig model msg -> List (Html.Attribute msg) -> CardData model -> Html msg
+name config attributes cardData =
+    field .name config <| input ([ type_ "text", value <| Maybe.withDefault "" cardData.name, onInput <| updateName config cardData, placeholder config.placeholders.name ] ++ attributes) []
 
 
 {-| Number form field
@@ -318,12 +318,12 @@ Example:
         in
             form []
                 [ CreditCard.card config model
-                , CreditCard.number config model
+                , CreditCard.number config [] model
                 ...
 
 -}
-number : FormConfig model msg -> CardData model -> Html msg
-number config cardData =
+number : FormConfig model msg -> List (Html.Attribute msg) -> CardData model -> Html msg
+number config attributes cardData =
     let
         cardInfo =
             Helpers.CardType.detect cardData
@@ -338,7 +338,7 @@ number config cardData =
             in
             { default | maxLength = Just maxLength }
     in
-    field .number config <| Input.BigNumber.input numberConfig [ placeholder config.placeholders.number ] (Maybe.withDefault "" cardData.number)
+    field .number config <| Input.BigNumber.input numberConfig (placeholder config.placeholders.number :: attributes) (Maybe.withDefault "" cardData.number)
 
 
 
@@ -347,12 +347,11 @@ number config cardData =
 
 field : (Form -> String) -> FormConfig model msg -> Html msg -> Html msg
 field getter config inputElement =
-    p [ class <| getter config.classes ]
-        [ if config.showLabel then
-            label [] [ text <| getter config.labels, inputElement ]
-          else
-            inputElement
-        ]
+    if config.showLabel then
+        p [ class <| getter config.classes ]
+            [ label [] [ text <| getter config.labels, inputElement ] ]
+    else
+        inputElement
 
 
 updateCVV : Config (FormConfig model msg) -> CardData model -> (String -> msg)
