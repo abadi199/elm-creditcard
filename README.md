@@ -69,7 +69,7 @@ type Msg
 
 view model =
     ...
-    CreditCard.form (CreditCard.defaultFormConfig UpdateCardData) model
+    CreditCard.form (CreditCard.Config.defaultFormConfig UpdateCardData) model
     ...
 
 update msg model =
