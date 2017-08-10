@@ -154,7 +154,7 @@ defaultLabels =
   - `number = "Credit Card Number"`
   - `name = "First Last"`
   - `month = "MM"`
-  - `year = "YYYY"`
+  - `year = "YY"`
   - `cvv = "CVV"`
 
 -}
@@ -163,6 +163,6 @@ defaultPlaceholders =
     { number = "Credit Card Number"
     , name = "First Last"
     , month = "MM"
-    , year = "YYYY"
+    , year = "YY"
     , cvv = "CVV"
     }

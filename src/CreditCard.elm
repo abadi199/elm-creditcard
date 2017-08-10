@@ -245,7 +245,7 @@ year config attributes cardData =
                 default =
                     Input.Number.defaultOptions <| updateYear config cardData
             in
-            { default | minValue = Just 1, maxValue = Just 9999 }
+            { default | minValue = Just 1, maxValue = Just 99 }
     in
     field .year config <| Input.Number.input yearConfig (placeholder config.placeholders.year :: attributes) (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
 

@@ -57,7 +57,7 @@ card config cardInfo cardData =
         expirationYear =
             cardData.year
                 |> Maybe.withDefault ""
-                |> rightPad config.blankChar 4
+                |> rightPad config.blankChar 2
 
         cardStyle =
             cardInfo.cardStyle
@@ -109,7 +109,7 @@ card config cardInfo cardData =
                         , text_ [ x "250", y "160", fontSize "10", fill cardStyle.lightTextColor ] [ text "MONTH/YEAR" ]
                         , text_ [ x "215", y "170", fontSize "8", fill cardStyle.lightTextColor ] [ text "valid" ]
                         , text_ [ x "220", y "180", fontSize "8", fill cardStyle.lightTextColor ] [ text "thru" ]
-                        , text_ [ x "250", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
+                        , text_ [ x "260", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
                         , if cardInfo.cvvPosition == CreditCard.Internal.Front then
                             text_ [ x "290", y "110", fontSize "14", fill cardStyle.darkTextColor ] [ text cvv ]
                           else
