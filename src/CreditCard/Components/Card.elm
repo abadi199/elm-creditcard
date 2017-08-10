@@ -81,7 +81,7 @@ card config cardInfo cardData =
             getStateValue cardData.state
     in
     div
-        [ Html.Attributes.class "elm-card-svg"
+        [ Html.Attributes.class config.class
         , Html.Attributes.style [ ( "perspective", "1200px" ) ]
         ]
         [ svg

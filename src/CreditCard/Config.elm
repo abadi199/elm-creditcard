@@ -37,6 +37,7 @@ type alias Config config =
     { config
         | blankChar : Char
         , blankName : String
+        , class : String
     }
 
 
@@ -54,6 +55,7 @@ This includes all configuration from `Config` with addition of:
 type alias FormConfig model msg =
     { blankChar : Char
     , blankName : String
+    , class : String
     , onChange : CardData model -> msg
     , showLabel : Bool
     , classes : Form
@@ -83,6 +85,7 @@ defaultConfig : Config {}
 defaultConfig =
     { blankChar = '•'
     , blankName = "YOUR NAME"
+    , class = "elm-card-svg"
     }
 
 
@@ -99,6 +102,7 @@ defaultFormConfig : (CardData model -> msg) -> FormConfig model msg
 defaultFormConfig onChange =
     { blankChar = defaultConfig.blankChar
     , blankName = defaultConfig.blankName
+    , class = defaultConfig.class
     , onChange = onChange
     , showLabel = True
     , classes = defaultClasses
