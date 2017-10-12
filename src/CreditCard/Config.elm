@@ -50,6 +50,7 @@ This includes all configuration from `Config` with addition of:
   - `classes` : classes of each form field's container, stored in a `Form` record.
   - `labels` : text of each form field's label, stored in a `Form` record.
   - `placeholders` : the placeholder text of form field, stored in a `Form` record.
+  - `yearConfig` : the config for year input. see `YearConfig`.
 
 -}
 type alias FormConfig model msg =
@@ -163,6 +164,6 @@ defaultPlaceholders =
     { number = "Credit Card Number"
     , name = "First Last"
     , month = "MM"
-    , year = "YY"
+    , year = "YYYY"
     , cvv = "CVV"
     }

@@ -243,11 +243,11 @@ year config attributes cardData =
         yearConfig =
             let
                 default =
-                    Input.Number.defaultOptions <| updateYear config cardData
+                    Input.BigNumber.defaultOptions <| updateYear config cardData
             in
-            { default | minValue = Just 1, maxValue = Just 99 }
+            { default | maxLength = Just 4 }
     in
-    field .year config <| Input.Number.input yearConfig (placeholder config.placeholders.year :: attributes) (cardData.year |> Maybe.andThen (String.toInt >> Result.toMaybe))
+    field .year config <| Input.BigNumber.input yearConfig (placeholder config.placeholders.year :: attributes) <| Maybe.withDefault "" cardData.year
 
 
 {-| Month form field
@@ -363,13 +363,13 @@ updateCVV config cardData =
     \cvv -> config.onChange (updatedCardData cvv)
 
 
-updateYear : Config (FormConfig model msg) -> CardData model -> (Maybe Int -> msg)
+updateYear : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateYear config cardData =
     let
-        updatedCardData maybeInt =
-            { cardData | year = Maybe.map toString maybeInt }
+        updatedCardData year =
+            { cardData | year = Just year }
     in
-    \maybeInt -> config.onChange (updatedCardData maybeInt)
+    \year -> config.onChange (updatedCardData year)
 
 
 updateMonth : Config (FormConfig model msg) -> CardData model -> (String -> msg)
