@@ -43,7 +43,6 @@ import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onInput)
 import Input.BigNumber
 import Input.Number
-import String
 
 
 {-| Internal State of the card view
@@ -216,7 +215,11 @@ cvv config attributes cardData =
             in
             config.onChange updatedCardData
     in
-    field .cvv config <| Input.BigNumber.input cvvConfig (placeholder config.placeholders.cvv :: attributes) <| Maybe.withDefault "" cardData.cvv
+    field .cvv config <|
+        Input.BigNumber.input cvvConfig
+            (placeholder config.placeholders.cvv :: autocompleteAttributes config CVV ++ attributes)
+        <|
+            Maybe.withDefault "" cardData.cvv
 
 
 {-| Year form field
@@ -247,7 +250,11 @@ year config attributes cardData =
             in
             { default | maxLength = Just 4 }
     in
-    field .year config <| Input.BigNumber.input yearConfig (placeholder config.placeholders.year :: attributes) <| Maybe.withDefault "" cardData.year
+    field .year config <|
+        Input.BigNumber.input yearConfig
+            (placeholder config.placeholders.year :: autocompleteAttributes config Year ++ attributes)
+        <|
+            Maybe.withDefault "" cardData.year
 
 
 {-| Month form field
@@ -278,7 +285,11 @@ month config attributes cardData =
             in
             { default | maxLength = Just 2, maxValue = Just 12, minValue = Just 1 }
     in
-    field .month config <| Input.Number.inputString monthConfig (placeholder config.placeholders.month :: attributes) <| Maybe.withDefault "" cardData.month
+    field .month config <|
+        Input.Number.inputString monthConfig
+            (placeholder config.placeholders.month :: autocompleteAttributes config Month ++ attributes)
+        <|
+            Maybe.withDefault "" cardData.month
 
 
 {-| Name form field
@@ -301,7 +312,17 @@ Example:
 -}
 name : FormConfig model msg -> List (Html.Attribute msg) -> CardData model -> Html msg
 name config attributes cardData =
-    field .name config <| input ([ type_ "text", value <| Maybe.withDefault "" cardData.name, onInput <| updateName config cardData, placeholder config.placeholders.name ] ++ attributes) []
+    field .name config <|
+        input
+            ([ type_ "text"
+             , value <| Maybe.withDefault "" cardData.name
+             , onInput <| updateName config cardData
+             , placeholder config.placeholders.name
+             ]
+                ++ autocompleteAttributes config Name
+                ++ attributes
+            )
+            []
 
 
 {-| Number form field
@@ -338,7 +359,10 @@ number config attributes cardData =
             in
             { default | maxLength = Just maxLength }
     in
-    field .number config <| Input.BigNumber.input numberConfig (placeholder config.placeholders.number :: attributes) (Maybe.withDefault "" cardData.number)
+    field .number config <|
+        Input.BigNumber.input numberConfig
+            (placeholder config.placeholders.number :: autocompleteAttributes config Number ++ attributes)
+            (Maybe.withDefault "" cardData.number)
 
 
 
@@ -397,3 +421,43 @@ updateName config cardData =
             { cardData | name = Just name }
     in
     \name -> config.onChange (updatedCardData name)
+
+
+type FieldType
+    = Name
+    | Number
+    | Month
+    | Year
+    | CVV
+
+
+autocompleteAttributes : Config (FormConfig model msg) -> FieldType -> List (Html.Attribute msg)
+autocompleteAttributes config fieldType =
+    if config.autocomplete then
+        case fieldType of
+            Name ->
+                [ Html.Attributes.name "ccname"
+                , Html.Attributes.attribute "autocomplete" "cc-name"
+                ]
+
+            Number ->
+                [ Html.Attributes.name "cardnumber"
+                , Html.Attributes.attribute "autocomplete" "cc-number"
+                ]
+
+            Month ->
+                [ Html.Attributes.name "ccmonth"
+                , Html.Attributes.attribute "autocomplete" "cc-exp-month"
+                ]
+
+            Year ->
+                [ Html.Attributes.name "ccyear"
+                , Html.Attributes.attribute "autocomplete" "cc-exp-year"
+                ]
+
+            CVV ->
+                [ Html.Attributes.name "cvc"
+                , Html.Attributes.attribute "autocomplete" "cc-csc"
+                ]
+    else
+        []

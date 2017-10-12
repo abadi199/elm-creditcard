@@ -62,6 +62,7 @@ type alias FormConfig model msg =
     , classes : Form
     , labels : Form
     , placeholders : Form
+    , autocomplete : Bool
     }
 
 
@@ -109,6 +110,7 @@ defaultFormConfig onChange =
     , classes = defaultClasses
     , labels = defaultLabels
     , placeholders = defaultPlaceholders
+    , autocomplete = True
     }
 
 
