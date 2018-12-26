@@ -1,8 +1,8 @@
 module CreditCard.Components.Logo.JCB exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (path, node, g, style, defs, text, linearGradient, stop)
-import Svg.Attributes exposing (type_, d, transform, id, x1, y1, x2, y2, gradientUnits, stopColor, offset, fill, class)
+import Svg exposing (defs, g, linearGradient, node, path, stop, style, text)
+import Svg.Attributes exposing (class, d, fill, gradientUnits, id, offset, stopColor, transform, type_, x1, x2, y1, y2)
 
 
 viewLogo : Html msg

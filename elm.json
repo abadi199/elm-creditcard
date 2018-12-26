@@ -1,0 +1,22 @@
+{
+    "type": "package",
+    "name": "abadi199/elm-creditcard",
+    "summary": "Pretty credit card form built with elm",
+    "license": "MIT",
+    "version": "10.0.1",
+    "exposed-modules": [
+        "CreditCard",
+        "CreditCard.Config",
+        "CreditCard.Events"
+    ],
+    "elm-version": "0.19.0 <= v < 0.20.0",
+    "dependencies": {
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/html": "1.0.0 <= v < 2.0.0",
+        "elm/json": "1.1.2 <= v < 2.0.0",
+        "elm/regex": "1.0.0 <= v < 2.0.0",
+        "elm/svg": "1.0.1 <= v < 2.0.0",
+        "indicatrix/elm-input-extra": "1.0.1 <= v < 2.0.0"
+    },
+    "test-dependencies": {}
+}

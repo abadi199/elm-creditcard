@@ -25,6 +25,7 @@ viewBackCard cardInfo cardData =
         , rect [ x "30", y "90", width "290", height "40", fill "rgba(255,255,255,0.5)" ] []
         , if cardInfo.cvvPosition == Back then
             text_ [ x "270", y "115", fontSize "14", fill cardStyle.darkTextColor ] [ text cvv ]
+
           else
             text ""
         ]

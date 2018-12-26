@@ -1,8 +1,8 @@
 module CreditCard.Components.Logo.VisaElectron exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (path, node, g)
-import Svg.Attributes exposing (clipPath, d, transform, id, style)
+import Svg exposing (g, node, path)
+import Svg.Attributes exposing (clipPath, d, id, style, transform)
 
 
 viewLogo : Html msg

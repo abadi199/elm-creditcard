@@ -1,7 +1,7 @@
 module Styles.Backgrounds.Gradient exposing (background)
 
-import Svg exposing (Svg, radialGradient, stop, rect, linearGradient, g)
-import Svg.Attributes as Attributes exposing (stopColor, offset, id, x1, y1, x2, y2, stopOpacity, x, y, width, height, rx, ry, fill)
+import Svg exposing (Svg, g, linearGradient, radialGradient, rect, stop)
+import Svg.Attributes as Attributes exposing (fill, height, id, offset, rx, ry, stopColor, stopOpacity, width, x, x1, x2, y, y1, y2)
 
 
 type alias Config =

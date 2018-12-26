@@ -33,11 +33,12 @@ card config cardInfo cardData =
             cardData.name
                 |> Maybe.map String.toUpper
                 |> Maybe.withDefault ""
-                |> (\name ->
-                        if String.isEmpty name then
+                |> (\n ->
+                        if String.isEmpty n then
                             blankName
+
                         else
-                            name
+                            n
                    )
 
         blankMonth =
@@ -50,6 +51,7 @@ card config cardInfo cardData =
                 |> (\str ->
                         if String.isEmpty str then
                             blankMonth
+
                         else
                             leftPad '0' 2 str
                    )
@@ -70,6 +72,7 @@ card config cardInfo cardData =
         numberFontSize =
             if numberLength > 16 then
                 fontSize "20"
+
             else
                 fontSize "22"
 
@@ -82,7 +85,7 @@ card config cardInfo cardData =
     in
     div
         [ Html.Attributes.class config.class
-        , Html.Attributes.style [ ( "perspective", "1200px" ) ]
+        , Html.Attributes.style "perspective" "1200px"
         ]
         [ svg
             [ width "350"
@@ -98,23 +101,26 @@ card config cardInfo cardData =
                     , rect (List.append [ x "0", y "0", width "350", height "220", rx "5", ry "5" ] cardStyle.background.attributes) []
                     ]
                     cardStyle.background.svg
-                    |> flip List.append
-                        [ viewChip 40 70
-                        , CreditCard.Components.Logo.viewLogo config cardInfo
-                        , text_ [ x "40", y "130", numberFontSize, fill cardStyle.textColor ] [ text number ]
-                        , foreignObject [ x "40", y "160", fontSize "16", width "170", fill cardStyle.textColor ]
-                            [ Html.p [ style [ ( "color", cardStyle.textColor ) ] ]
-                                [ Html.text name ]
-                            ]
-                        , text_ [ x "250", y "160", fontSize "10", fill cardStyle.lightTextColor ] [ text "MONTH/YEAR" ]
-                        , text_ [ x "215", y "170", fontSize "8", fill cardStyle.lightTextColor ] [ text "valid" ]
-                        , text_ [ x "220", y "180", fontSize "8", fill cardStyle.lightTextColor ] [ text "thru" ]
-                        , text_ [ x "260", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
-                        , if cardInfo.cvvPosition == CreditCard.Internal.Front then
-                            text_ [ x "290", y "110", fontSize "14", fill cardStyle.darkTextColor ] [ text cvv ]
-                          else
-                            text ""
-                        ]
+                    |> (\a ->
+                            List.append a
+                                [ viewChip 40 70
+                                , CreditCard.Components.Logo.viewLogo config cardInfo
+                                , text_ [ x "40", y "130", numberFontSize, fill cardStyle.textColor ] [ text number ]
+                                , foreignObject [ x "40", y "160", fontSize "16", width "170", fill cardStyle.textColor ]
+                                    [ Html.p [ style "color" cardStyle.textColor ]
+                                        [ Html.text name ]
+                                    ]
+                                , text_ [ x "250", y "160", fontSize "10", fill cardStyle.lightTextColor ] [ text "MONTH/YEAR" ]
+                                , text_ [ x "215", y "170", fontSize "8", fill cardStyle.lightTextColor ] [ text "valid" ]
+                                , text_ [ x "220", y "180", fontSize "8", fill cardStyle.lightTextColor ] [ text "thru" ]
+                                , text_ [ x "260", y "180", fontSize "14", fill cardStyle.textColor ] [ text (expirationMonth ++ "/" ++ expirationYear) ]
+                                , if cardInfo.cvvPosition == CreditCard.Internal.Front then
+                                    text_ [ x "290", y "110", fontSize "14", fill cardStyle.darkTextColor ] [ text cvv ]
+
+                                  else
+                                    text ""
+                                ]
+                       )
                 )
             , viewBackCard cardInfo cardData
             ]

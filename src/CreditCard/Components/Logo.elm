@@ -1,20 +1,20 @@
 module CreditCard.Components.Logo exposing (viewLogo)
 
-import Html exposing (Html)
-import Svg exposing (svg, rect, text_, g)
-import Svg.Attributes exposing (transform, width, height, viewBox, x, y, rx, ry, fill, fontSize, fontFamily)
-import CreditCard.Internal exposing (CardInfo, CardType(..))
-import CreditCard.Config exposing (Config)
-import String
+import CreditCard.Components.Logo.Amex as Amex
+import CreditCard.Components.Logo.Diners as Diners
+import CreditCard.Components.Logo.Discover as Discover
+import CreditCard.Components.Logo.JCB as JCB
+import CreditCard.Components.Logo.Maestro as Maestro
+import CreditCard.Components.Logo.Mastercard as Mastercard
 import CreditCard.Components.Logo.Visa as Visa
 import CreditCard.Components.Logo.VisaElectron as VisaElectron
-import CreditCard.Components.Logo.Mastercard as Mastercard
-import CreditCard.Components.Logo.Amex as Amex
-import CreditCard.Components.Logo.Discover as Discover
-import CreditCard.Components.Logo.Maestro as Maestro
-import CreditCard.Components.Logo.JCB as JCB
-import CreditCard.Components.Logo.Diners as Diners
+import CreditCard.Config exposing (Config)
+import CreditCard.Internal exposing (CardInfo, CardType(..))
 import Helpers.CardAnimation as CardAnimation
+import Html exposing (Html)
+import String
+import Svg exposing (g, rect, svg, text_)
+import Svg.Attributes exposing (fill, fontFamily, fontSize, height, rx, ry, transform, viewBox, width, x, y)
 
 
 viewLogo : Config config -> CardInfo msg -> Html msg
@@ -55,38 +55,38 @@ viewLogo config cardInfo =
         viewUnknown =
             text_ [ x "280", y "40", fontSize "12", fill cardInfo.cardStyle.textColor ] [ Svg.text unknownLogo ]
     in
-        g [ CardAnimation.fadeInAnimation ]
-            [ case cardType of
-                Visa ->
-                    viewVisa
+    g [ CardAnimation.fadeInAnimation ]
+        [ case cardType of
+            Visa ->
+                viewVisa
 
-                Mastercard ->
-                    viewMastercard
+            Mastercard ->
+                viewMastercard
 
-                Amex ->
-                    viewAmex
+            Amex ->
+                viewAmex
 
-                Discover ->
-                    viewDiscover
+            Discover ->
+                viewDiscover
 
-                Maestro ->
-                    viewMaestro
+            Maestro ->
+                viewMaestro
 
-                JCB ->
-                    viewJCB
+            JCB ->
+                viewJCB
 
-                DinersClubCarteBlanche ->
-                    viewDiners
+            DinersClubCarteBlanche ->
+                viewDiners
 
-                DinersClubInternational ->
-                    viewDiners
+            DinersClubInternational ->
+                viewDiners
 
-                VisaElectron ->
-                    viewVisaElectron
+            VisaElectron ->
+                viewVisaElectron
 
-                Laser ->
-                    viewUnknown
+            Laser ->
+                viewUnknown
 
-                Unknown ->
-                    viewUnknown
-            ]
+            Unknown ->
+                viewUnknown
+        ]

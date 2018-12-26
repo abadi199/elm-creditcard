@@ -1,17 +1,8 @@
-module CreditCard
-    exposing
-        ( CardData
-        , State
-        , card
-        , cvv
-        , emptyCardData
-        , form
-        , initialState
-        , month
-        , name
-        , number
-        , year
-        )
+module CreditCard exposing
+    ( card, form, number, name, month, year, cvv
+    , CardData, emptyCardData
+    , State, initialState
+    )
 
 {-|
 
@@ -374,6 +365,7 @@ field getter config inputElement =
     if config.showLabel then
         p [ class <| getter config.classes ]
             [ label [] [ text <| getter config.labels, inputElement ] ]
+
     else
         inputElement
 
@@ -381,46 +373,46 @@ field getter config inputElement =
 updateCVV : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateCVV config cardData =
     let
-        updatedCardData cvv =
-            { cardData | cvv = Just cvv }
+        updatedCardData c =
+            { cardData | cvv = Just c }
     in
-    \cvv -> config.onChange (updatedCardData cvv)
+    \a -> config.onChange (updatedCardData a)
 
 
 updateYear : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateYear config cardData =
     let
-        updatedCardData year =
-            { cardData | year = Just year }
+        updatedCardData y =
+            { cardData | year = Just y }
     in
-    \year -> config.onChange (updatedCardData year)
+    \yr -> config.onChange (updatedCardData yr)
 
 
 updateMonth : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateMonth config cardData =
     let
-        updatedCardData month =
-            { cardData | month = Just month }
+        updatedCardData m =
+            { cardData | month = Just m }
     in
-    \month -> config.onChange (updatedCardData month)
+    \mon -> config.onChange (updatedCardData mon)
 
 
 updateNumber : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateNumber config cardData =
     let
-        updatedCardData number =
-            { cardData | number = Just number }
+        updatedCardData n =
+            { cardData | number = Just n }
     in
-    \number -> config.onChange (updatedCardData number)
+    \num -> config.onChange (updatedCardData num)
 
 
 updateName : Config (FormConfig model msg) -> CardData model -> (String -> msg)
 updateName config cardData =
     let
-        updatedCardData name =
-            { cardData | name = Just name }
+        updatedCardData n =
+            { cardData | name = Just n }
     in
-    \name -> config.onChange (updatedCardData name)
+    \nn -> config.onChange (updatedCardData nn)
 
 
 type FieldType
@@ -459,5 +451,6 @@ autocompleteAttributes config fieldType =
                 [ Html.Attributes.name "cvc"
                 , Html.Attributes.attribute "autocomplete" "cc-csc"
                 ]
+
     else
         []
