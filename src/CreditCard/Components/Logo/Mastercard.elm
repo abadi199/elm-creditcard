@@ -1,8 +1,8 @@
 module CreditCard.Components.Logo.Mastercard exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (path, node, g)
-import Svg.Attributes exposing (d, transform, id, style, d, fill)
+import Svg exposing (g, node, path)
+import Svg.Attributes exposing (d, fill, id, style, transform)
 
 
 viewLogo : Html msg

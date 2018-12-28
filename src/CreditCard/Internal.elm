@@ -1,16 +1,15 @@
-module CreditCard.Internal
-    exposing
-        ( CVVPosition(..)
-        , CardData
-        , CardInfo
-        , CardStyle
-        , CardType(..)
-        , NumberFormat
-        , State(..)
-        , StateValue
-        , getStateValue
-        , initialState
-        )
+module CreditCard.Internal exposing
+    ( CVVPosition(..)
+    , CardData
+    , CardInfo
+    , CardStyle
+    , CardType(..)
+    , NumberFormat
+    , State(..)
+    , StateValue
+    , getStateValue
+    , initialState
+    )
 
 import Html exposing (Attribute)
 import Svg exposing (Svg)

@@ -1,23 +1,23 @@
-module Helpers.Misc
-    exposing
-        ( onKeyDown
-        , partition
-        , partitionStep
-        , printNumber
-        , rightPad
-        , leftPad
-        , formatNumber
-        , minMaxNumberLength
-          -- , cardInfo
-          -- , toNumberInputModel
-          -- , toStringInputModel
-        )
+module Helpers.Misc exposing
+    ( formatNumber
+    , leftPad
+    ,  minMaxNumberLength
+       -- , cardInfo
+       -- , toNumberInputModel
+       -- , toStringInputModel
 
-import Html.Events exposing (on, keyCode)
-import String
+    , onKeyDown
+    , partition
+    , partitionStep
+    , printNumber
+    , rightPad
+    )
+
+import CreditCard.Internal exposing (CardInfo, NumberFormat)
 import Html exposing (Attribute, Html, input)
+import Html.Events exposing (keyCode, on)
 import Json.Decode as Json
-import CreditCard.Internal exposing (NumberFormat, CardInfo)
+import String
 
 
 onKeyDown : (Int -> msg) -> Attribute msg
@@ -32,7 +32,7 @@ partition numberFormat xs =
             [ xs ]
 
         n :: tail ->
-            List.take n xs :: (partition tail (List.drop n xs))
+            List.take n xs :: partition tail (List.drop n xs)
 
 
 partition_ : Int -> List a -> List (List a)
@@ -55,10 +55,11 @@ partitionStep groupSize step xs =
         okayLength =
             groupSize == List.length group
     in
-        if okayArgs && okayLength then
-            group :: partitionStep groupSize step xs_
-        else
-            [ group ]
+    if okayArgs && okayLength then
+        group :: partitionStep groupSize step xs_
+
+    else
+        [ group ]
 
 
 printNumber : NumberFormat -> Int -> Char -> Maybe String -> String
@@ -72,6 +73,7 @@ rightPad : Char -> Int -> String -> String
 rightPad char length number =
     if String.length number < length then
         rightPad char length (number ++ String.fromChar char)
+
     else
         number
 
@@ -80,6 +82,7 @@ leftPad : Char -> Int -> String -> String
 leftPad char length number =
     if String.length number < length then
         rightPad char length (String.fromChar char ++ number)
+
     else
         number
 
@@ -99,4 +102,4 @@ minMaxNumberLength : CardInfo msg -> ( Int, Int )
 minMaxNumberLength cardInfo =
     cardInfo
         |> .validLength
-        |> \numbers -> ( List.minimum numbers |> Maybe.withDefault 16, List.maximum numbers |> Maybe.withDefault 16 )
+        |> (\numbers -> ( List.minimum numbers |> Maybe.withDefault 16, List.maximum numbers |> Maybe.withDefault 16 ))

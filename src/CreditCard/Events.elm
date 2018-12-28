@@ -1,4 +1,4 @@
-module CreditCard.Events exposing (onCVVBlur, onCVVFocus, updateCVVFocus)
+module CreditCard.Events exposing (updateCVVFocus, onCVVFocus, onCVVBlur)
 
 {-| Helpers function for all events related to focus/blur of CVV field for card flipping effects.
 See examples in the demo folder of the git repo for some example on how to use this module.

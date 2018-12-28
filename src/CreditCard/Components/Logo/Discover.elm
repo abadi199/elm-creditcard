@@ -1,8 +1,8 @@
 module CreditCard.Components.Logo.Discover exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (path, node, g, clipPath, stop, use, radialGradient, defs)
-import Svg.Attributes exposing (fill, r, d, transform, id, style, xlinkHref, gradientUnits, cy, cx, offset, fx, fy, x, y, width, height)
+import Svg exposing (clipPath, defs, g, node, path, radialGradient, stop, use)
+import Svg.Attributes exposing (cx, cy, d, fill, fx, fy, gradientUnits, height, id, offset, r, style, transform, width, x, xlinkHref, y)
 
 
 viewLogo : Html msg

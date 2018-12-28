@@ -1,13 +1,14 @@
 module CreditCard.Components.Chip exposing (viewChip, viewChipAlt)
 
 import Html exposing (Html)
-import Svg exposing (rect, path, node, g, defs, text, linearGradient, stop)
-import Svg.Attributes exposing (width, height, rx, ry, x, y, style, gradientTransform, xlinkHref, type_, d, transform, id, x1, y1, x2, y2, gradientUnits, stopColor, offset, fill, class)
+import String
+import Svg exposing (defs, g, linearGradient, node, path, rect, stop, text)
+import Svg.Attributes exposing (class, d, fill, gradientTransform, gradientUnits, height, id, offset, rx, ry, stopColor, style, transform, type_, width, x, x1, x2, xlinkHref, y, y1, y2)
 
 
 viewChip : Int -> Int -> Html msg
 viewChip x_ y_ =
-    g [ transform ("translate(" ++ toString x_ ++ ", " ++ toString y_ ++ ")") ]
+    g [ transform ("translate(" ++ String.fromInt x_ ++ ", " ++ String.fromInt y_ ++ ")") ]
         [ g [ transform "scale(0.13671875,0.13671875)", id "g3007" ]
             [ g [ transform "translate(-96.5,-252.09375)", id "g3000" ]
                 [ rect [ width "250", height "250", rx "30", ry "30", x "99.510002", y "255.09", id "rect2818", style "fill:#ffcc00;stroke:#000000;stroke-width:6" ] []
@@ -22,7 +23,7 @@ viewChip x_ y_ =
 
 viewChipAlt : Int -> Int -> Html msg
 viewChipAlt x_ y_ =
-    g [ transform ("translate(" ++ toString x_ ++ ", " ++ toString y_ ++ ")") ]
+    g [ transform ("translate(" ++ String.fromInt x_ ++ ", " ++ String.fromInt y_ ++ ")") ]
         [ defs [ id "defs1200" ]
             [ linearGradient [ x1 "108.44", y1 "17.976999", x2 "110.62", y2 "24.427", id "SVGID_5_", gradientUnits "userSpaceOnUse" ]
                 [ stop [ id "stop914", style "stop-color:#ffffff;stop-opacity:1", offset "0.0055" ] []

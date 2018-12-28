@@ -1,11 +1,16 @@
-module Helpers.CardType exposing (detect, unknownCard)
+module Helpers.CardType exposing
+    ( detect
+    , unknownCard
+    )
 
 {-| Helper for detecting type of card
+
 @docs CardType, detect
+
 -}
 
-import CreditCard.Internal exposing (CVVPosition(Back, Front), CardData, CardInfo, CardStyle, CardType(..))
-import Regex exposing (Regex, contains, regex)
+import CreditCard.Internal exposing (CVVPosition(..), CardData, CardInfo, CardStyle, CardType(..))
+import Regex
 import Styles.Cards.Amex as AmexStyle
 import Styles.Cards.Diners as DinersStyle
 import Styles.Cards.Discover as DiscoverStyle
@@ -18,7 +23,7 @@ import Styles.Cards.Visa as VisaStyle
 {-| CardType
 -}
 type alias CardRegex msg =
-    { pattern : Regex
+    { pattern : Regex.Regex
     , cardInfo : CardInfo msg
     }
 
@@ -33,7 +38,7 @@ detect model =
                 |> Maybe.withDefault ""
     in
     cards
-        |> List.map (\card -> ( contains card.pattern number, card ))
+        |> List.map (\card -> ( Regex.contains card.pattern number, card ))
         |> List.filter (\( match, card ) -> match)
         |> List.head
         |> Maybe.map (\( _, card ) -> card.cardInfo)
@@ -49,7 +54,7 @@ cards =
             , cardStyle = AmexStyle.style
             , cvvPosition = Front
             }
-      , pattern = regex "^3[47]"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^3[47]"
       }
     , { cardInfo =
             { cardType = DinersClubCarteBlanche
@@ -58,7 +63,7 @@ cards =
             , cardStyle = DinersStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^30[0-5]"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^30[0-5]"
       }
     , { cardInfo =
             { cardType = DinersClubInternational
@@ -67,7 +72,7 @@ cards =
             , cardStyle = DinersStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^36"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^36"
       }
     , { cardInfo =
             { cardType = JCB
@@ -76,7 +81,7 @@ cards =
             , cardStyle = JCBStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^35(2[89]|[3-8][0-9])"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^35(2[89]|[3-8][0-9])"
       }
     , { cardInfo =
             { cardType = Laser
@@ -85,7 +90,7 @@ cards =
             , cardStyle = VisaStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^(6304|670[69]|6771)"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^(6304|670[69]|6771)"
       }
     , { cardInfo =
             { cardType = VisaElectron
@@ -94,7 +99,7 @@ cards =
             , cardStyle = VisaStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^(4026|417500|4508|4844|491(3|7))"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^(4026|417500|4508|4844|491(3|7))"
       }
     , { cardInfo =
             { cardType = Visa
@@ -103,7 +108,7 @@ cards =
             , cardStyle = VisaStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^4"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^4"
       }
     , { cardInfo =
             { cardType = Mastercard
@@ -112,7 +117,7 @@ cards =
             , cardStyle = MastercardStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^5[1-5]"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^5[1-5]"
       }
     , { cardInfo =
             { cardType = Maestro
@@ -121,7 +126,7 @@ cards =
             , cardStyle = MastercardStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^(5018|5020|5038|6304|6759|676[1-3])"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^(5018|5020|5038|6304|6759|676[1-3])"
       }
     , { cardInfo =
             { cardType = Discover
@@ -130,7 +135,7 @@ cards =
             , cardStyle = DiscoverStyle.style
             , cvvPosition = Back
             }
-      , pattern = regex "^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)"
+      , pattern = Maybe.withDefault Regex.never <| Regex.fromString "^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)"
       }
     ]
 

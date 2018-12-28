@@ -1,8 +1,8 @@
 module CreditCard.Components.Logo.Amex exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (path, node, g, clipPath, stop, use, radialGradient, defs)
-import Svg.Attributes exposing (fill, x, y, r, overflow, d, transform, id, style, xlinkHref, height, width, stopColor, gradientUnits, cy, cx, gradientTransform, offset)
+import Svg exposing (clipPath, defs, g, node, path, radialGradient, stop, use)
+import Svg.Attributes exposing (cx, cy, d, fill, gradientTransform, gradientUnits, height, id, offset, overflow, r, stopColor, style, transform, width, x, xlinkHref, y)
 
 
 viewLogo : Html msg

@@ -1,14 +1,7 @@
-module CreditCard.Config
-    exposing
-        ( Config
-        , Form
-        , FormConfig
-        , defaultClasses
-        , defaultConfig
-        , defaultFormConfig
-        , defaultLabels
-        , defaultPlaceholders
-        )
+module CreditCard.Config exposing
+    ( Config, FormConfig, Form
+    , defaultConfig, defaultFormConfig, defaultClasses, defaultLabels, defaultPlaceholders
+    )
 
 {-|
 

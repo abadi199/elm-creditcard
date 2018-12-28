@@ -1,8 +1,8 @@
 module CreditCard.Components.Logo.Diners exposing (viewLogo)
 
 import Html exposing (Html)
-import Svg exposing (path, node, g)
-import Svg.Attributes exposing (d, transform, id, style)
+import Svg exposing (g, node, path)
+import Svg.Attributes exposing (d, id, style, transform)
 
 
 viewLogo : Html msg
