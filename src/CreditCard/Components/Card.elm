@@ -106,7 +106,7 @@ card config cardInfo cardData =
                                 [ viewChip 40 70
                                 , CreditCard.Components.Logo.viewLogo config cardInfo
                                 , text_ [ x "40", y "130", numberFontSize, fill cardStyle.textColor ] [ text number ]
-                                , foreignObject [ x "40", y "160", fontSize "16", width "170", fill cardStyle.textColor ]
+                                , foreignObject [ x "40", y "140", fontSize "16", width "170", fill cardStyle.textColor, height "100" ]
                                     [ Html.p [ style "color" cardStyle.textColor ]
                                         [ Html.text name ]
                                     ]
