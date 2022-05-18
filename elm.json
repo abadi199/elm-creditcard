@@ -3,7 +3,7 @@
     "name": "abadi199/elm-creditcard",
     "summary": "Pretty credit card form built with elm",
     "license": "MIT",
-    "version": "10.0.1",
+    "version": "10.0.2",
     "exposed-modules": [
         "CreditCard",
         "CreditCard.Config",
