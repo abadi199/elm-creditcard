@@ -1,15 +1,15 @@
 module DemoFormModel exposing (main)
 
+import Browser
 import CreditCard
 import CreditCard.Config
 import Html exposing (Html, div, form, input, label, p, text)
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-    Html.program
+    Browser.sandbox
         { init = init
-        , subscriptions = subscriptions
         , view = view
         , update = update
         }
@@ -32,19 +32,17 @@ type Msg
     | UpdateCardData Model
 
 
-init : ( Model, Cmd Msg )
+init : Model
 init =
-    ( { number = Nothing
-      , name = Nothing
-      , month = Nothing
-      , year = Nothing
-      , cvv = Nothing
-      , state = CreditCard.initialState
-      , shippingAddress = Nothing
-      , shippingState = Nothing
-      }
-    , Cmd.none
-    )
+    { number = Nothing
+    , name = Nothing
+    , month = Nothing
+    , year = Nothing
+    , cvv = Nothing
+    , state = CreditCard.initialState
+    , shippingAddress = Nothing
+    , shippingState = Nothing
+    }
 
 
 subscriptions : Model -> Sub Msg
@@ -65,11 +63,11 @@ view model =
         ]
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Model
 update msg model =
     case msg of
         NoOp ->
-            ( model, Cmd.none )
+            model
 
         UpdateCardData cardData ->
-            ( cardData, Cmd.none )
+            cardData

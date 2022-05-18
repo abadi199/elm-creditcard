@@ -1,5 +1,6 @@
 module DemoCard exposing (main)
 
+import Browser
 import CreditCard
 import CreditCard.Config
 import CreditCard.Events exposing (onCVVBlur, onCVVFocus)
@@ -8,11 +9,10 @@ import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onInput)
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-    Html.program
+    Browser.sandbox
         { init = init
-        , subscriptions = subscriptions
         , view = view
         , update = update
         }
@@ -38,16 +38,9 @@ type Msg
     | UpdateState CreditCard.State
 
 
-init : ( Model, Cmd Msg )
+init : Model
 init =
-    ( Model Nothing Nothing Nothing Nothing Nothing CreditCard.initialState
-    , Cmd.none
-    )
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
+    Model Nothing Nothing Nothing Nothing Nothing CreditCard.initialState
 
 
 view : Model -> Html Msg
@@ -94,28 +87,26 @@ view model =
         ]
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Model
 update msg model =
     case msg of
         NoOp ->
-            ( model, Cmd.none )
+            model
 
         UpdateCardNumber value ->
-            ( { model | number = value }, Cmd.none )
+            { model | number = value }
 
         UpdateName value ->
-            ( { model | name = value }, Cmd.none )
+            { model | name = value }
 
         UpdateMonth value ->
-            ( { model | month = value }, Cmd.none )
+            { model | month = value }
 
         UpdateYear value ->
-            ( { model | year = value }, Cmd.none )
+            { model | year = value }
 
         UpdateCVV value ->
-            ( { model | cvv = value }, Cmd.none )
+            { model | cvv = value }
 
         UpdateState state ->
-            ( { model | state = state }
-            , Cmd.none
-            )
+            { model | state = state }

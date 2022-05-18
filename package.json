@@ -24,7 +24,7 @@
     "webpack-dev-server": "^1.15.1"
   },
   "dependencies": {
-    "elm": "^0.19.0-bugfix2",
+    "elm": "^0.19.1-5",
     "elm-format": "^0.8.1"
   }
 }
